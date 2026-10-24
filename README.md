@@ -29,7 +29,7 @@ En la app de escritorio (pestaña Code): botón **+** junto al campo de texto �
 **Add marketplace** con `La-Boveda-del-Master/masterplan` → **Add plugin**.
 
 **Necesitas:** Claude Code reciente, Node.js 20 o superior y git. Para construir el SaaS: una
-cuenta gratis de Supabase y de Vercel (el plugin te dice cuándo).
+cuenta en los servicios que te recomiende para tu proyecto (te dice cuáles y cuándo).
 
 ## Empezar
 
@@ -65,12 +65,23 @@ Así ninguna conversación carga todo el proyecto.
 ## Qué trae
 
 - **Skill principal** `masterplan` con las 9 fases, 6 tipos de producto (SaaS, sitio, API,
-  herramienta interna, bot, app con IA) y 2 perfiles de stack (React + Vite + Supabase + Vercel
-  por defecto; Next.js como alternativa).
-- **7 kits por capacidad:** datos (migraciones, RLS y sus tests), auth (organizaciones, roles,
-  invitaciones), API (contratos, rate limiting, webhooks), frontend (design system, estados,
-  accesibilidad, rendimiento), pagos para Latinoamérica (Stripe, Mercado Pago, Wompi/PSE/Nequi,
-  Lemon Squeezy), deploy y observabilidad.
+  herramienta interna, bot, app con IA) y 4 perfiles de stack (React + Vite, Next.js, API Node en
+  contenedor, todo en Cloudflare).
+- **Catálogo de 120 herramientas en 24 categorías** con su especialidad, cuándo usarlas y cuándo
+  no, plan gratis, si permite uso comercial, presencia en Latinoamérica, fuente oficial y fecha de
+  verificación: hosting (Vercel, Netlify, Cloudflare), backend (Railway, Render, Fly.io, Cloud Run,
+  VPS con Coolify), bases de datos (Supabase, Neon, D1, Turso, MongoDB…), login (Supabase Auth,
+  Clerk, Better Auth, WorkOS…), archivos (R2, Bunny Storage, S3…), video (Bunny Stream, Mux,
+  Cloudflare Stream…), imágenes, correo, WhatsApp y SMS, tiempo real, colas y cron, búsqueda,
+  vectores, modelos de IA, observabilidad, analítica, CMS, pagos, automatización y más.
+- **Recomendador:** describes lo que necesitas y elige la herramienta por categoría con sus
+  razones, alternativas y descartes; prefiere menos proveedores, respeta tu presupuesto y si el plan
+  gratis permite uso comercial, y nunca propone servicios cerrados.
+- **9 kits por capacidad:** datos (migraciones, aislamiento entre clientes y sus tests), auth
+  (organizaciones, roles, invitaciones), API (contratos, rate limiting, webhooks), frontend (design
+  system, estados, accesibilidad, rendimiento), media (archivos, video e imágenes), trabajos en
+  segundo plano (colas, cron, procesos largos), pagos para Latinoamérica (Mercado Pago, Wompi con
+  PSE/Nequi, Stripe donde aplica, Paddle), deploy en cualquier proveedor y observabilidad.
 - **Auditor** con dos notas que nunca se mezclan: Seguridad y Calidad de experiencia.
 - **10 agentes, uno por tipo de tarea:** explorador, investigador de versiones, arquitecto de
   datos, diseñador, revisor del plano, constructor, revisor de código, auditor de seguridad,
@@ -84,7 +95,21 @@ Así ninguna conversación carga todo el proyecto.
 - **Conexiones (MCP) listas:** Supabase (solo lectura), Vercel, Context7 (documentación al día) y
   Playwright (pruebas de interfaz). Supabase y Vercel te piden iniciar sesión la primera vez.
 - **CLI sin dependencias** `scripts/masterplan.mjs`: `estado`, `validar`, `tarea`, `auditoria`,
-  `deriva`, `cambio`, `relevo`, `buzon`.
+  `deriva`, `cambio`, `relevo`, `buzon` y `proveedores` (`recomendar`, `lista`, `ver`, `validar`).
+
+## Elegir herramientas
+
+Masterplan no asume Supabase + Vercel. En la fase 3 traduce lo que cuentas a necesidades y
+recomienda pieza por pieza. Puedes probarlo solo:
+
+```bash
+node scripts/masterplan.mjs proveedores recomendar --rasgos ssr,postgres,auth-orgs,video-vod,correo-transaccional,pagos-latam
+```
+
+Una plataforma de cursos sale con Supabase (datos y login), Bunny Stream (video), Resend (correo)
+y Mercado Pago (pagos). Una API con procesos largos sale con un servidor en contenedor (Railway o
+Coolify), Inngest o BullMQ para las colas y Postgres. Un sitio barato y global sale entero en
+Cloudflare. Antes de proponerlo, un agente confirma precios y planes de ese día.
 
 ## Sesiones conectadas (mod)
 
@@ -127,8 +152,9 @@ negocio o técnico, te dice cuál eligió y puedes cambiarlo cuando quieras ("h�
 **¿Funciona con un proyecto que ya tengo?** Sí. Lee tu repo, respeta tus convenciones y diseña
 solo el cambio.
 
-**¿Me cobra algo?** El plugin es gratis (MIT). Los servicios que uses (Supabase, Vercel, pagos)
-tienen planes gratuitos y te avisa el costo a 1× y a 10× antes de construir.
+**¿Me cobra algo?** El plugin es gratis (MIT). Los servicios que elijas tienen sus propios planes:
+te dice cuáles tienen plan gratis, si ese plan permite cobrar a tus clientes y el costo a 1× y a 10×
+antes de construir.
 
 **¿Publica solo a producción?** Nunca. Publicar, cobrar de verdad o borrar datos siempre espera tu
 confirmación. Los secretos los escribes tú en `.env`; jamás te los pide por el chat.

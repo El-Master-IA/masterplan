@@ -80,13 +80,20 @@ directorio de trabajo de la persona, bajo `masterplan/` (ver `plantillas/estruct
 ## Conocimiento (se lee solo lo que el proyecto necesita)
 
 - `conocimiento/tipos/` — qué es el producto: `saas.md`, `sitio.md`, `api.md`, `herramienta-interna.md`, `bot.md`, `app-ia.md`.
-- `conocimiento/perfiles/` — en qué se construye, con versiones y su procedencia. Por defecto
-  `react-vite-supabase-vercel.md`; alternativa `nextjs-supabase-vercel.md`.
+- `conocimiento/proveedores.md` + `conocimiento/proveedores.json` — catálogo verificado de
+  herramientas por categoría (hosting, backend, borde, bases de datos, auth, archivos, video,
+  imágenes, correo, WhatsApp, tiempo real, colas, búsqueda, IA, observabilidad, analítica, CMS,
+  pagos…) y cómo pasar de necesidades a rasgos. Recomienda con
+  `masterplan.mjs proveedores recomendar`; nunca asumas Supabase + Vercel sin pasar por ahí.
+- `conocimiento/perfiles/` — en qué framework se construye, con versiones y su procedencia:
+  `react-vite-supabase-vercel.md`, `nextjs-supabase-vercel.md`, `node-railway.md`, `cloudflare.md`.
 - `conocimiento/fundamentos.md` — los 12 principios y los atributos de calidad.
 - `conocimiento/compatibilidad.md` — combinaciones que se rompen juntas.
 - Kits por capacidad (skills hermanas): `masterplan:kit-datos`, `masterplan:kit-auth`,
   `masterplan:kit-api`, `masterplan:kit-frontend`, `masterplan:kit-pagos`,
-  `masterplan:kit-deploy`, `masterplan:kit-observabilidad`. Auditoría: `masterplan:auditor`.
+  `masterplan:kit-deploy`, `masterplan:kit-observabilidad`, `masterplan:kit-media` (archivos,
+  video e imágenes) y `masterplan:kit-trabajos` (colas, cron y procesos largos). Auditoría:
+  `masterplan:auditor`.
 
 ## Agentes: uno por tipo de tarea
 

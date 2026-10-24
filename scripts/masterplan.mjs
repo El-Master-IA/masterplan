@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Masterplan CLI: estado, validación del plano, tareas, auditoría, deriva, cambios, relevos y buzón.
+// Masterplan CLI: estado, validación del plano, tareas, auditoría, deriva, cambios, relevos, buzón y proveedores.
 // Sin dependencias. Se ejecuta desde la raíz del proyecto de la persona.
 // Uso: node masterplan.mjs <comando> [args]   (node masterplan.mjs ayuda)
 
@@ -424,6 +424,201 @@ function cmdBuzon([sub, ...resto]) {
   fallar('Uso: masterplan.mjs buzon enviar --para <fase-N|todas> "texto" | buzon leer [--todo]')
 }
 
+// ---------- proveedores: catálogo y recomendador ----------
+// El catálogo vive en skills/masterplan/conocimiento/proveedores.json (fichas verificadas con fuente y fecha).
+// El recomendador es determinista: las necesidades del proyecto (rasgos) activan categorías; dentro de cada
+// categoría puntúa cada proveedor y explica por qué gana, qué no cubre y por qué se descarta.
+
+const CATALOGO = process.env.MASTERPLAN_CATALOGO || path.join(PLUGIN, 'skills', 'masterplan', 'conocimiento', 'proveedores.json')
+
+// Rasgos que, si aparecen en las necesidades, piden una categoría.
+const ANCLAS = {
+  'hosting-web': ['sitio-estatico', 'ssr', 'spa'],
+  backend: ['api-http', 'proceso-largo', 'contenedor-docker', 'gpu'],
+  'serverless-borde': ['borde-global'],
+  'base-de-datos': ['postgres', 'mysql', 'sqlite-borde', 'nosql-documentos', 'ramas-de-base', 'serverless-db', 'realtime-db'],
+  auth: ['auth-email', 'auth-social', 'auth-magic-link', 'auth-orgs', 'sso-empresa', 'mfa'],
+  almacenamiento: ['archivos-grandes', 'subidas-directas', 'sin-costo-salida'],
+  video: ['video-vod', 'video-en-vivo', 'drm'],
+  imagenes: ['transformacion-imagenes'],
+  'cdn-dns': [],
+  correo: ['correo-transaccional', 'correo-masivo'],
+  mensajeria: ['whatsapp', 'sms', 'push'],
+  'tiempo-real': ['presencia', 'colaboracion-multiusuario', 'pubsub', 'websockets'],
+  trabajos: ['worker-cola', 'cron', 'reintentos', 'workflows-durables', 'cola-simple', 'programador'],
+  'cache-kv': [],
+  busqueda: ['busqueda-texto', 'busqueda-tolerante-errores'],
+  vectores: ['busqueda-semantica', 'embeddings'],
+  'ia-modelos': ['ia-llm', 'gateway-modelos'],
+  observabilidad: ['errores', 'logs', 'uptime', 'trazas'],
+  analitica: ['analitica-producto', 'analitica-web-privada', 'replays-sesion'],
+  cms: ['cms-headless', 'editor-visual', 'cms-self-host'],
+  pagos: ['pagos-latam', 'pse', 'merchant-of-record'],
+  automatizacion: ['flujos-no-code'],
+  movil: ['builds-moviles', 'ota-updates'],
+  flags: ['feature-flags', 'experimentos'],
+}
+const CATEGORIAS = Object.keys(ANCLAS)
+const MODIFICADORES = new Set(['region-latam', 'uso-comercial-gratis', 'presupuesto-cero', 'presupuesto-bajo', 'enterprise-cumplimiento',
+  'self-host', 'escala-a-cero', 'mcp-oficial', 'preview-por-pr', 'monorepo', 'backups-automaticos', 'multi-region', 'cdn-global', 'rls'])
+const RASGOS = new Set([...Object.values(ANCLAS).flat(), ...MODIFICADORES, 'websockets', 'auth-integrada-db', 'plantillas',
+  'workflows-durables', 'cola-simple', 'programador', 'transformacion-imagenes'])
+const CAMPOS_FICHA = ['id', 'nombre', 'categoria', 'especialidad', 'rasgos', 'usarCuando', 'evitarCuando', 'gratis', 'precio', 'fuente', 'verificado']
+
+function catalogo() {
+  if (!existe(CATALOGO)) fallar(`No encuentro el catálogo de proveedores (${CATALOGO}). Corre este comando desde el plugin o define MASTERPLAN_CATALOGO.`)
+  const c = leerJSON(CATALOGO)
+  const lista = Array.isArray(c) ? c : c.proveedores || []
+  EMPRESA = new Map(lista.map(p => [p.id, p.empresa || p.id]))
+  return lista
+}
+// Empresa dueña del producto (campo "empresa" de la ficha). Sin él, cada ficha es su propia empresa.
+let EMPRESA = new Map()
+const familia = id => EMPRESA.get(id) || id
+const textoLatam = p => /(latam|am[eé]rica latina|s[aã]o paulo|brasil|m[eé]xico|colombia|bogot|chile|santiago|argentina|buenos aires|per[uú]|lima)/i.test(p.latam || '')
+
+function validarCatalogo(lista) {
+  const errores = []
+  const ids = new Set()
+  for (const p of lista) {
+    const d = p.id || '(sin id)'
+    for (const k of CAMPOS_FICHA) if (p[k] === undefined || p[k] === '' || (Array.isArray(p[k]) && !p[k].length)) errores.push(`${d}: falta "${k}"`)
+    if (ids.has(p.id)) errores.push(`${d}: id repetido`)
+    ids.add(p.id)
+    if (p.categoria && !CATEGORIAS.includes(p.categoria)) errores.push(`${d}: categoría desconocida "${p.categoria}"`)
+    for (const r of p.rasgos || []) if (!RASGOS.has(r)) errores.push(`${d}: rasgo fuera del vocabulario "${r}"`)
+    if (p.fuente && !/^https:\/\//.test(p.fuente)) errores.push(`${d}: la fuente debe ser una URL https`)
+    if (p.verificado && !/^\d{4}-\d{2}-\d{2}$/.test(p.verificado)) errores.push(`${d}: "verificado" debe ser AAAA-MM-DD`)
+    if (p.aviso && !['descontinuado', 'evitar-en-nuevos'].includes(p.aviso)) errores.push(`${d}: aviso desconocido "${p.aviso}"`)
+  }
+  return errores
+}
+
+function necesidadesDe(args) {
+  // Prioridad: --rasgos a,b,c en la línea de comandos; si no, proyecto.json → necesidades.
+  const i = args.indexOf('--rasgos')
+  let n = {}
+  if (existe(path.join(MP, 'proyecto.json'))) n = leerJSON(path.join(MP, 'proyecto.json')).necesidades || {}
+  if (i >= 0) n = { ...n, rasgos: (args[i + 1] || '').split(',').map(s => s.trim()).filter(Boolean) }
+  const v = (flag, def) => { const j = args.indexOf(flag); return j >= 0 ? args[j + 1] : def }
+  return {
+    rasgos: n.rasgos || [],
+    categorias: (v('--categorias', null)?.split(',') ?? n.categorias ?? []).filter(Boolean),
+    presupuesto: v('--presupuesto', n.presupuesto || 'bajo'),
+    comercial: args.includes('--comercial') ? true : n.comercial ?? true,
+    region: v('--region', n.region || 'latam'),
+    preferir: n.preferir || [],
+    evitar: n.evitar || [],
+  }
+}
+
+// La ubicación importa donde hay latencia, residencia de datos o medios de pago locales.
+const CATS_REGION = new Set(['hosting-web', 'backend', 'serverless-borde', 'base-de-datos', 'almacenamiento', 'video', 'imagenes', 'cdn-dns', 'pagos', 'mensajeria'])
+
+function puntuarCategoria(lista, cat, nec, pide, otros) {
+  const relevantes = [...pide].filter(r => ANCLAS[cat].includes(r) || (MODIFICADORES.has(r) && r !== 'region-latam'))
+  const candidatos = []
+  const descartes = []
+  for (const p of lista.filter(x => x.categoria === cat)) {
+    if (nec.evitar.includes(p.id) || nec.evitar.includes(familia(p.id))) { descartes.push({ id: p.id, motivo: 'la persona pidió evitarlo' }); continue }
+    if (p.aviso === 'descontinuado') { descartes.push({ id: p.id, motivo: 'servicio descontinuado' }); continue }
+    const tiene = new Set(p.rasgos || [])
+    const cubre = relevantes.filter(r => tiene.has(r))
+    const falta = ANCLAS[cat].filter(r => pide.has(r) && !tiene.has(r))
+    let puntos = cubre.filter(r => ANCLAS[cat].includes(r)).length * 3 + cubre.filter(r => MODIFICADORES.has(r)).length
+    const razones = cubre.length ? [`cubre: ${cubre.join(', ')}`] : []
+    if (nec.presupuesto === 'cero') {
+      const sinGratis = /^(no|sin plan gratis|ninguno)/i.test(String(p.gratis).trim())
+      if (sinGratis) { puntos -= 4; razones.push('no tiene plan gratis') }
+      else if (nec.comercial && p.usoComercialGratis === false) { puntos -= 4; razones.push('su plan gratis no permite uso comercial') }
+      else puntos += 2
+    }
+    if (p.aviso === 'evitar-en-nuevos') { puntos -= 3; razones.push(`evitar en proyectos nuevos: ${p.evitarCuando?.[0] ?? 'ver ficha'}`) }
+    if (nec.region === 'latam' && CATS_REGION.has(cat) && (tiene.has('region-latam') || textoLatam(p))) { puntos += 1; razones.push('presencia en Latinoamérica') }
+    if (otros.some(e => familia(e) === familia(p.id))) { puntos += 2; razones.push('mismo proveedor que otra pieza: una cuenta y una factura menos') }
+    if (nec.preferir.includes(p.id) || nec.preferir.includes(familia(p.id))) { puntos += 5; razones.push('preferido por la persona') }
+    if (falta.length) razones.push(`no cubre: ${falta.join(', ')}`)
+    candidatos.push({ id: p.id, nombre: p.nombre, puntos, falta, razones, porDefecto: !!p.porDefecto, especialidad: p.especialidad, fuente: p.fuente, verificado: p.verificado })
+  }
+  // Empate: gana la opción marcada porDefecto en el catálogo (la más probada para principiantes).
+  candidatos.sort((a, b) => b.puntos - a.puntos || a.falta.length - b.falta.length || Number(b.porDefecto) - Number(a.porDefecto) || a.id.localeCompare(b.id))
+  const completos = candidatos.filter(c => !c.falta.length)
+  const gana = completos[0] || candidatos[0] || null
+  return {
+    categoria: cat,
+    pide: ANCLAS[cat].filter(r => pide.has(r)),
+    recomendado: gana,
+    alternativas: candidatos.filter(c => c !== gana).slice(0, 2),
+    descartes: [...descartes, ...candidatos.filter(c => c !== gana && c.falta.length).slice(0, 3).map(c => ({ id: c.id, motivo: `no cubre ${c.falta.join(', ')}` }))],
+    sinCobertura: !completos.length,
+  }
+}
+
+function recomendar(lista, nec) {
+  const pide = new Set(nec.rasgos)
+  const cats = CATEGORIAS.filter(c => nec.categorias.includes(c) || ANCLAS[c].some(r => pide.has(r)))
+  // Primera pasada sin afinidad; luego se repite con los ganadores de las demás categorías hasta que
+  // nada cambie, para que la afinidad (menos proveedores) no dependa del orden de las categorías.
+  let res = cats.map(c => puntuarCategoria(lista, c, nec, pide, []))
+  for (let vuelta = 0; vuelta < 4; vuelta++) {
+    const ganadores = res.map(r => r.recomendado?.id).filter(Boolean)
+    const nuevo = cats.map((c, i) => puntuarCategoria(lista, c, nec, pide, ganadores.filter((_, j) => j !== i)))
+    const igual = nuevo.every((r, i) => r.recomendado?.id === res[i].recomendado?.id)
+    res = nuevo
+    if (igual) break
+  }
+  return res
+}
+
+function cmdProveedores([sub, ...args]) {
+  const lista = catalogo()
+  if (sub === 'validar') {
+    const e = validarCatalogo(lista)
+    if (e.length) { e.forEach(x => console.log(`✗ ${x}`)); process.exit(1) }
+    const porCat = CATEGORIAS.map(c => `${c} ${lista.filter(p => p.categoria === c).length}`).join(' · ')
+    return console.log(`✓ ${lista.length} fichas válidas\n${porCat}`)
+  }
+  if (sub === 'lista') {
+    const i = args.indexOf('--categoria')
+    const cat = i >= 0 ? args[i + 1] : null
+    for (const c of CATEGORIAS.filter(x => !cat || x === cat)) {
+      const ps = lista.filter(p => p.categoria === c)
+      if (!ps.length) continue
+      console.log(`\n## ${c}`)
+      for (const p of ps) console.log(`- ${p.nombre} (${p.id}): ${p.especialidad}`)
+    }
+    return
+  }
+  if (sub === 'ver') {
+    const p = lista.find(x => x.id === args[0])
+    if (!p) fallar(`No existe el proveedor ${args[0]}. Usa: masterplan.mjs proveedores lista`)
+    return console.log(JSON.stringify(p, null, 2))
+  }
+  if (sub === 'recomendar') {
+    const nec = necesidadesDe(args)
+    if (!nec.rasgos.length && !nec.categorias.length) fallar('Sin necesidades. Usa --rasgos ssr,postgres,video-vod … o define "necesidades" en proyecto.json.')
+    const desconocidos = nec.rasgos.filter(r => !RASGOS.has(r))
+    if (desconocidos.length) fallar(`Rasgos desconocidos: ${desconocidos.join(', ')}. Vocabulario en conocimiento/proveedores.md`)
+    const r = recomendar(lista, nec)
+    if (args.includes('--json')) return console.log(JSON.stringify(r, null, 2))
+    for (const c of r) {
+      console.log(`\n## ${c.categoria}${c.pide.length ? ` (pide: ${c.pide.join(', ')})` : ''}`)
+      if (!c.recomendado) { console.log('  sin proveedores en el catálogo'); continue }
+      console.log(`  → ${c.recomendado.nombre} · ${c.recomendado.razones.join(' · ') || 'opción general'}`)
+      for (const a of c.alternativas) console.log(`    alternativa: ${a.nombre} · ${a.razones.join(' · ') || 'opción general'}`)
+      if (c.sinCobertura) console.log('    ⚠ ningún proveedor cubre todo lo pedido: decide qué ceder o combina dos')
+    }
+    if (args.includes('--guardar')) {
+      const pr = proyecto()
+      pr.proveedores = Object.fromEntries(r.filter(c => c.recomendado).map(c => [c.categoria, c.recomendado.id]))
+      guardarProyecto(pr)
+      console.log('\n✓ guardado en proyecto.json → proveedores')
+    }
+    return
+  }
+  fallar('Uso: masterplan.mjs proveedores recomendar [--rasgos a,b] [--presupuesto cero|bajo|medio|alto] [--json] [--guardar] | lista [--categoria c] | ver <id> | validar')
+}
+
 // ---------- main ----------
 const AYUDA = `Masterplan · comandos (desde la raíz de tu proyecto)
   estado                         fase, tareas, último relevo y buzón
@@ -435,7 +630,9 @@ const AYUDA = `Masterplan · comandos (desde la raíz de tu proyecto)
   cambio nuevo "<qué>"           abre un cambio (delta) sobre las specs vivas
   cambio archivar <carpeta>      aplica el delta a specs/ y lo archiva
   relevo [NN-fase]               crea el relevo para seguir en una sesión nueva
-  buzon enviar --para fase-N "…" | buzon leer   mensajes entre sesiones (sin mod)`
+  buzon enviar --para fase-N "…" | buzon leer   mensajes entre sesiones (sin mod)
+  proveedores recomendar [--rasgos a,b] [--presupuesto cero|bajo|medio|alto] [--json] [--guardar]
+  proveedores lista [--categoria c] | ver <id> | validar   catálogo de herramientas por necesidad`
 
 const [cmd, ...args] = process.argv.slice(2)
 try {
@@ -448,6 +645,7 @@ try {
     case 'cambio': cmdCambio(args); break
     case 'relevo': cmdRelevo(args); break
     case 'buzon': cmdBuzon(args); break
+    case 'proveedores': cmdProveedores(args); break
     case undefined: case 'ayuda': case '--help': case '-h': console.log(AYUDA); break
     default: fallar(`Comando desconocido: ${cmd}\n\n${AYUDA}`)
   }

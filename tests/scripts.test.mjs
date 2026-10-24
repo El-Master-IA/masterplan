@@ -175,3 +175,95 @@ test('políticas: bloquean push forzado y db reset remoto', () => {
   assert.match(pol(dir, 'pre', { tool_name: 'Bash', tool_input: { command: 'npx supabase db reset --linked' } }).stdout, /MP-DAT-04/)
   assert.equal(pol(dir, 'pre', { tool_name: 'Bash', tool_input: { command: 'git push --force-with-lease origin feat' } }).stdout, '')
 })
+
+// ---------- proveedores ----------
+function catalogoEjemplo() {
+  const f = (id, categoria, rasgos, extra = {}) => ({
+    id, nombre: id, categoria, especialidad: 'x', rasgos, usarCuando: ['x'], evitarCuando: ['x'],
+    gratis: 'Plan gratis', precio: 'uso', fuente: 'https://ejemplo.com', verificado: '2026-10-24', ...extra
+  })
+  const lista = [
+    f('supabase-db', 'base-de-datos', ['postgres', 'rls', 'realtime-db', 'backups-automaticos'], { porDefecto: true, empresa: 'supabase' }),
+    f('neon', 'base-de-datos', ['postgres', 'ramas-de-base', 'serverless-db', 'escala-a-cero']),
+    f('mongodb-atlas', 'base-de-datos', ['nosql-documentos']),
+    f('vercel', 'hosting-web', ['ssr', 'spa', 'sitio-estatico', 'preview-por-pr'], { usoComercialGratis: false }),
+    f('cloudflare-pages', 'hosting-web', ['ssr', 'spa', 'sitio-estatico', 'borde-global'], { usoComercialGratis: true, empresa: 'cloudflare' }),
+    f('railway', 'backend', ['api-http', 'proceso-largo', 'contenedor-docker', 'cron']),
+    f('cloudflare-workers', 'serverless-borde', ['borde-global', 'api-http'], { empresa: 'cloudflare' }),
+    f('bunny-stream', 'video', ['video-vod', 'cdn-global', 'presupuesto-bajo'], { gratis: 'No tiene plan gratis', latam: 'PoPs en São Paulo' }),
+    f('mux', 'video', ['video-vod', 'video-en-vivo', 'drm']),
+    f('cloudflare-r2', 'almacenamiento', ['archivos-grandes', 'sin-costo-salida', 'subidas-directas'], { empresa: 'cloudflare' }),
+    f('better-auth', 'auth', ['auth-email']),
+    f('better-stack', 'observabilidad', ['errores']),
+    f('supabase-storage', 'almacenamiento', ['subidas-directas'], { empresa: 'supabase' }),
+  ]
+  const p = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'cat-')), 'proveedores.json')
+  fs.writeFileSync(p, JSON.stringify(lista))
+  return p
+}
+const mpCat = (dir, cat, ...args) => spawnSync(process.execPath, [CLI, ...args], { cwd: dir, encoding: 'utf8', env: { ...process.env, MASTERPLAN_CATALOGO: cat } })
+
+test('proveedores: el catálogo real del plugin es válido', () => {
+  const r = spawnSync(process.execPath, [CLI, 'proveedores', 'validar'], { cwd: RAIZ, encoding: 'utf8' })
+  assert.equal(r.status, 0, r.stdout + r.stderr)
+})
+
+test('proveedores: video pide un servicio de video y no el storage de la base', () => {
+  const dir = proyectoTemporal()
+  const r = mpCat(dir, catalogoEjemplo(), 'proveedores', 'recomendar', '--rasgos', 'postgres,video-vod,drm', '--json')
+  assert.equal(r.status, 0, r.stderr)
+  const out = JSON.parse(r.stdout)
+  const video = out.find(c => c.categoria === 'video')
+  assert.equal(video.recomendado.id, 'mux')                     // único que cubre DRM
+  assert.ok(video.descartes.some(d => d.id === 'bunny-stream' && /drm/.test(d.motivo)))
+  assert.equal(out.find(c => c.categoria === 'base-de-datos').recomendado.id, 'supabase-db')
+  assert.ok(!out.some(c => c.categoria === 'almacenamiento'))  // nadie pidió archivos
+})
+
+test('proveedores: procesos largos llevan a un backend con contenedor, no a funciones', () => {
+  const dir = proyectoTemporal()
+  const out = JSON.parse(mpCat(dir, catalogoEjemplo(), 'proveedores', 'recomendar', '--rasgos', 'proceso-largo,cron', '--json').stdout)
+  assert.equal(out.find(c => c.categoria === 'backend').recomendado.id, 'railway')
+})
+
+test('proveedores: presupuesto cero con uso comercial descarta planes gratis no comerciales', () => {
+  const dir = proyectoTemporal()
+  const out = JSON.parse(mpCat(dir, catalogoEjemplo(), 'proveedores', 'recomendar', '--rasgos', 'ssr', '--presupuesto', 'cero', '--comercial', '--json').stdout)
+  const web = out.find(c => c.categoria === 'hosting-web')
+  assert.equal(web.recomendado.id, 'cloudflare-pages')
+  assert.ok(web.alternativas.find(a => a.id === 'vercel').razones.some(x => /no permite uso comercial/.test(x)))
+})
+
+test('proveedores: prefiere repetir proveedor y respeta lo que la persona evita', () => {
+  const dir = proyectoTemporal({ necesidades: { rasgos: ['borde-global', 'archivos-grandes', 'ssr'], evitar: ['vercel'] } })
+  const out = JSON.parse(mpCat(dir, catalogoEjemplo(), 'proveedores', 'recomendar', '--json').stdout)
+  const web = out.find(c => c.categoria === 'hosting-web')
+  assert.equal(web.recomendado.id, 'cloudflare-pages')
+  assert.ok(web.descartes.some(d => d.id === 'vercel'))
+  assert.equal(out.find(c => c.categoria === 'almacenamiento').recomendado.id, 'cloudflare-r2')
+})
+
+test('proveedores: rasgos desconocidos y fichas incompletas se rechazan', () => {
+  const dir = proyectoTemporal()
+  assert.equal(mpCat(dir, catalogoEjemplo(), 'proveedores', 'recomendar', '--rasgos', 'teletransporte').status, 1)
+  const malo = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'cat-')), 'p.json')
+  fs.writeFileSync(malo, JSON.stringify([{ id: 'x', categoria: 'inventada', rasgos: ['nada'] }]))
+  const r = mpCat(dir, malo, 'proveedores', 'validar')
+  assert.equal(r.status, 1)
+  assert.match(r.stdout, /categoría desconocida/)
+  assert.match(r.stdout, /rasgo fuera del vocabulario/)
+})
+
+test('proveedores: --guardar escribe la elección en proyecto.json', () => {
+  const dir = proyectoTemporal()
+  assert.equal(mpCat(dir, catalogoEjemplo(), 'proveedores', 'recomendar', '--rasgos', 'postgres,video-vod', '--guardar').status, 0)
+  const pr = JSON.parse(fs.readFileSync(path.join(dir, 'masterplan/proyecto.json'), 'utf8'))
+  assert.equal(pr.proveedores['base-de-datos'], 'supabase-db')
+  assert.ok(pr.proveedores.video)
+})
+
+test('proveedores: la afinidad usa la empresa real, no la primera palabra del id', () => {
+  const dir = proyectoTemporal()
+  const out = JSON.parse(mpCat(dir, catalogoEjemplo(), 'proveedores', 'recomendar', '--rasgos', 'auth-email,errores', '--json').stdout)
+  for (const c of out) assert.ok(!c.recomendado.razones.some(r => /mismo proveedor/.test(r)), c.categoria)
+})

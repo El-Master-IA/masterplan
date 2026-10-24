@@ -1,5 +1,17 @@
 # Cambios
 
+## 1.1.0 · 2026-10-24
+
+Herramientas según la necesidad, no siempre Supabase + Vercel.
+
+- Catálogo verificado de 120 proveedores en 24 categorías (`conocimiento/proveedores.json`) con especialidad, cuándo usar y evitar, plan gratis, uso comercial, presencia en LatAm, MCP, fuente y fecha.
+- Recomendador determinista `masterplan.mjs proveedores recomendar`: de rasgos a una pieza por categoría con razones, alternativas y descartes; afinidad por proveedor, presupuesto, uso comercial, región y servicios descontinuados.
+- Guía `conocimiento/proveedores.md` para pasar de lo que dice la persona a rasgos; la fase 3 elige proveedores antes que perfil.
+- Perfiles nuevos: API Node en contenedor (Railway, Render, Fly.io) y todo en Cloudflare.
+- Kits nuevos: `kit-media` (archivos, video, imágenes) y `kit-trabajos` (colas, cron, procesos largos).
+- Kits de deploy, datos, auth y API ahora explican cada proveedor; kit de pagos corregido (Stripe no acepta empresas de Colombia, Chile, Perú ni Argentina; Lemon Squeezy en transición).
+- El investigador también verifica precios y planes de los proveedores elegidos.
+
 ## 1.0.0 · 2026-10-24
 
 Primera versión pública.

@@ -41,6 +41,19 @@ otro cliente. Todo lo de este kit apunta a eso y a poder cambiar el esquema sin 
 | Datos que se consultan juntos y nunca solos | `jsonb` solo para metadatos sin consultas por campo | Lo que se filtra va en columnas con tipo |
 | Archivos de usuario | Supabase Storage con bucket privado y política por `org_id` en la ruta (`<org_id>/...`) | Mismo modelo de aislamiento que las tablas |
 
+## Si la base no es Supabase
+El proveedor sale de `proyecto.json.proveedores['base-de-datos']`. Lo que cambia:
+
+| Base | Migraciones | Aislamiento entre clientes | Backups |
+|---|---|---|---|
+| Supabase | `supabase migration new` / `db push` | RLS en Postgres (este kit) | Automáticos + restauración probada |
+| Neon o Railway Postgres | Drizzle, Prisma o SQL versionado en el repo | RLS en Postgres (mismas políticas) o autorización en la API con test | Ramas o snapshots del proveedor |
+| Cloudflare D1 | `wrangler d1 migrations` | En el Worker: una sola función de autorización + test de aislamiento contra la API | Time Travel/exports de D1 |
+| MongoDB Atlas | Scripts de migración versionados | En la API: filtro por `org_id` obligatorio en cada consulta + test | Backups del cluster |
+
+Los candados DAT-* valen para todas: dueño de cada registro, dinero en enteros, borrado decidido,
+test de aislamiento y restauración probada. Solo cambia cómo se cumplen.
+
 ## Archivos que produce
 ```
 masterplan/datos.md                         entidades, dueño de cada fila, borrado, índices, retención

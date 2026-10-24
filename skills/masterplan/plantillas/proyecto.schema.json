@@ -17,6 +17,25 @@
       "default": "normales",
       "description": "estrictas: las advertencias de las políticas de seguridad se vuelven bloqueos."
     },
+    "necesidades": {
+      "type": "object",
+      "description": "Lo que el proyecto exige, en rasgos del vocabulario de conocimiento/proveedores.md. Lo lee `masterplan.mjs proveedores recomendar`.",
+      "additionalProperties": false,
+      "properties": {
+        "rasgos": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9-]+$" }, "uniqueItems": true },
+        "categorias": { "type": "array", "items": { "type": "string" }, "description": "Categorías pedidas explícitamente aunque ningún rasgo las active (ej. cdn-dns, cache-kv)." },
+        "presupuesto": { "enum": ["cero", "bajo", "medio", "alto"], "default": "bajo" },
+        "comercial": { "type": "boolean", "default": true, "description": "¿El proyecto cobra o es para un cliente? Descarta planes gratis no comerciales." },
+        "region": { "enum": ["latam", "global", "norteamerica", "europa"], "default": "latam" },
+        "preferir": { "type": "array", "items": { "type": "string" } },
+        "evitar": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "proveedores": {
+      "type": "object",
+      "description": "Proveedor elegido por categoría (id del catálogo), tras la aprobación de la persona.",
+      "additionalProperties": { "type": "string" }
+    },
     "tipo": { "enum": ["saas", "sitio", "api", "herramienta-interna", "bot", "app-ia"] },
     "tipoSecundario": {
       "enum": ["saas", "sitio", "api", "herramienta-interna", "bot", "app-ia", null],

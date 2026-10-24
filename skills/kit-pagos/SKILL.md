@@ -2,7 +2,7 @@
 name: kit-pagos
 description: >-
   Cobros y suscripciones con enfoque LatAm: elegir proveedor por país y modelo (Stripe, Mercado
-  Pago, Wompi con PSE/Nequi, Lemon Squeezy como merchant of record), checkout creado en el
+  Pago, Wompi con PSE/Nequi, Paddle como merchant of record), checkout creado en el
   servidor, webhooks firmados sobre el cuerpo crudo con idempotencia por id de evento, estado de
   suscripción escrito solo por webhook, gating de plan en el servidor, reembolsos, modo prueba y
   checklist de facturación electrónica (DIAN, SAT). Úsala cuando el alcance cobre dinero, en fases
@@ -38,8 +38,9 @@ Dilo así a la persona antes de planear. Ningún paso del plan marca "facturaci�
 |---|---|---|
 | Empresa en Colombia, clientes en Colombia | Wompi (tarjeta, PSE, Nequi, Bancolombia) | Medios locales que la gente sí usa; liquida en pesos |
 | Empresa en Colombia, clientes en varios países de LatAm | Mercado Pago en los países donde opera, o Wompi + merchant of record para el resto | Cobertura local sin abrir entidades |
-| Empresa en México, Brasil, Chile o EE. UU. con suscripciones | Stripe (Billing, Checkout, portal de cliente) | Mejor manejo de suscripciones y pruebas; verificar disponibilidad del país hoy |
-| Venta de software a todo el mundo y no quieres manejar impuestos extranjeros | Lemon Squeezy u otro merchant of record | Él vende, factura y paga impuestos; tú recibes el neto |
+| Empresa en México, Brasil o EE. UU. con suscripciones | Stripe (Billing, Checkout, portal de cliente) | Mejor manejo de suscripciones y pruebas |
+| Empresa en Colombia, Chile, Perú o Argentina que quiere Stripe | No es posible abrir cuenta local (verificado 2026-10). Merchant of record (Paddle) o una entidad en EE. UU. | Stripe no acepta empresas registradas en esos países |
+| Venta de software a todo el mundo y no quieres manejar impuestos extranjeros | Paddle u otro merchant of record | Él vende, factura y paga impuestos; tú recibes el neto. Lemon Squeezy anuncia su paso a Stripe Managed Payments: evítalo en proyectos nuevos |
 | Marketplace (pagas a terceros) | Stripe Connect o Mercado Pago con split; diseño aparte | Requiere verificación de terceros: más alcance, considerar Non-Goal |
 | Solo validar la idea | Enlace de pago del proveedor + webhook mínimo | Cobrar antes de construir el sistema completo |
 

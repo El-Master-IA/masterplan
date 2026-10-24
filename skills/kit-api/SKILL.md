@@ -51,6 +51,19 @@ type Respuesta<T> =
    `code` en mayúsculas estable (`VALIDACION`, `NO_AUTENTICADO`, `PROHIBIDO`, `NO_ENCONTRADO`,
    `CONFLICTO`, `LIMITE`, `INTERNO`). `message` apto para mostrar; nunca trazas ni SQL.
 
+## Dónde corre la API
+Sale de `proyecto.json.proveedores` (`backend`, `serverless-borde`, `hosting-web`):
+
+| Necesidad | Dónde | Perfil |
+|---|---|---|
+| CRUD con login y reglas en la base | Consultas directas con RLS + RPC + Edge Functions de Supabase | `react-vite-supabase-vercel.md` |
+| Lógica de servidor junto al frontend | Rutas/acciones de servidor del framework | `nextjs-supabase-vercel.md` |
+| Procesos largos, workers, WebSockets propios, binarios nativos | Servicio en contenedor (Railway, Render, Fly.io) | `node-railway.md` |
+| API ligera y global, archivos en R2, datos en D1 | Cloudflare Workers con Hono | `cloudflare.md` |
+
+El contrato (zod), el sobre de error, la autorización en cada ruta, los límites de uso y la
+idempotencia son iguales en todos los destinos.
+
 ## Archivos que produce
 ```
 masterplan/api.md

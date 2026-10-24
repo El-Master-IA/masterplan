@@ -41,6 +41,20 @@ hacer (membresías en la base, leídas por RLS). La interfaz solo refleja; nunca
 | Datos sensibles o rol owner | MFA TOTP de Supabase; políticas críticas exigen `aal2` en el JWT | Segundo factor verificado por la base |
 | Borrar cuenta | Edge Function con verificación de JWT y reautenticación reciente; transfiere o borra orgs donde es único owner; anonimiza lo contable | Derecho de supresión sin romper facturas |
 
+## Si el login no es Supabase Auth
+El proveedor sale de `proyecto.json.proveedores.auth`. Regla de oro: **un solo dueño de la sesión**.
+
+| Proveedor | Cuándo gana | Cómo se conecta con la base |
+|---|---|---|
+| Supabase Auth | La base es Supabase y quieres RLS con `auth.uid()` | Directo (este kit) |
+| Clerk | Organizaciones, invitaciones y UI de cuenta listas; B2B con prisa | Webhook que replica usuarios/orgs en tu base; la API valida el JWT de Clerk (o integración nativa de Clerk con Supabase) |
+| Better Auth | Quieres el login dentro de tu código y tu base, sin servicio externo | Tablas propias en tu base; sesiones en tu servidor |
+| WorkOS / Auth0 | Clientes empresa que exigen SSO (SAML) y SCIM | El JWT del proveedor se valida en la API; la membresía vive en tu base |
+| Firebase Auth | El proyecto ya vive en Firebase o es móvil-primero | Reglas de seguridad de Firebase o validación del token en la API |
+
+Los candados AUT-* aplican igual: roles en el servidor, invitaciones con vencimiento, límite de
+intentos y borrado de cuenta.
+
 ## Archivos que produce
 ```
 supabase/migrations/<ts>_auth_orgs.sql      orgs, memberships, invitations, trigger de registro

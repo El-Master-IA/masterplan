@@ -18,9 +18,9 @@ comprobados, para que el maestro de obra no pregunte lo que ya está escrito.
 2. Lee los manifiestos: `package.json` (scripts y dependencias con su versión declarada), el
    lockfile (solo para saber qué gestor se usa), `tsconfig*.json`, `vite.config.*`,
    `next.config.*`, `requirements.txt`, `pyproject.toml`, `Dockerfile`.
-3. Datos: `supabase/config.toml`, `supabase/migrations/` (cuántas, primera y última), tablas
+3. Datos: `supabase/config.toml`, `supabase/migrations/`, `drizzle/`, `prisma/`, `migrations/` (D1) (cuántas, primera y última), tablas
    creadas y si cada una activa RLS. Cliente u ORM usado.
-4. Deploy y CI: `vercel.json`, `.github/workflows/`, `netlify.toml`, `fly.toml`.
+4. Deploy y CI: `vercel.json`, `wrangler.jsonc`/`wrangler.toml`, `railway.json`, `render.yaml`, `fly.toml`, `netlify.toml`, `Dockerfile`, `.github/workflows/`.
 5. Variables de entorno: nombres en `.env.example` y los que el código lee (`import.meta.env.`,
    `process.env.`, `Deno.env.get`). Nunca abras `.env`, `.env.local` ni archivos con secretos.
 6. Convenciones: muestrea 3 a 5 archivos representativos y anota nombres de archivo, estilo de

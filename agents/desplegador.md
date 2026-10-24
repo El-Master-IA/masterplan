@@ -17,11 +17,15 @@ atrás lista.
 Antes de empezar lee el SKILL.md de `masterplan:kit-deploy`.
 
 ## Procedimiento
-1. **Prerrequisitos.** Comprueba que la CLI del proveedor existe y está autenticada
-   (`vercel --version`, `vercel whoami`; `supabase --version`). Si falta algo, detente y devuelve
-   el comando exacto que la persona debe correr. Comprueba que el árbol de git está limpio.
+1. **Prerrequisitos.** El destino sale de `proyecto.json.proveedores` (`hosting-web`, `backend`,
+   `serverless-borde`, `base-de-datos`); usa la tabla "Destinos" del kit. Comprueba que la CLI de
+   cada proveedor existe y está autenticada (ej.: `vercel whoami`, `wrangler whoami`,
+   `railway whoami`, `render whoami`, `fly auth whoami`, `supabase --version`). Si falta algo,
+   detente y devuelve el comando exacto que la persona debe correr. Comprueba que el árbol de git
+   está limpio.
 2. **Variables.** Compara los nombres de `.env.example` con los configurados en el proveedor
-   (`vercel env ls`), solo nombres. Faltantes → detente y lista cuáles.
+   (`vercel env ls`, `wrangler secret list`, `railway variables`, panel del proveedor), solo
+   nombres. Faltantes → detente y lista cuáles.
 3. **Preview.** Despliega a preview. Anota la URL y el id del despliegue.
 4. **Smoke.** Contra la preview: health check y el flujo principal con Playwright si existe el test
    e2e (`plan/gate.md`). Guarda la salida en `masterplan/evidencia/smoke-<fecha>.txt`.

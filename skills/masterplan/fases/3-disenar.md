@@ -5,15 +5,24 @@ después, obligan a reescribir. Todo lo demás se deja al constructor.
 
 Antes de empezar dile a la persona cuánto va a tardar (normalmente 10–20 min) y que verás avances.
 
-## 1. Perfil y capacidades
-- Elige el perfil de `conocimiento/perfiles/` (por defecto `react-vite-supabase-vercel.md`) salvo
-  restricción real del repo o de la persona.
+## 1. Necesidades, proveedores y perfil
+- **Necesidades primero, marcas después.** Sigue `conocimiento/proveedores.md`: traduce lo que la
+  persona contó a rasgos, guárdalos en `proyecto.json.necesidades` y corre
+  `node "${CLAUDE_PLUGIN_ROOT}/scripts/masterplan.mjs" proveedores recomendar`. Supabase y Vercel
+  salen solo si ganan para esta necesidad; video, procesos largos, borde, correo, colas, búsqueda o
+  IA traen su propia pieza.
+- Confirma precios y planes gratis de los elegidos con `masterplan:investigador` y presenta la
+  tabla pieza · recomendación · por qué · alternativa. Con el sí, `proveedores recomendar --guardar`.
+- Elige el perfil de `conocimiento/perfiles/` que encaje con los proveedores: React + Vite (SPA),
+  Next.js (SSR), u otro que pida el repo. El perfil fija el framework; los proveedores fijan dónde
+  vive cada pieza.
 - Lista las capacidades que el alcance exige: auth, datos, api, frontend, pagos, deploy,
-  observabilidad, correo, archivos, tiempo real, IA. Para cada una hay un kit
-  (`masterplan:kit-*`): lee su SKILL.md antes de decidirla.
+  observabilidad, correo, archivos, video, trabajos en segundo plano, tiempo real, IA. Para cada
+  una hay un kit (`masterplan:kit-*`): lee su SKILL.md antes de decidirla. Los kits explican el
+  camino con Supabase y dicen qué cambia con otros proveedores.
 - Revisa `conocimiento/compatibilidad.md`.
-- Despacha `masterplan:investigador` en segundo plano con la lista de paquetes del perfil: devuelve
-  versión estable actual, fuente y fecha. Se usa en la fase 5.
+- Despacha `masterplan:investigador` en segundo plano con la lista de paquetes del perfil y los SDK
+  de los proveedores: devuelve versión estable actual, fuente y fecha. Se usa en la fase 5.
 
 ## 2. Atributos de calidad
 Elige 3 que mandan y uno que se sacrifica (ver `conocimiento/fundamentos.md`): disponibilidad,
@@ -43,5 +52,5 @@ salta. Usa los planes vigentes; si no los verificaste hoy, márcalo "verificar".
 ## Puerta
 - [ ] Los 7 documentos existen y `node "${CLAUDE_PLUGIN_ROOT}/scripts/masterplan.mjs" validar` no
       reporta BLOCKER de estructura
-- [ ] `proyecto.json`: `perfil`, `capacidades[]`, `calidad`, `fase: 4`
+- [ ] `proyecto.json`: `necesidades`, `proveedores`, `perfil`, `capacidades[]`, `calidad`, `fase: 4`
 - [ ] Relevo `relevos/03-disenar.md` y propuesta de sesión nueva para las puertas

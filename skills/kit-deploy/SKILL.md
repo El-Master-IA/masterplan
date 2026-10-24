@@ -4,9 +4,10 @@ description: >-
   Entornos y publicación: local, preview y producción con variables por entorno, .env.example
   completo, nada secreto en VITE_, GitHub Actions con las puertas (typecheck, lint, test, build,
   masterplan.mjs deriva), migraciones antes de promover, preview con smoke de Playwright y
-  producción solo con confirmación, rollback, headers de seguridad en vercel.json, dominio y
-  hosting que permita uso comercial. Úsala en las fases 3, 5 y 7 (agente masterplan:desplegador).
-  EN: environments, env vars, CI gates, preview to production, rollback, security headers, domains.
+  producción solo con confirmación, rollback, headers de seguridad, dominio y hosting que permita
+  uso comercial, en Vercel, Cloudflare, Railway, Render, Fly.io o un VPS con Coolify. Úsala en las
+  fases 3, 5 y 7 (agente masterplan:desplegador).
+  EN: environments, env vars, CI gates, preview to production, rollback, security headers, domains, multi-provider.
 ---
 
 # Kit · Deploy
@@ -36,6 +37,25 @@ atrás probado antes de necesitarlo.
 | Algo falla en producción | Rollback instantáneo al deploy anterior (`vercel rollback` o promover el anterior) | Volver atrás en segundos; arreglar con calma |
 | Variable que el navegador necesita (URL de Supabase, anon key, llave pública de pagos) | Prefijo `VITE_` | Se empaqueta en el JS público: solo lo que es público por diseño |
 | Variable secreta | Secretos de Supabase Functions o variables de Vercel sin `VITE_` | Nunca llega al navegador |
+
+## Destinos: el mismo proceso en cualquier proveedor
+El destino sale de `proyecto.json.proveedores` (`hosting-web`, `backend`, `serverless-borde`),
+elegido con `masterplan.mjs proveedores recomendar`. Lo de arriba usa Vercel como ejemplo; el
+proceso (preview → smoke → migraciones → producción con confirmación → verificación → rollback) es
+igual en todos. Cambia el cómo:
+
+| Destino | Preview | Producción | Rollback | Headers de seguridad | Ojo con |
+|---|---|---|---|---|---|
+| Vercel | Automático por PR (Git) o `vercel` | `vercel --prod` o promover | `vercel rollback` | `vercel.json`/`vercel.ts` → `headers` | Hobby no permite uso comercial |
+| Cloudflare Pages/Workers | Rama de preview o `wrangler deploy --env preview` | `wrangler deploy` (env production) | `wrangler rollback` o versión anterior | Archivo `_headers` o en el Worker | Bindings (D1, R2, KV) distintos por entorno |
+| Railway | Entorno de PR (PR environments) o entorno `preview` | Deploy del servicio en `production` | Redeploy de una versión anterior desde el panel o CLI | En la app (middleware de headers) | Servicio web y worker separados; healthcheck configurado |
+| Render | Preview environments o servicio de prueba | Deploy del servicio | Rollback a un deploy anterior | En la app | El plan gratis duerme el servicio |
+| Fly.io | App de staging (`fly deploy -a <app>-staging`) | `fly deploy` | `fly releases` + desplegar la imagen anterior | En la app | Volúmenes ligados a una región |
+| VPS + Coolify (Hostinger u otro) | Entorno de preview de Coolify | Deploy desde Coolify | Redeploy de la imagen anterior | Proxy (Traefik/Caddy) o la app | Tú cuidas actualizaciones, backups y firewall |
+
+Reglas que no cambian con el destino: secretos solo en el panel o CLI del proveedor (jamás en el
+repo), variables públicas solo con el prefijo del framework, health check que toca la base, y
+`DEP-06`: producción solo con confirmación.
 
 ## Archivos que produce
 ```
