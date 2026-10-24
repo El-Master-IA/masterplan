@@ -12,6 +12,10 @@ haría algo que no le toca o tumbaría el servicio, y solo reportas lo que puede
 ## Entradas
 - Ruta absoluta del proyecto y alcance: `diff <base>` o `repo`.
 - `masterplan/seguridad.md` (matriz y políticas), `masterplan/datos.md`, `masterplan/api.md`.
+- **Proyecto que no se hizo con Masterplan** (no existen esos archivos): reconstruye tú la matriz
+  rol × recurso × acción desde el código (rutas, middleware, políticas y migraciones) y desde el
+  Mapa del repo si te lo pasan, y escríbela al final de tu salida como "Matriz inferida". Juzga
+  contra ella y contra los candados de los kits; no reportes "falta seguridad.md" como hallazgo.
 
 Lee `skills/auditor/hallazgo.schema.json` (bajo `${CLAUDE_PLUGIN_ROOT}`) antes de escribir la salida.
 
@@ -21,9 +25,9 @@ Lee `skills/auditor/hallazgo.schema.json` (bajo `${CLAUDE_PLUGIN_ROOT}`) antes d
    `.env*` en git (`git ls-files`).
 2. Cliente: variables `VITE_`/`NEXT_PUBLIC_` que contienen secretos; `service_role` o clientes
    admin importados desde código de navegador.
-3. Autorización: cada endpoint o función de `api.md` comprueba sesión y dueño; nada confía en un
+3. Autorización: cada endpoint o función (de `api.md` o los que encuentres en el código) comprueba sesión y dueño; nada confía en un
    `user_id` u `org_id` que manda el cliente.
-4. RLS: compara cada tabla de las migraciones con la matriz de `seguridad.md`: RLS activado,
+4. RLS: compara cada tabla de las migraciones con la matriz (de `seguridad.md` o la inferida): RLS activado,
    políticas por acción, ninguna `using (true)` sobre datos de usuarios, funciones
    `security definer` con `search_path` fijo.
 5. Inyección y XSS: SQL armado con strings, `dangerouslySetInnerHTML`, `eval`, rutas de archivo

@@ -50,6 +50,21 @@ Sigamos con mi proyecto.
 
 Así ninguna conversación carga todo el proyecto.
 
+## Auditar un proyecto que ya tienes
+
+¿Ya construiste algo (con Lovable, Bolt, v0, Cursor o a mano) y quieres saber si aguanta clientes
+reales? Abre Claude Code en la carpeta del proyecto y dile:
+
+```
+Audita mi proyecto con Masterplan. Lo hice con Lovable y ya tiene clientes. Me preocupa que se vean los datos de otros.
+```
+
+(El atajo es `/masterplan:auditar`.) Masterplan mapea el repo y corre tres auditores en paralelo
+(seguridad, experiencia y bases técnicas) sin cambiar nada. Te entrega un informe con el veredicto
+("¿se puede usar con clientes hoy?"), los 5 riesgos más graves en palabras simples y un plan de
+arreglos en olas. Después tú decides: arreglar, seguir construyendo con Masterplan o dejarlo
+registrado.
+
 ## Cómo trabaja
 
 | Fase | Qué pasa | Para pasar a la siguiente |
@@ -88,10 +103,10 @@ Así ninguna conversación carga todo el proyecto.
   segundo plano (colas, cron, procesos largos), IA generativa (créditos, cola, tope de gasto,
   licencia comercial), pagos para Latinoamérica (Mercado Pago, Wompi con
   PSE/Nequi, Stripe donde aplica, Paddle), deploy en cualquier proveedor y observabilidad.
-- **Auditor** con dos notas que nunca se mezclan: Seguridad y Calidad de experiencia.
-- **10 agentes, uno por tipo de tarea:** explorador, investigador de versiones, arquitecto de
+- **Auditor** para cualquier proyecto, hecho con Masterplan o no, con tres notas que nunca se mezclan: Seguridad, Calidad de experiencia y Bases técnicas.
+- **11 agentes, uno por tipo de tarea:** explorador, investigador de versiones, arquitecto de
   datos, diseñador, revisor del plano, constructor, revisor de código, auditor de seguridad,
-  auditor de frontend y desplegador.
+  auditor de frontend, auditor de bases técnicas y desplegador.
 - **Comandos:** `/masterplan:empezar`, `/masterplan:seguir`, `/masterplan:rapido`,
   `/masterplan:estado`, `/masterplan:auditar`, `/masterplan:cambio`, `/masterplan:relevo`.
 - **Políticas de seguridad (hooks)** que bloquean mientras se escribe: la llave `service_role` en el

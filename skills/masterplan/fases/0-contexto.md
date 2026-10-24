@@ -9,6 +9,10 @@ proyecto.
   `proyecto.json.fase`. Dile a la persona en 3 líneas dónde quedó y qué sigue.
 - No existe → sigue.
 
+## 1b. ¿Viene a auditar?
+Si existe `contexto/auditoria.md` o la persona pidió auditar/revisar lo que ya tiene, no sigas esta
+fase: ve al camino **Auditor** (`commands/auditar.md`, modo auditor).
+
 ## 2. ¿Hay código?
 Mira el directorio: `package.json`, `requirements.txt`, `supabase/`, `src/`, `.git`.
 - **Sí hay código (brownfield):** despacha `masterplan:explorador` con la ruta absoluta. Devuelve un

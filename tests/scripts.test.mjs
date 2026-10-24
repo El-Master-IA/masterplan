@@ -130,6 +130,28 @@ test('auditoria: fusiona, deduplica y separa las dos notas', () => {
   assert.match(r.stdout, /Seguridad 49\/100 · Experiencia 97\/100 · 2 hallazgos/)
 })
 
+test('auditoria: con el auditor de bases sale la tercera nota y lo no auditado se declara', () => {
+  const dir = proyectoTemporal({ fase: 7 })
+  const h = (id, dominio, severidad, regla, archivo, arreglo) => ({ id, dominio, severidad, titulo: `hallazgo ${id}`, evidencia: 'visto en el archivo', regla, confianza: 'establecida', archivo, arreglo })
+  escribir(dir, 'masterplan/auditoria/pendientes/seguridad.json', JSON.stringify([h('S1', 'rls', 'alta', 'DAT-01', 'supabase/migrations/1.sql', 'activar RLS')]))
+  escribir(dir, 'masterplan/auditoria/pendientes/bases.json', JSON.stringify([h('B1', 'bases', 'media', 'BAS-TEST', 'package.json')]))
+  const r = mp(dir, 'auditoria', 'fusionar')
+  assert.equal(r.status, 1)
+  assert.match(r.stdout, /Seguridad 90\/100 · Bases 97\/100 · 2 hallazgos/)
+  const md = fs.readdirSync(path.join(dir, 'masterplan/auditoria')).find(f => f.endsWith('.md'))
+  const texto = fs.readFileSync(path.join(dir, 'masterplan/auditoria', md), 'utf8')
+  assert.match(texto, /Calidad de experiencia \| no auditado/)
+  assert.match(texto, /## Qué arreglar primero\n1\. \*\*hallazgo S1\*\*.*→ activar RLS/)
+})
+
+test('auditoria: funciona en un proyecto que no se hizo con Masterplan (sin proyecto.json)', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'mp-audit-'))
+  escribir(dir, 'masterplan/auditoria/pendientes/frontend.json', JSON.stringify([{ id: 'F1', dominio: 'seo-agentes', severidad: 'baja', titulo: 'sin sitemap', evidencia: 'no existe public/sitemap.xml', regla: 'CHK-SEO-01', confianza: 'establecida' }]))
+  const r = mp(dir, 'auditoria', 'fusionar')
+  assert.equal(r.status, 0, r.stderr)
+  assert.match(r.stdout, /Experiencia 99\/100 · 1 hallazgos/)
+})
+
 test('buzon: un mensaje para la fase llega y se marca leído', () => {
   const dir = proyectoTemporal({ fase: 6 })
   assert.equal(mp(dir, 'buzon', 'enviar', '--para', 'fase-6', 'T05 ya está hecha').status, 0)

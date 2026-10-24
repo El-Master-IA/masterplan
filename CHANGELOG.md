@@ -1,5 +1,15 @@
 # Cambios
 
+## 1.3.0 · 2026-10-24
+
+Dos caminos: **Constructor** y **Auditor**.
+
+- `/masterplan:auditar` (o "audita mi proyecto") funciona en cualquier proyecto ya construido, aunque se haya hecho con Lovable, Bolt, v0, Cursor o a mano: explorador → tres auditores en paralelo → informe con veredicto, riesgos en lenguaje de negocio y plan de arreglos en olas. Solo lee; no crea `proyecto.json`.
+- Agente nuevo `auditor-bases`: arquitectura, migraciones e índices, manejo de errores, pruebas, CI, deploy, observabilidad, respaldos y stack desactualizado. Tercera nota, **Bases técnicas**, que nunca se promedia con las otras.
+- Los auditores de seguridad y frontend trabajan sin los documentos de Masterplan: infieren la matriz de permisos desde el código y usan presupuestos de rendimiento por defecto.
+- `auditoria fusionar` agrega "Qué arreglar primero", declara las notas no auditadas (nunca un 100 sin auditor) y funciona sin `proyecto.json`.
+- Al terminar la auditoría ofrece arreglar la ola 1, convertir el proyecto en uno de Masterplan o dejarlo registrado.
+
 ## 1.2.1 · 2026-10-24
 
 - Lenguaje natural primero: "sigamos con mi proyecto", "¿cómo vamos?", "quiero agregarle X" o "revisa la seguridad" funcionan igual que los comandos, y el plugin sugiere el siguiente paso como frase.

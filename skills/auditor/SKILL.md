@@ -4,9 +4,10 @@ description: >-
   Motor común de auditoría de Masterplan: dominios (seguridad, rls, dependencias, frontend-a11y,
   rendimiento, estetica-generica, seo-agentes), qué mide un script y qué juzga el modelo, tamaño de
   la auditoría según el repo, auditores de solo lectura en paralelo, verificador independiente,
-  formato de hallazgo, dos notas separadas (Seguridad y Calidad de experiencia), severidad con
-  CWE/OWASP y arreglos solo con aprobación. Úsala en las fases 6 y 7 o cuando la persona pida
-  "audita mi app", "revisa la seguridad", "qué tan listo está para producción". EN: audit engine,
+  formato de hallazgo, tres notas separadas (Seguridad, Calidad de experiencia y Bases técnicas), severidad con
+  CWE/OWASP y arreglos solo con aprobación. Úsala en las fases 6 y 7, en cualquier proyecto ya
+  construido (aunque no se haya hecho con Masterplan) o cuando la persona pida "audita mi app",
+  "revisa mi proyecto", "revisa la seguridad", "qué tan listo está para producción". EN: audit engine,
   security and UX audit, findings format, scoring.
 ---
 
@@ -20,6 +21,10 @@ juzga el modelo, y nada se reporta sin evidencia ni sin que otro lo haya mirado.
 - Fase 7: auditoría completa antes de publicar.
 - Fase 8: auditoría de mantenimiento (mensual o tras cambios grandes) y comparación con la anterior.
 - Brownfield: diagnóstico inicial para saber de dónde se parte.
+- **Modo auditor:** proyectos hechos con otra herramienta (Lovable, Bolt, v0, Cursor) o a mano, sin
+  `masterplan/proyecto.json`. Lo conduce `/masterplan:auditar` (o la frase "audita mi proyecto"):
+  explorador → tres auditores → informe con plan de arreglos. Los auditores infieren la matriz de
+  permisos y usan presupuestos por defecto; nunca reportan "faltan los documentos de Masterplan".
 
 ## Dominios
 | Dominio | Nota | Qué cubre | Candados que revisa |
@@ -31,9 +36,10 @@ juzga el modelo, y nada se reporta sin evidencia ni sin que otro lo haya mirado.
 | `rendimiento` | Experiencia | Lighthouse, Web Vitals, bundle, imágenes, consultas sin índice | FE-09..11, DAT-07 |
 | `estetica-generica` | Experiencia | los 12 patrones prohibidos, tokens, estados de pantalla | FE-01..03, FE-12 |
 | `seo-agentes` | Experiencia | títulos, meta, Open Graph, sitemap, robots, datos estructurados, contenido legible sin JS, `llms.txt` | CHK-SEO-* |
+| `bases` | Bases técnicas | arquitectura y capas, migraciones e índices, manejo de errores, pruebas, CI, deploy, observabilidad, respaldos, stack desactualizado | BAS-ARQ, BAS-DAT, BAS-ERR, BAS-TEST, BAS-CI, BAS-OBS, BAS-BAK, BAS-DEPS |
 
-Las dos notas **nunca se mezclan** en un solo número: una app bonita con datos expuestos no
-"promedia" bien.
+Las tres notas **nunca se mezclan** en un solo número: una app bonita con datos expuestos no
+"promedia" bien. Una nota cuyo auditor no corrió sale como "no auditado", nunca como 100.
 
 ## Script mide, modelo juzga
 | Lo mide un script (determinista, ver `checks.md`) | Lo juzga el modelo (con evidencia) |
@@ -52,8 +58,8 @@ reportan pero no restan nota.
 ## Tamaño de la auditoría
 | Repo (archivos de código fuente) | Tier | Cómo |
 |---|---|---|
-| < 150 | ligero | 2 auditores: `masterplan:auditor-seguridad` (seguridad, rls, dependencias) y `masterplan:auditor-frontend` (el resto). Lectura completa |
-| 150 – 1.000 | medio | Los mismos 2 auditores + checks completos; el modelo lee solo los archivos señalados por los checks y los de auth, datos, pagos y funciones |
+| < 150 | ligero | 3 auditores: `masterplan:auditor-seguridad` (seguridad, rls, dependencias), `masterplan:auditor-frontend` (experiencia) y `masterplan:auditor-bases` (bases). Lectura completa |
+| 150 – 1.000 | medio | Los mismos 3 auditores + checks completos; el modelo lee solo los archivos señalados por los checks y los de auth, datos, pagos y funciones |
 | > 1.000 | grande | Un auditor por dominio en paralelo, cada uno con su lista de archivos; muestreo declarado en el informe ("revisadas 40 de 220 pantallas") |
 
 Siempre se declara qué no se revisó.
@@ -77,7 +83,7 @@ Siempre se declara qué no se revisó.
    - calcula las notas y escribe `masterplan/auditoria/<fecha-hora>.json` y `.md`;
    - mueve los pendientes a `masterplan/auditoria/procesados/`;
    - sale 1 si queda alguna crítica o alta, 0 si no.
-5. **Reportar.** Muestra a la persona el `.md`: dos notas, conteo por severidad, no verificados y
+5. **Reportar.** Muestra a la persona el `.md`: las notas auditadas, conteo por severidad, no verificados y
    los hallazgos críticos y altos con su arreglo propuesto.
 6. **Arreglar con permiso.** Pregunta cuáles arreglar. Los arreglos los aplica **un solo**
    `masterplan:constructor` por vez, un hallazgo por commit, explicando el cambio. Luego se
@@ -95,6 +101,7 @@ Cada nota parte de 100 y resta por hallazgo no especulativo de su grupo:
 
 - **Seguridad** = dominios `seguridad`, `rls`, `dependencias`.
 - **Calidad de experiencia** = `frontend-a11y`, `rendimiento`, `estetica-generica`, `seo-agentes`.
+- **Bases técnicas** = `bases`.
 - Si hay al menos una crítica en el grupo, la nota queda en **máximo 49**, sin importar el resto.
 - Mínimo 0. Puerta de la fase 7: 0 críticas y 0 altas abiertas (no especulativas).
 
@@ -123,7 +130,9 @@ Cuando aplique, el hallazgo lleva `cwe` y `owasp`. Referencias frecuentes:
 ```
 masterplan/auditoria/pendientes/<agente>.json   arrays de hallazgos (entrada)
 masterplan/auditoria/<fecha-hora>.json          informe fusionado con notas
-masterplan/auditoria/<fecha-hora>.md            resumen para la persona
+masterplan/auditoria/<fecha-hora>.md            notas, "Qué arreglar primero" y todos los hallazgos
+masterplan/auditoria/mapa.md                    Mapa del repo (modo auditor)
+masterplan/auditoria/INFORME.md                 veredicto, riesgos en lenguaje de negocio y plan en olas
 masterplan/auditoria/procesados/                pendientes ya fusionados
 masterplan/evidencia/auditoria/                 salidas de los checks
 ```
@@ -133,4 +142,4 @@ masterplan/evidencia/auditoria/                 salidas de los checks
 - Contar dos veces el mismo problema con reglas distintas: elige el candado más específico.
 - Subir la severidad por estilo. Crítica es explotable, no "feo".
 - Dejar que el auditor arregle "de paso": rompe la regla de un solo escritor y la trazabilidad.
-- Promediar Seguridad y Experiencia en un número para el cliente.
+- Promediar las notas en un número para el cliente.

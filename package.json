@@ -1,6 +1,6 @@
 {
   "name": "masterplan",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "private": true,
   "description": "Plugin de Claude Code: de la idea a un SaaS en producción con bases sólidas.",
   "type": "module",

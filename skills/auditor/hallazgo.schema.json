@@ -14,8 +14,8 @@
     },
     "dominio": {
       "type": "string",
-      "enum": ["seguridad", "rls", "dependencias", "frontend-a11y", "rendimiento", "estetica-generica", "seo-agentes"],
-      "description": "seguridad, rls y dependencias cuentan para la nota de Seguridad; el resto para la de Calidad de experiencia."
+      "enum": ["seguridad", "rls", "dependencias", "frontend-a11y", "rendimiento", "estetica-generica", "seo-agentes", "bases"],
+      "description": "seguridad, rls y dependencias cuentan para la nota de Seguridad; bases para la de Bases técnicas; el resto para la de Calidad de experiencia."
     },
     "severidad": {
       "type": "string",
@@ -43,7 +43,7 @@
     "regla": {
       "type": "string",
       "description": "Código del candado que se incumple (DAT-01, AUT-03, API-03, FE-05, PAG-02, DEP-02, OBS-02...) o código de check de checks.md (CHK-...). Junto con archivo y linea forma la llave de deduplicación.",
-      "pattern": "^((DAT|AUT|API|FE|PAG|DEP|OBS|MED|TRA|GEN|CHK|MP)-[A-Z0-9-]+|CWE-[0-9]+)$"
+      "pattern": "^((DAT|AUT|API|FE|PAG|DEP|OBS|MED|TRA|GEN|CHK|MP|BAS)-[A-Z0-9-]+|CWE-[0-9]+)$"
     },
     "cwe": {
       "type": "string",

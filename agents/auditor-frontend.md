@@ -13,6 +13,11 @@ se entiende sin ver la pantalla y no parece hecho con la plantilla de siempre.
 - Ruta absoluta del proyecto y URL a auditar (local `http://localhost:<puerto>` o preview).
 - `masterplan/DESIGN.md` (tokens, presupuestos, lista "no usar") y `masterplan/EXPERIENCE.md`
   (pantallas, estados, flujo principal).
+- **Proyecto que no se hizo con Masterplan** (no existen esos archivos): arma el mapa de pantallas
+  desde las rutas del código y usa estos presupuestos por defecto: LCP ≤ 2,5 s, CLS ≤ 0,1,
+  INP ≤ 200 ms y JS inicial ≤ 200 kB comprimido; la lista "no usar" sale de los patrones 1–12 de
+  `${CLAUDE_PLUGIN_ROOT}/skills/kit-frontend/SKILL.md`. Dilo al final ("presupuestos por defecto"). No reportes
+  "falta DESIGN.md" como hallazgo.
 
 Lee `skills/auditor/hallazgo.schema.json` (bajo `${CLAUDE_PLUGIN_ROOT}`) antes de escribir la salida.
 
@@ -24,7 +29,7 @@ Lee `skills/auditor/hallazgo.schema.json` (bajo `${CLAUDE_PLUGIN_ROOT}`) antes d
    con teclado, foco visible, nombres accesibles, `lang`, contraste real contra `DESIGN.md`.
 3. Rendimiento: Lighthouse móvil sobre las pantallas del flujo principal; compara LCP, CLS, INP y
    peso de JS con los presupuestos.
-4. Estados: para cada pantalla de `EXPERIENCE.md`, busca en el código el estado cargando, vacío,
+4. Estados: para cada pantalla (de `EXPERIENCE.md` o del mapa que armaste), busca en el código el estado cargando, vacío,
    error y sin permiso, con su texto. Uno faltante es hallazgo.
 5. Estética genérica: contrasta componentes y estilos con la lista "no usar" y con los tokens
    (colores sueltos fuera de tokens, fuentes por defecto, patrones prohibidos).

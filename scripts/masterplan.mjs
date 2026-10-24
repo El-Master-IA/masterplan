@@ -19,6 +19,11 @@ const ID_SPEC = /\b[A-Z]{2,6}-\d{3}\b/g
 const PESO = { critica: 25, alta: 10, media: 3, baja: 1 }
 const ORDEN_SEV = { critica: 4, alta: 3, media: 2, baja: 1 }
 const DOM_SEGURIDAD = new Set(['seguridad', 'rls', 'dependencias'])
+const DOM_BASES = new Set(['bases'])
+const grupo = x => DOM_SEGURIDAD.has(x.dominio) ? 'seguridad' : DOM_BASES.has(x.dominio) ? 'bases' : 'experiencia'
+// Qué nota cubre cada archivo de pendientes/ (por nombre). Una nota sin su auditor no se calcula:
+// "100" sin haber auditado sería mentira.
+const NOTA_DE_ARCHIVO = { seguridad: 'seguridad', frontend: 'experiencia', bases: 'bases' }
 
 // ---------- utilidades ----------
 const hoy = () => new Date().toISOString().slice(0, 10)
@@ -255,15 +260,22 @@ function cmdAuditoria([sub]) {
       }
     }
     const hallazgos = [...vistos.values()].sort((a, b) => ORDEN_SEV[b.severidad] - ORDEN_SEV[a.severidad])
-    const nota = filtro => {
-      const hs = hallazgos.filter(filtro).filter(x => x.confianza !== 'especulativa')
+    const nota = g => {
+      const hs = hallazgos.filter(x => grupo(x) === g).filter(x => x.confianza !== 'especulativa')
       let n = Math.max(0, 100 - hs.reduce((s, x) => s + PESO[x.severidad], 0))
       if (hs.some(x => x.severidad === 'critica')) n = Math.min(n, 49)
       return n
     }
+    // Notas auditadas: por el nombre de cada archivo de pendientes; si ninguno coincide, las de siempre.
+    let auditadas = [...new Set(pend.map(f => NOTA_DE_ARCHIVO[path.basename(f, '.json')]).filter(Boolean))]
+    if (!auditadas.length) auditadas = ['seguridad', 'experiencia']
+    for (const x of hallazgos) if (!auditadas.includes(grupo(x))) auditadas.push(grupo(x))
+    const NOMBRE_NOTA = { seguridad: 'Seguridad', experiencia: 'Calidad de experiencia', bases: 'Bases técnicas' }
+    const orden = ['seguridad', 'experiencia', 'bases'].filter(g => auditadas.includes(g))
     const informe = {
       fecha: ahora(),
-      notas: { seguridad: nota(x => DOM_SEGURIDAD.has(x.dominio)), experiencia: nota(x => !DOM_SEGURIDAD.has(x.dominio)) },
+      notas: Object.fromEntries(orden.map(g => [g, nota(g)])),
+      noAuditado: ['seguridad', 'experiencia', 'bases'].filter(g => !auditadas.includes(g)),
       conteo: Object.fromEntries(Object.keys(PESO).map(s => [s, hallazgos.filter(x => x.severidad === s).length])),
       noVerificados: hallazgos.filter(x => x.verificado === false).length,
       descartados,
@@ -271,18 +283,27 @@ function cmdAuditoria([sub]) {
     }
     const nombre = ahora().replace(/[:.]/g, '-')
     escribirJSON(path.join(dir, `${nombre}.json`), informe)
+    const donde = x => x.archivo ? `${x.archivo}${x.linea ? ':' + x.linea : ''}` : 'global'
+    const primero = hallazgos.filter(x => ORDEN_SEV[x.severidad] >= ORDEN_SEV.alta && x.confianza !== 'especulativa')
     const lineas = [
       `# Auditoría ${hoy()}`, '',
       `| Nota | Valor |`, `|---|---|`,
-      `| Seguridad | ${informe.notas.seguridad}/100 |`, `| Calidad de experiencia | ${informe.notas.experiencia}/100 |`, '',
+      ...orden.map(g => `| ${NOMBRE_NOTA[g]} | ${informe.notas[g]}/100 |`),
+      ...informe.noAuditado.map(g => `| ${NOMBRE_NOTA[g]} | no auditado |`), '',
       `Críticas ${informe.conteo.critica} · Altas ${informe.conteo.alta} · Medias ${informe.conteo.media} · Bajas ${informe.conteo.baja} · No verificados ${informe.noVerificados}`, '',
-      ...hallazgos.map(x => `- **${x.severidad}** [${x.dominio}] ${x.titulo} — ${x.archivo ? `${x.archivo}${x.linea ? ':' + x.linea : ''}` : 'global'} (${x.regla})`),
+      '## Qué arreglar primero',
+      ...(primero.length
+        ? primero.map((x, i) => `${i + 1}. **${x.titulo}** (${x.severidad}, ${donde(x)})${x.arreglo ? ` → ${x.arreglo}` : ''}`)
+        : ['Nada crítico ni alto. Revisa los medios cuando puedas.']), '',
+      '## Todos los hallazgos',
+      ...hallazgos.map(x => `- **${x.severidad}** [${x.dominio}] ${x.titulo} — ${donde(x)} (${x.regla})`),
       ...(descartados.length ? ['', '## Descartados por formato', ...descartados.map(d => `- ${d}`)] : [])
     ]
     escribir(path.join(dir, `${nombre}.md`), lineas.join('\n') + '\n')
     fs.mkdirSync(path.join(dir, 'procesados'), { recursive: true })
     for (const f of pend) fs.renameSync(f, path.join(dir, 'procesados', `${nombre}-${path.basename(f)}`))
-    console.log(`Seguridad ${informe.notas.seguridad}/100 · Experiencia ${informe.notas.experiencia}/100 · ${hallazgos.length} hallazgos`)
+    const CORTO = { seguridad: 'Seguridad', experiencia: 'Experiencia', bases: 'Bases' }
+    console.log(`${orden.map(g => `${CORTO[g]} ${informe.notas[g]}/100`).join(' · ')} · ${hallazgos.length} hallazgos`)
     console.log(`→ ${rel(path.join(dir, nombre + '.md'))}`)
     process.exit(informe.conteo.critica || informe.conteo.alta ? 1 : 0)
   }
@@ -294,7 +315,8 @@ function cmdAuditoria([sub]) {
     const ka = new Set(a.hallazgos.map(clave)), kb = new Set(b.hallazgos.map(clave))
     const cerrados = a.hallazgos.filter(x => !kb.has(clave(x)))
     const nuevos = b.hallazgos.filter(x => !ka.has(clave(x)))
-    console.log(`Seguridad ${a.notas.seguridad} → ${b.notas.seguridad} · Experiencia ${a.notas.experiencia} → ${b.notas.experiencia}`)
+    const notas = ['seguridad', 'experiencia', 'bases'].filter(g => g in a.notas || g in b.notas)
+    console.log(notas.map(g => `${g[0].toUpperCase() + g.slice(1)} ${a.notas[g] ?? '–'} → ${b.notas[g] ?? '–'}`).join(' · '))
     console.log(`Cerrados ${cerrados.length} · Nuevos ${nuevos.length} · Siguen ${b.hallazgos.length - nuevos.length}`)
     for (const x of nuevos) console.log(`  nuevo: ${x.severidad} ${x.titulo}`)
     return

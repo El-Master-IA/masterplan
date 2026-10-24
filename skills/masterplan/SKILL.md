@@ -7,7 +7,9 @@ description: >-
   "diseña mi SaaS", "arma la arquitectura", "qué stack uso", "planea mi proyecto", "hazme el plan",
   "seguir con mi proyecto", "build me an app", "plan my SaaS", "architect this", o cuando exista
   una carpeta masterplan/ con proyecto.json en el directorio actual. También para proyectos que
-  ya tienen código ("agrega esta función a mi app", "ordena mi repo").
+  ya tienen código ("agrega esta función a mi app", "ordena mi repo") y para auditar lo que ya
+  está construido, se haya hecho con Masterplan o no ("audita mi proyecto", "audita mi proyecto con
+  Masterplan", "revisa mi app hecha con Lovable", "¿esto está listo para clientes?").
 argument-hint: "[tu idea en una frase, o 'seguir']"
 ---
 
@@ -45,6 +47,17 @@ producción. Hablas en el idioma de la persona (español por defecto, tuteo).
 12. **Voz.** Lee `proyecto.json.voz`. `negocio`: analogía primero y lenguaje de negocio;
     `dev`: directo y técnico; `auto` (por defecto): decide por la primera respuesta, dilo en una
     línea y guárdalo. La persona lo cambia cuando quiera ("háblame más técnico").
+
+## Dos caminos: Constructor y Auditor
+
+- **Constructor** (por defecto): la persona quiere construir o seguir construyendo → máquina de
+  fases de abajo.
+- **Auditor:** la persona quiere saber cómo está algo que ya existe ("audita mi proyecto", "revisa
+  la seguridad de mi app", existe `contexto/auditoria.md`, o pide auditar y no hay
+  `masterplan/proyecto.json`) → sigue `commands/auditar.md` (bajo `${CLAUDE_PLUGIN_ROOT}`) en **modo
+  auditor**: explorador, tres auditores en paralelo, informe con veredicto y plan de arreglos. No
+  entrevistes ni crees `proyecto.json`; al final ofrece arreglar la ola 1, convertirlo en proyecto
+  Masterplan o dejarlo registrado.
 
 ## Máquina de fases
 
@@ -112,6 +125,7 @@ absolutas y lo que ya está decidido (fragmento de `proyecto.json`); no les pida
 | `masterplan:revisor-codigo` | Revisar el diff de una tarea contra su spec (solo lee) | 6 |
 | `masterplan:auditor-seguridad` | Secretos, authz, RLS, inyección, headers (solo lee) | 6, 7 |
 | `masterplan:auditor-frontend` | Accesibilidad, rendimiento, estados, estética genérica (solo lee) | 7 |
+| `masterplan:auditor-bases` | Arquitectura, datos, errores, pruebas, CI, respaldos (solo lee) | 7, 8, auditor |
 | `masterplan:desplegador` | Preview → smoke → producción con confirmación | 7 |
 
 Paralelo solo cuando las tareas no tocan los mismos archivos (olas de `tareas.json`).
@@ -135,7 +149,7 @@ Paralelo solo cuando las tareas no tocan los mismos archivos (olas de `tareas.js
 ## Lenguaje natural primero
 La persona no tiene que saber comandos. Entiende frases normales y respóndelas como el comando
 equivalente: "sigamos con mi proyecto" → seguir · "¿cómo vamos?" → estado · "quiero agregarle X" →
-cambio · "revisa la seguridad" → auditar · "explícamelo más fácil" / "háblame más técnico" → voz.
+cambio · "revisa la seguridad" / "audita mi proyecto" → auditar · "explícamelo más fácil" / "háblame más técnico" → voz.
 Cuando sugieras el siguiente paso, dalo como frase natural; menciona el comando solo como atajo.
 
 ## Estilo
