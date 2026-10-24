@@ -1,0 +1,21 @@
+{
+  "description": "Masterplan: políticas de seguridad sobre escrituras y comandos (solo en proyectos con masterplan/proyecto.json)",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|Bash",
+        "hooks": [
+          { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/politicas.mjs\" pre", "timeout": 10 }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|Bash",
+        "hooks": [
+          { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/politicas.mjs\" post", "timeout": 10 }
+        ]
+      }
+    ]
+  }
+}

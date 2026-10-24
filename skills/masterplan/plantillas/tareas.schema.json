@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/La-Boveda-del-Master/masterplan/plantillas/tareas.schema.json",
+  "title": "Masterplan · plan/tareas.json",
+  "description": "Lista de tareas del plan. Reglas adicionales que valida masterplan.mjs: ids únicos, dependencias existentes y de olas anteriores, ninguna tarea de la misma ola comparte archivos, specs citadas existen en masterplan/specs/.",
+  "type": "array",
+  "minItems": 1,
+  "items": { "$ref": "#/$defs/tarea" },
+  "$defs": {
+    "criterioEars": {
+      "type": "string",
+      "allOf": [
+        { "pattern": "CUANDO" },
+        { "pattern": "EL SISTEMA DEBE" }
+      ]
+    },
+    "tarea": {
+      "type": "object",
+      "required": ["id", "titulo", "ola", "depende", "agente", "archivos", "hacer", "criterios", "verificar", "checkpoint", "estado"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^T\\d{2,3}$" },
+        "titulo": { "type": "string", "minLength": 3, "maxLength": 70 },
+        "ola": { "type": "integer", "minimum": 1 },
+        "depende": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^T\\d{2,3}$" } },
+        "agente": { "type": "string", "description": "Normalmente masterplan:constructor." },
+        "kit": { "type": "string", "pattern": "^masterplan:kit-[a-z-]+$" },
+        "specs": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z]+-\\d{3}$" } },
+        "archivos": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "items": { "type": "string" },
+          "description": "Archivos generados por herramientas se escriben con patrón (p. ej. supabase/migrations/…_rls.sql)."
+        },
+        "hacer": { "type": "string", "minLength": 10 },
+        "criterios": { "type": "array", "minItems": 2, "maxItems": 6, "items": { "$ref": "#/$defs/criterioEars" } },
+        "verificar": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "checkpoint": { "type": "string", "description": "Comando de commit + tag mp-<id>." },
+        "estado": { "enum": ["pendiente", "en-curso", "hecha", "bloqueada"] },
+        "motivo": { "type": "string", "description": "Obligatorio en la práctica cuando estado = bloqueada." }
+      },
+      "if": { "properties": { "estado": { "const": "bloqueada" } } },
+      "then": { "required": ["motivo"] }
+    }
+  }
+}

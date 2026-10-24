@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/La-Boveda-del-Master/masterplan/skills/auditor/hallazgo.schema.json",
+  "title": "Hallazgo de auditoría Masterplan",
+  "description": "Un hallazgo de un auditor. Cada agente escribe un array de estos objetos en masterplan/auditoria/pendientes/<agente>.json; `masterplan.mjs auditoria fusionar` los valida, deduplica y calcula las notas.",
+  "type": "object",
+  "required": ["id", "dominio", "severidad", "titulo", "evidencia", "regla", "confianza"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Identificador único dentro del archivo del auditor, por ejemplo SEG-003 o A11Y-012.",
+      "pattern": "^[A-Z0-9]+(-[A-Z0-9]+)*$"
+    },
+    "dominio": {
+      "type": "string",
+      "enum": ["seguridad", "rls", "dependencias", "frontend-a11y", "rendimiento", "estetica-generica", "seo-agentes"],
+      "description": "seguridad, rls y dependencias cuentan para la nota de Seguridad; el resto para la de Calidad de experiencia."
+    },
+    "severidad": {
+      "type": "string",
+      "enum": ["critica", "alta", "media", "baja"]
+    },
+    "titulo": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 140,
+      "description": "Qué está mal, en una línea y en lenguaje claro."
+    },
+    "archivo": {
+      "type": "string",
+      "description": "Ruta relativa a la raíz del proyecto. Omitir si el hallazgo es global (configuración, base remota)."
+    },
+    "linea": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "evidencia": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Lo observado: fragmento de código, salida de un comando o resultado de una consulta. Sin secretos: se enmascaran dejando los primeros 4 caracteres."
+    },
+    "regla": {
+      "type": "string",
+      "description": "Código del candado que se incumple (DAT-01, AUT-03, API-03, FE-05, PAG-02, DEP-02, OBS-02...) o código de check de checks.md (CHK-...). Junto con archivo y linea forma la llave de deduplicación.",
+      "pattern": "^((DAT|AUT|API|FE|PAG|DEP|OBS|CHK|MP)-[A-Z0-9-]+|CWE-[0-9]+)$"
+    },
+    "cwe": {
+      "type": "string",
+      "pattern": "^CWE-[0-9]+$"
+    },
+    "owasp": {
+      "type": "string",
+      "description": "Categoría OWASP aplicable, por ejemplo A01:2021 o API1:2023.",
+      "pattern": "^(A|API|M|LLM)[0-9]{1,2}:[0-9]{4}$"
+    },
+    "arreglo": {
+      "type": "string",
+      "description": "Cambio mínimo propuesto. No se aplica sin aprobación de la persona."
+    },
+    "confianza": {
+      "type": "string",
+      "enum": ["establecida", "probable", "especulativa"],
+      "description": "establecida: reproducido o probado; probable: evidencia directa sin reproducir; especulativa: sospecha. Las especulativas se reportan pero no restan nota."
+    },
+    "verificado": {
+      "type": "boolean",
+      "description": "true si el verificador independiente lo confirmó; false si no se pudo verificar (se reporta como no verificado)."
+    },
+    "auditor": {
+      "type": "string",
+      "description": "Agente que lo encontró, por ejemplo masterplan:auditor-seguridad."
+    }
+  }
+}

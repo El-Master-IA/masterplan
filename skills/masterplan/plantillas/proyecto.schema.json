@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/La-Boveda-del-Master/masterplan/plantillas/proyecto.schema.json",
+  "title": "Masterplan · proyecto.json",
+  "description": "Contrato del proyecto. Regla documentada (no validada aquí): alcance.noGoals debe tener al menos 5 elementos para salir de la fase 2.",
+  "type": "object",
+  "required": ["nombre", "modo", "fase", "creado"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "nombre": { "type": "string", "minLength": 1, "description": "Nombre del proyecto (puede ser provisional)." },
+    "modo": { "enum": ["greenfield", "brownfield"], "description": "greenfield: sin código previo. brownfield: repo existente." },
+    "fase": { "type": "integer", "minimum": 0, "maximum": 8, "description": "Fase actual de la máquina de fases." },
+    "voz": { "enum": ["auto", "negocio", "dev"], "default": "auto" },
+    "politicas": {
+      "enum": ["normales", "estrictas"],
+      "default": "normales",
+      "description": "estrictas: las advertencias de las políticas de seguridad se vuelven bloqueos."
+    },
+    "tipo": { "enum": ["saas", "sitio", "api", "herramienta-interna", "bot", "app-ia"] },
+    "tipoSecundario": {
+      "enum": ["saas", "sitio", "api", "herramienta-interna", "bot", "app-ia", null],
+      "description": "Solo si tiene su propio deploy o sus propios usuarios."
+    },
+    "audiencia": { "type": "string", "description": "Quién lo usa." },
+    "escala": { "type": "string", "description": "Usuarios esperados, p. ej. '1.000 en 6 meses'." },
+    "etapa": { "enum": ["validacion", "usuarios-reales", "crecimiento"] },
+    "restricciones": { "type": "array", "items": { "type": "string" } },
+    "metricaExito": { "type": "string", "description": "El número que dice que funcionó; se vuelve evento de analítica." },
+    "alcance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": { "enum": ["minima", "recomendada", "sonada"] },
+        "flujoPrincipal": { "type": "array", "items": { "type": "string" }, "description": "5 a 8 pasos desde los ojos del usuario." },
+        "noGoals": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Lo que v1 NO hace, con cuándo volvería. Regla: mínimo 5 (la valida masterplan.mjs, no el esquema)."
+        }
+      }
+    },
+    "perfil": { "type": "string", "description": "Nombre del archivo de conocimiento/perfiles/ sin extensión." },
+    "capacidades": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": ["auth", "datos", "api", "frontend", "pagos", "deploy", "observabilidad", "correo", "archivos", "tiempo-real", "ia"]
+      }
+    },
+    "calidad": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "prioridades": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+        "sacrificio": { "type": "string" }
+      }
+    },
+    "versiones": {
+      "type": "object",
+      "description": "Paquete -> versión verificada en el registro oficial.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["version", "fuente", "verificado"],
+        "additionalProperties": false,
+        "properties": {
+          "version": { "type": "string" },
+          "fuente": { "type": "string", "description": "URL del registro o documentación consultada." },
+          "verificado": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "aprobaciones": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "diseno": { "type": ["string", "null"], "format": "date" },
+        "plan": { "type": ["string", "null"], "format": "date" },
+        "produccion": { "type": ["string", "null"], "format": "date" }
+      }
+    },
+    "produccion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "url": { "type": "string", "format": "uri" },
+        "fecha": { "type": "string", "format": "date" }
+      }
+    },
+    "creado": { "type": "string", "format": "date" },
+    "actualizado": { "type": "string", "format": "date" }
+  }
+}

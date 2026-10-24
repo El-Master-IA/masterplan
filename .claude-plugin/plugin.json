@@ -1,0 +1,28 @@
+{
+  "name": "masterplan",
+  "displayName": "Masterplan",
+  "version": "1.0.0",
+  "description": "Construye software desde cero con bases sólidas: te entrevista, diseña frontend, backend, datos, APIs y seguridad, construye paso a paso con un agente por tarea, audita, publica y mantiene. Specs vivas, puertas verificadas por máquina y un mod que conecta tus sesiones para que nada se cargue en una sola conversación. En español.",
+  "author": {
+    "name": "Alexander Cast · La Bóveda del Master",
+    "url": "https://github.com/La-Boveda-del-Master"
+  },
+  "homepage": "https://la-boveda-del-master.vercel.app/boveda/masterplan",
+  "repository": "https://github.com/La-Boveda-del-Master/masterplan",
+  "license": "MIT",
+  "keywords": [
+    "arquitectura",
+    "saas",
+    "supabase",
+    "react",
+    "spec-driven",
+    "seguridad",
+    "rls",
+    "design-system",
+    "agentes",
+    "español",
+    "claude-code-plugin"
+  ],
+  "hooks": "./hooks/politicas.json",
+  "types": "./types/index.d.ts"
+}
