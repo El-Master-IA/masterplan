@@ -196,6 +196,10 @@ function catalogoEjemplo() {
     f('better-auth', 'auth', ['auth-email']),
     f('better-stack', 'observabilidad', ['errores']),
     f('supabase-storage', 'almacenamiento', ['subidas-directas'], { empresa: 'supabase' }),
+    f('pancake', 'chatbots', ['bandeja-compartida', 'crm-ventas', 'whatsapp'], { empresa: 'pancake' }),
+    f('botcake', 'chatbots', ['chatbot-no-code', 'whatsapp'], { empresa: 'pancake' }),
+    f('otrobot', 'chatbots', ['chatbot-no-code']),
+    f('whatsapp-cloud-api', 'mensajeria', ['whatsapp', 'api-whatsapp-oficial']),
   ]
   const p = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'cat-')), 'proveedores.json')
   fs.writeFileSync(p, JSON.stringify(lista))
@@ -266,4 +270,15 @@ test('proveedores: la afinidad usa la empresa real, no la primera palabra del id
   const dir = proyectoTemporal()
   const out = JSON.parse(mpCat(dir, catalogoEjemplo(), 'proveedores', 'recomendar', '--rasgos', 'auth-email,errores', '--json').stdout)
   for (const c of out) assert.ok(!c.recomendado.razones.some(r => /mismo proveedor/.test(r)), c.categoria)
+})
+
+test('proveedores: si nadie cubre todo, propone la pareja que sí (mejor de la misma empresa)', () => {
+  const dir = proyectoTemporal()
+  const out = JSON.parse(mpCat(dir, catalogoEjemplo(), 'proveedores', 'recomendar', '--rasgos', 'chatbot-no-code,bandeja-compartida,crm-ventas,whatsapp', '--json').stdout)
+  const chat = out.find(c => c.categoria === 'chatbots')
+  assert.deepEqual(chat.recomendado.combo, ['pancake', 'botcake'].sort((a, b) => chat.recomendado.combo.indexOf(a) - chat.recomendado.combo.indexOf(b)))
+  assert.ok(chat.recomendado.combo.includes('pancake') && chat.recomendado.combo.includes('botcake'))
+  const men = out.find(c => c.categoria === 'mensajeria')
+  assert.equal(men.recomendado, null)
+  assert.match(men.cubiertoPor, /Pancake|pancake/)
 })

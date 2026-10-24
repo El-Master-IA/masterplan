@@ -82,8 +82,8 @@ directorio de trabajo de la persona, bajo `masterplan/` (ver `plantillas/estruct
 - `conocimiento/tipos/` — qué es el producto: `saas.md`, `sitio.md`, `api.md`, `herramienta-interna.md`, `bot.md`, `app-ia.md`.
 - `conocimiento/proveedores.md` + `conocimiento/proveedores.json` — catálogo verificado de
   herramientas por categoría (hosting, backend, borde, bases de datos, auth, archivos, video,
-  imágenes, correo, WhatsApp, tiempo real, colas, búsqueda, IA, observabilidad, analítica, CMS,
-  pagos…) y cómo pasar de necesidades a rasgos. Recomienda con
+  imágenes, correo, WhatsApp, chatbots y bandejas omnicanal, tiempo real, colas, búsqueda,
+  modelos de IA, IA generativa de imagen/video/voz, observabilidad, analítica, CMS, pagos…) y cómo pasar de necesidades a rasgos. Recomienda con
   `masterplan.mjs proveedores recomendar`; nunca asumas Supabase + Vercel sin pasar por ahí.
 - `conocimiento/perfiles/` — en qué framework se construye, con versiones y su procedencia:
   `react-vite-supabase-vercel.md`, `nextjs-supabase-vercel.md`, `node-railway.md`, `cloudflare.md`.
@@ -92,7 +92,8 @@ directorio de trabajo de la persona, bajo `masterplan/` (ver `plantillas/estruct
 - Kits por capacidad (skills hermanas): `masterplan:kit-datos`, `masterplan:kit-auth`,
   `masterplan:kit-api`, `masterplan:kit-frontend`, `masterplan:kit-pagos`,
   `masterplan:kit-deploy`, `masterplan:kit-observabilidad`, `masterplan:kit-media` (archivos,
-  video e imágenes) y `masterplan:kit-trabajos` (colas, cron y procesos largos). Auditoría:
+  video e imágenes), `masterplan:kit-trabajos` (colas, cron y procesos largos) y
+  `masterplan:kit-ia-media` (generar imágenes, video, voz o avatares con IA). Auditoría:
   `masterplan:auditor`.
 
 ## Agentes: uno por tipo de tarea

@@ -67,20 +67,24 @@ Así ninguna conversación carga todo el proyecto.
 - **Skill principal** `masterplan` con las 9 fases, 6 tipos de producto (SaaS, sitio, API,
   herramienta interna, bot, app con IA) y 4 perfiles de stack (React + Vite, Next.js, API Node en
   contenedor, todo en Cloudflare).
-- **Catálogo de 120 herramientas en 24 categorías** con su especialidad, cuándo usarlas y cuándo
+- **Catálogo de 152 herramientas en 26 categorías** con su especialidad, cuándo usarlas y cuándo
   no, plan gratis, si permite uso comercial, presencia en Latinoamérica, fuente oficial y fecha de
   verificación: hosting (Vercel, Netlify, Cloudflare), backend (Railway, Render, Fly.io, Cloud Run,
   VPS con Coolify), bases de datos (Supabase, Neon, D1, Turso, MongoDB…), login (Supabase Auth,
   Clerk, Better Auth, WorkOS…), archivos (R2, Bunny Storage, S3…), video (Bunny Stream, Mux,
-  Cloudflare Stream…), imágenes, correo, WhatsApp y SMS, tiempo real, colas y cron, búsqueda,
-  vectores, modelos de IA, observabilidad, analítica, CMS, pagos, automatización y más.
+  Cloudflare Stream…), imágenes, correo, WhatsApp y SMS (Meta, Zernio, 360dialog…), chatbots y
+  ventas por chat (Pancake, Botcake, LucidBot, ManyChat, Wati, Kommo, Chatwoot…), tiempo real,
+  colas y cron, búsqueda, vectores, modelos de IA, IA generativa de imagen, video y voz (fal,
+  Replicate, Higgsfield, Magnific, Google Nano Banana y Veo, FLUX, Ideogram, Runway, Luma, Kling,
+  ElevenLabs, HeyGen…), observabilidad, analítica, CMS, pagos, automatización y más.
 - **Recomendador:** describes lo que necesitas y elige la herramienta por categoría con sus
   razones, alternativas y descartes; prefiere menos proveedores, respeta tu presupuesto y si el plan
   gratis permite uso comercial, y nunca propone servicios cerrados.
-- **9 kits por capacidad:** datos (migraciones, aislamiento entre clientes y sus tests), auth
+- **10 kits por capacidad:** datos (migraciones, aislamiento entre clientes y sus tests), auth
   (organizaciones, roles, invitaciones), API (contratos, rate limiting, webhooks), frontend (design
   system, estados, accesibilidad, rendimiento), media (archivos, video e imágenes), trabajos en
-  segundo plano (colas, cron, procesos largos), pagos para Latinoamérica (Mercado Pago, Wompi con
+  segundo plano (colas, cron, procesos largos), IA generativa (créditos, cola, tope de gasto,
+  licencia comercial), pagos para Latinoamérica (Mercado Pago, Wompi con
   PSE/Nequi, Stripe donde aplica, Paddle), deploy en cualquier proveedor y observabilidad.
 - **Auditor** con dos notas que nunca se mezclan: Seguridad y Calidad de experiencia.
 - **10 agentes, uno por tipo de tarea:** explorador, investigador de versiones, arquitecto de
@@ -109,7 +113,10 @@ node scripts/masterplan.mjs proveedores recomendar --rasgos ssr,postgres,auth-or
 Una plataforma de cursos sale con Supabase (datos y login), Bunny Stream (video), Resend (correo)
 y Mercado Pago (pagos). Una API con procesos largos sale con un servidor en contenedor (Railway o
 Coolify), Inngest o BullMQ para las colas y Postgres. Un sitio barato y global sale entero en
-Cloudflare. Antes de proponerlo, un agente confirma precios y planes de ese día.
+Cloudflare. Una tienda que vende por WhatsApp e Instagram sale con Pancake + Botcake (misma
+empresa, se integran); una app que genera fotos y videos de producto sale con fal (muchos modelos
+en un API) más una cola y almacenamiento propio. Antes de proponerlo, un agente confirma precios
+y planes de ese día.
 
 ## Sesiones conectadas (mod)
 

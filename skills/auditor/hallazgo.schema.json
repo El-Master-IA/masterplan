@@ -43,7 +43,7 @@
     "regla": {
       "type": "string",
       "description": "Código del candado que se incumple (DAT-01, AUT-03, API-03, FE-05, PAG-02, DEP-02, OBS-02...) o código de check de checks.md (CHK-...). Junto con archivo y linea forma la llave de deduplicación.",
-      "pattern": "^((DAT|AUT|API|FE|PAG|DEP|OBS|MED|TRA|CHK|MP)-[A-Z0-9-]+|CWE-[0-9]+)$"
+      "pattern": "^((DAT|AUT|API|FE|PAG|DEP|OBS|MED|TRA|GEN|CHK|MP)-[A-Z0-9-]+|CWE-[0-9]+)$"
     },
     "cwe": {
       "type": "string",

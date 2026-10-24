@@ -44,7 +44,19 @@ necesidad razonablemente.
 | "muchas fotos de productos", "miniaturas" | `transformacion-imagenes` |
 | "mandar correos de confirmación" | `correo-transaccional` |
 | "newsletter", "campañas" | `correo-masivo` |
-| "avisar por WhatsApp", "bot de WhatsApp" | `whatsapp` |
+| "avisar por WhatsApp" (notificaciones desde mi app) | `whatsapp`, `api-whatsapp-oficial` |
+| "vender por WhatsApp/Instagram con un bot", "atender chats con mi equipo" | `chatbot-no-code`, `bandeja-compartida`, `crm-ventas` (+ `whatsapp`, `instagram-dm`, `messenger`, `tiktok-dm` según canales) |
+| "todos mis chats en un solo lugar" | `omnicanal`, `bandeja-compartida` |
+| "que el bot responda con IA" | `chatbot-ia` |
+| "mandar promociones a todos mis contactos" | `campanas-masivas` |
+| "tomar pedidos por chat", "inventario" | `pos-ecommerce`, `crm-ventas` |
+| "mi app genera imágenes", "fotos de producto con IA" | `generacion-imagenes`, `api-generativa` |
+| "editar fotos con IA", "quitar fondo", "mejorar calidad" | `edicion-imagenes`, `upscale` |
+| "videos con IA", "animar una imagen" | `generacion-video`, `api-generativa` |
+| "un presentador virtual que hable" | `avatares-video` |
+| "voz en off", "clonar mi voz" | `voz-sintetica` |
+| "probar varios modelos con una sola cuenta" | `multi-modelo` |
+| "lo uso yo, no dentro de una app" | `interfaz-web` (en vez de `api-generativa`) |
 | "tareas cada noche", "recordatorios programados" | `cron`, `programador` |
 | "buscar productos", "buscador del catálogo" | `busqueda-texto`, `busqueda-tolerante-errores` |
 | "que responda preguntas sobre mis documentos" | `ia-llm`, `busqueda-semantica`, `embeddings` |
@@ -73,6 +85,8 @@ Modificadores (afinan, no piden una pieza): `presupuesto-cero`, `presupuesto-baj
 | Sitio de contenido barato y global | Cloudflare Pages/Workers + D1 + R2 | Todo en el borde, salida de archivos gratis |
 | App móvil | Expo (EAS) + Supabase o API propia | Builds y actualizaciones sin pelear con Xcode |
 | Bot o automatización | n8n o un worker en Railway + cola con reintentos | Se despierta solo y aguanta reintentos de terceros |
+| Ventas y atención por chat | Plataforma de chatbots/bandeja omnicanal + proveedor de la API oficial de WhatsApp; tu app se conecta por API o webhooks | No reconstruyas una bandeja de chats que ya existe; integra |
+| App que genera imágenes o video | Agregador de modelos (un API, muchos modelos) o el proveedor directo + cola de trabajos + almacenamiento + créditos por usuario | La generación tarda y cuesta por uso: va en segundo plano y con tope (`masterplan:kit-ia-media`) |
 | Producto con IA | API de Claude u otros vía gateway + pgvector + trabajos en segundo plano | Respuestas largas fuera de la petición del usuario |
 
 ## Lo que nunca cambia aunque cambie el proveedor

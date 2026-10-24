@@ -1,5 +1,13 @@
 # Cambios
 
+## 1.2.0 · 2026-10-24
+
+- Categoría nueva **chatbots**: Pancake, Botcake, LucidBot, ManyChat, respond.io, Wati, Kommo, Chatwoot, Callbell, Treble, Leadsales y B2Chat. En mensajería: Zernio, 360dialog y Gupshup (API oficial de WhatsApp).
+- Categoría nueva **ia-media**: Higgsfield, Magnific (antes Freepik), fal, Replicate, APIMart (marcado evitar en producción), Runway, Kling, Luma, Google Nano Banana/Imagen/Veo, OpenAI GPT Image, FLUX, Ideogram, Leonardo, ElevenLabs, HeyGen, Hedra y Synthesia.
+- Catálogo: 152 fichas en 26 categorías.
+- Recomendador: si nadie cubre todo solo, propone la pareja que sí (primero de la misma empresa); si la plataforma de chatbots ya conecta WhatsApp, no agrega otro proveedor.
+- Kit nuevo `kit-ia-media`: generación en segundo plano, créditos con tope, resultados en almacenamiento propio, moderación y licencia comercial.
+
 ## 1.1.0 · 2026-10-24
 
 Herramientas según la necesidad, no siempre Supabase + Vercel.

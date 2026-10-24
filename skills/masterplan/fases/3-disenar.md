@@ -17,7 +17,8 @@ Antes de empezar dile a la persona cuánto va a tardar (normalmente 10–20 min)
   Next.js (SSR), u otro que pida el repo. El perfil fija el framework; los proveedores fijan dónde
   vive cada pieza.
 - Lista las capacidades que el alcance exige: auth, datos, api, frontend, pagos, deploy,
-  observabilidad, correo, archivos, video, trabajos en segundo plano, tiempo real, IA. Para cada
+  observabilidad, correo, archivos, video, trabajos en segundo plano, tiempo real, chatbots y
+  ventas por chat, IA (modelos de texto e IA generativa de imagen, video y voz). Para cada
   una hay un kit (`masterplan:kit-*`): lee su SKILL.md antes de decidirla. Los kits explican el
   camino con Supabase y dicen qué cambia con otros proveedores.
 - Revisa `conocimiento/compatibilidad.md`.

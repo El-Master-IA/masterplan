@@ -2700,6 +2700,742 @@
       "empresa": "expo"
     },
     {
+      "id": "zernio",
+      "nombre": "Zernio",
+      "categoria": "mensajeria",
+      "especialidad": "API unificada para desarrolladores que cubre redes sociales (publicar, analítica, DMs, comentarios, anuncios) y WhatsApp Business API oficial: mensajes, difusiones, llamadas, bandeja compartida y compra de números.",
+      "rasgos": [
+        "api-whatsapp-oficial",
+        "whatsapp",
+        "plantillas",
+        "campanas-masivas",
+        "omnicanal",
+        "bandeja-compartida",
+        "instagram-dm",
+        "messenger",
+        "sms",
+        "api-http",
+        "mcp-oficial",
+        "presupuesto-bajo"
+      ],
+      "usarCuando": [
+        "Tu app necesita enviar WhatsApp por API sin crear tu propia app de Meta ni pasar App Review",
+        "Quieres WhatsApp y redes sociales en una sola API con SDK para Node, Python y otros",
+        "Quieres que un agente de IA opere WhatsApp vía MCP"
+      ],
+      "evitarCuando": [
+        "Buscas un constructor visual de chatbots sin programar",
+        "Necesitas soporte comercial en español (no verificado)"
+      ],
+      "fuerte": [
+        "Cobro de Meta directo a tu cuenta de WhatsApp (WABA), sin recargo",
+        "Primeros 10.000 mensajes al mes sin costo de plataforma",
+        "SDK en 8 lenguajes, CLI, webhooks con reintentos y MCP oficial",
+        "Números de WhatsApp comprables en más de 50 países, incluidos México, Colombia, Brasil y Panamá"
+      ],
+      "debil": [
+        "Orientado a desarrolladores: no es una app lista para un equipo de ventas no técnico",
+        "Números en LatAm más caros que en EE. UU. (Colombia 21 USD/mes)",
+        "Sitio y documentación en inglés"
+      ],
+      "gratis": "2 cuentas conectadas gratis, sin tarjeta; primeros 10.000 mensajes al mes sin costo de plataforma; sandbox para probar",
+      "precio": "Por cuenta conectada al mes: 1–2 gratis, 3–10 a 6 USD, 11–100 a 3 USD, 101+ a 1 USD. Número de WhatsApp opcional desde 3 USD/mes (Brasil 4–5, México 8–9, Panamá 15, Colombia 21 USD/mes). Mensajes: 0 USD los primeros 10.000/mes, luego 1 USD por cada 10.000. Meta cobra sus tarifas aparte, directo a tu WABA, sin recargo.",
+      "usoComercialGratis": true,
+      "latam": "Vende números de WhatsApp de México, Colombia, Brasil, Panamá y Puerto Rico; pago con tarjeta. Soporte en español: no verificado.",
+      "compatibleCon": [
+        "node",
+        "python",
+        "nextjs",
+        "react-vite",
+        "workers"
+      ],
+      "mcp": "https://mcp.zernio.com/mcp",
+      "fuente": "https://zernio.com/whatsapp",
+      "verificado": "2026-10-24",
+      "empresa": "zernio"
+    },
+    {
+      "id": "360dialog",
+      "nombre": "360dialog",
+      "categoria": "mensajeria",
+      "especialidad": "Proveedor (BSP) de la API oficial de WhatsApp Business: acceso por API por número, sin recargo sobre las tarifas de Meta; plan para plataformas que revenden WhatsApp.",
+      "rasgos": [
+        "api-whatsapp-oficial",
+        "whatsapp",
+        "plantillas",
+        "api-http",
+        "mcp-oficial"
+      ],
+      "usarCuando": [
+        "Tu app necesita WhatsApp por API con un BSP oficial y precio fijo por número",
+        "Construyes una plataforma que conecta WhatsApp de muchos clientes (Partner Platform)",
+        "Quieres conectar agentes de IA vía MCP"
+      ],
+      "evitarCuando": [
+        "No sabes programar y necesitas bandeja o chatbot listo (el plan Regular es solo API)",
+        "Prefieres pagar en USD o en moneda local"
+      ],
+      "fuerte": [
+        "Sin recargo sobre las tarifas de Meta",
+        "Integración con Zapier, Make y n8n",
+        "MCP de mensajería en el plan Premium"
+      ],
+      "debil": [
+        "Precios en euros por número al mes",
+        "Bandeja incluida solo desde Premium",
+        "Prueba o sandbox: no verificado"
+      ],
+      "gratis": "no verificado",
+      "precio": "Por número al mes en EUR: Regular 49 (solo API), Premium 99 (incluye bandeja y MCP), Scale 500. Partner Platform: Starter 250 €/mes + 49 € por canal, Growth 500 € + 25 €, Premium 1.000 € + 15 €. Tarifas de Meta aparte, sin recargo.",
+      "usoComercialGratis": null,
+      "latam": "Cobro en EUR. Presencia y soporte en LatAm: no verificado.",
+      "compatibleCon": [
+        "node",
+        "python",
+        "n8n",
+        "make",
+        "zapier"
+      ],
+      "mcp": "Messaging MCP incluido en el plan Premium (URL no verificada)",
+      "fuente": "https://360dialog.com/pricing",
+      "verificado": "2026-10-24",
+      "empresa": "360dialog"
+    },
+    {
+      "id": "gupshup",
+      "nombre": "Gupshup",
+      "categoria": "mensajeria",
+      "especialidad": "Proveedor empresarial de la API de WhatsApp Business con cobro por mensaje y programa para ISV que integran WhatsApp en su software.",
+      "rasgos": [
+        "api-whatsapp-oficial",
+        "whatsapp",
+        "api-http"
+      ],
+      "usarCuando": [
+        "Necesitas WhatsApp por API sin cuota mensual y pagando por mensaje",
+        "Eres un software (ISV) que integra WhatsApp para tus clientes"
+      ],
+      "evitarCuando": [
+        "Eres principiante y quieres bandeja o chatbot listos sin programar",
+        "Necesitas precios claros por país en una sola página (detalle no verificado)"
+      ],
+      "fuerte": [
+        "Sin cuota de suscripción en autoservicio",
+        "Tarifa de plataforma desde 0,001 USD por mensaje",
+        "Tarifas de Meta cobradas al costo real"
+      ],
+      "debil": [
+        "Orientado a empresas e ISV",
+        "Documentación y soporte en español: no verificado",
+        "La página de autoservicio redirige al programa de partners"
+      ],
+      "gratis": "Sin cuota mensual; pagas por mensaje (prueba o sandbox: no verificado)",
+      "precio": "Tarifa de plataforma desde 0,001 USD por mensaje, sin suscripción; la tarifa de WhatsApp de Meta se cobra al costo real (según su página, consultada vía redirección a gupshup.ai/partners).",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "node",
+        "python"
+      ],
+      "mcp": "no verificado",
+      "fuente": "https://www.gupshup.ai/channels/self-serve/whatsapp",
+      "verificado": "2026-10-24",
+      "empresa": "gupshup"
+    },
+    {
+      "id": "pancake",
+      "nombre": "Pancake (pages.fm)",
+      "categoria": "chatbots",
+      "especialidad": "Plataforma de social commerce: bandeja que junta redes sociales, WhatsApp API y tiendas en línea, con creación de pedidos desde el chat y POS propio (Pancake POS).",
+      "rasgos": [
+        "omnicanal",
+        "bandeja-compartida",
+        "crm-ventas",
+        "pos-ecommerce",
+        "campanas-masivas",
+        "whatsapp",
+        "messenger",
+        "instagram-dm",
+        "api-http"
+      ],
+      "usarCuando": [
+        "Vendes por chat (Facebook, Instagram, WhatsApp) y necesitas crear pedidos e inventario en el mismo lugar",
+        "Tu equipo atiende varias páginas o cuentas a la vez",
+        "Quieres chat + POS + reportes en un solo proveedor"
+      ],
+      "evitarCuando": [
+        "Solo necesitas un chatbot sencillo sin pedidos ni inventario",
+        "Necesitas pagar mes a mes: los planes publicados son por 6 meses",
+        "Necesitas soporte y documentación en español garantizados (no verificado)"
+      ],
+      "fuerte": [
+        "Pedidos y POS integrados al chat",
+        "Detección automática de teléfono y dirección del cliente",
+        "API pública (pages.fm) y API del POS con webhooks",
+        "Muestra tarifas de WhatsApp por país, incluida Colombia"
+      ],
+      "debil": [
+        "Planes publicados en bloques de 6 meses",
+        "Producto pensado primero para Vietnam y el Sudeste Asiático; documentación mayormente en inglés y vietnamita",
+        "Sin plan gratis permanente"
+      ],
+      "gratis": "Sin plan gratis; prueba de 14 días con todas las funciones",
+      "precio": "Planes por conexiones y usuarios, pagados por 6 meses (USD mostrado con conversión): Small 1 conexión/3 usuarios 49,10 USD; Standard 3 conexiones/3 usuarios 103,70 USD; Business 6 conexiones/10 usuarios 365,80 USD; plan a medida. Los mensajes de WhatsApp API se cobran aparte según la tabla de Meta por país (p. ej., Colombia marketing 46,9 COP, utilidad 3 COP).",
+      "usoComercialGratis": null,
+      "latam": "Se presenta para Tailandia, Camboya, Brasil y Colombia; tabla de tarifas de WhatsApp con precios en ARS, BRL, COP y USD (Ecuador). Soporte en español: no verificado.",
+      "compatibleCon": [
+        "node",
+        "python",
+        "nextjs"
+      ],
+      "mcp": "no verificado (el MCP oficial existe para Botcake, su chatbot)",
+      "fuente": "https://pancake.biz/pricing",
+      "verificado": "2026-10-24",
+      "empresa": "pancake"
+    },
+    {
+      "id": "botcake",
+      "nombre": "Botcake",
+      "categoria": "chatbots",
+      "especialidad": "Chatbot de Pancake para Messenger, Instagram Direct, WhatsApp y TikTok: flujos automáticos, respuestas a comentarios, difusiones y agente de IA con tu propia cuenta de OpenAI.",
+      "rasgos": [
+        "chatbot-no-code",
+        "chatbot-ia",
+        "campanas-masivas",
+        "messenger",
+        "instagram-dm",
+        "whatsapp",
+        "tiktok-dm",
+        "api-http",
+        "mcp-oficial",
+        "presupuesto-cero",
+        "uso-comercial-gratis"
+      ],
+      "usarCuando": [
+        "Quieres automatizar respuestas en Messenger, Instagram o WhatsApp sin pagar al empezar",
+        "Ya usas Pancake y quieres el chatbot del mismo ecosistema",
+        "Quieres manejar el bot desde Claude u otro agente vía MCP"
+      ],
+      "evitarCuando": [
+        "Necesitas un CRM de ventas completo con embudo (combínalo con Pancake u otro CRM)",
+        "Quieres que el proveedor incluya los costos de IA: la IA se paga con tus propios tokens de OpenAI"
+      ],
+      "fuerte": [
+        "Plan gratis con 500.000 mensajes automáticos al mes",
+        "Servidor MCP oficial (mcp.botcake.io)",
+        "API y webhooks para conectar CRM o tienda",
+        "Sin costo de instalación ni penalidad por cancelar"
+      ],
+      "debil": [
+        "Las difusiones de marketing se cobran según las reglas de cada plataforma (Meta, TikTok)",
+        "La IA requiere conectar y pagar tu cuenta de OpenAI",
+        "Documentación en español: no verificada"
+      ],
+      "gratis": "Plan Starter gratis: 500.000 mensajes automáticos al mes, tiempo ilimitado, integraciones básicas con API",
+      "precio": "Pro desde 30 USD (por 3 millones de mensajes de difusión, según su calculadora); Premium a medida. Mensajes de WhatsApp: se cobran las tarifas oficiales de Meta por plantilla y país, aparte. IA: pago por uso de tokens de OpenAI con tu cuenta.",
+      "usoComercialGratis": true,
+      "latam": "Paga con tarjeta internacional o PayPal. Presencia y soporte en español en LatAm: no verificado (Pancake declara operación en Colombia y Brasil).",
+      "compatibleCon": [
+        "node",
+        "python",
+        "nextjs"
+      ],
+      "mcp": "https://mcp.botcake.io/mcp",
+      "fuente": "https://botcake.io/pricing",
+      "verificado": "2026-10-24",
+      "empresa": "pancake",
+      "porDefecto": true
+    },
+    {
+      "id": "lucidbot",
+      "nombre": "LucidBot",
+      "categoria": "chatbots",
+      "especialidad": "Plataforma latinoamericana de chatbots con IA para vender por WhatsApp, Instagram y Messenger, con integraciones a Dropi, Effi, Mastershop y Shopify para pedidos y seguimiento de guías.",
+      "rasgos": [
+        "chatbot-ia",
+        "omnicanal",
+        "api-whatsapp-oficial",
+        "whatsapp",
+        "instagram-dm",
+        "messenger",
+        "pos-ecommerce",
+        "presupuesto-bajo"
+      ],
+      "usarCuando": [
+        "Vendes por WhatsApp con dropshipping o contraentrega (Dropi, Effi, Mastershop)",
+        "Tienes tienda Shopify y quieres confirmar pedidos y recuperar carritos por WhatsApp",
+        "Quieres un bot con IA en español sin programar"
+      ],
+      "evitarCuando": [
+        "Necesitas un plan gratis para probar a largo plazo (no verificado)",
+        "Necesitas documentación técnica de API pública para integrarlo a tu app (solo webhooks y llamadas API externas verificadas)"
+      ],
+      "fuerte": [
+        "Pensado para ecommerce LatAm con integraciones nativas a Dropi, Effi y Mastershop",
+        "Meta Business Partner con API oficial de WhatsApp",
+        "Mensajes y miembros de equipo ilimitados según su sitio",
+        "Conecta con Make, Zapier, Pabbly, webhooks y varios modelos de IA (OpenAI, Claude, Gemini, DeepSeek, xAI)"
+      ],
+      "debil": [
+        "Precio sube según cantidad de contactos (tabla exacta por tramo no verificada)",
+        "Cobro de las tarifas de Meta por WhatsApp: no verificado",
+        "Plan gratis o prueba: no verificado"
+      ],
+      "gratis": "no verificado",
+      "precio": "Plan base 44 USD/mes hasta 20.000 contactos; el precio aumenta progresivamente con más contactos. Si cobra aparte los mensajes de Meta: no verificado. Ofrece marca blanca (precio no verificado).",
+      "usoComercialGratis": null,
+      "latam": "Sitio en español orientado a LatAm, integraciones con plataformas de dropshipping latinoamericanas (Dropi, Effi, Mastershop). País sede y soporte: no verificado.",
+      "compatibleCon": [
+        "n8n",
+        "make",
+        "zapier"
+      ],
+      "mcp": "no verificado",
+      "fuente": "https://lucidbot.co/",
+      "verificado": "2026-10-24",
+      "empresa": "lucidbot"
+    },
+    {
+      "id": "manychat",
+      "nombre": "ManyChat",
+      "categoria": "chatbots",
+      "especialidad": "Automatización de DMs y comentarios para creadores y marcas: Instagram, TikTok, Messenger, WhatsApp, Telegram, SMS y correo, con constructor visual y respuestas con IA.",
+      "rasgos": [
+        "chatbot-no-code",
+        "chatbot-ia",
+        "campanas-masivas",
+        "instagram-dm",
+        "tiktok-dm",
+        "messenger",
+        "whatsapp",
+        "sms",
+        "omnicanal",
+        "bandeja-compartida",
+        "presupuesto-cero",
+        "uso-comercial-gratis"
+      ],
+      "usarCuando": [
+        "Quieres responder comentarios y DMs de Instagram o TikTok automáticamente",
+        "Eres creador o marca personal y captas leads desde redes",
+        "Quieres empezar gratis sin tarjeta"
+      ],
+      "evitarCuando": [
+        "Necesitas WhatsApp en el plan barato: WhatsApp solo desde el plan Pro",
+        "Necesitas un CRM de ventas con embudo completo",
+        "Tienes miles de contactos activos al mes y presupuesto ajustado (cobra por contacto activo)"
+      ],
+      "fuerte": [
+        "Meta Business Partner oficial y partner de TikTok",
+        "Plantillas listas (más de 60) y constructor visual",
+        "Plan gratis sin tarjeta",
+        "Reembolso si cancelas antes de 30 días"
+      ],
+      "debil": [
+        "Cobra por contacto activo al mes, con excedentes",
+        "El plan gratis muestra la marca 'Powered by Manychat' y limita a 4 automatizaciones y 25 contactos activos",
+        "Sin MCP oficial (solo de comunidad o vía Zapier/Activepieces)"
+      ],
+      "gratis": "Plan Free: 25 contactos activos al mes, 2 canales (Instagram, TikTok, Messenger o Telegram), 4 automatizaciones, 1 usuario, marca de ManyChat",
+      "precio": "Facturado anual: Essential 14 USD/mes (250 contactos activos), Pro 29 USD/mes (2.500, incluye WhatsApp, IA y difusiones), Business 69 USD/mes (7.500), Advanced 139 USD/mes (25.000); excedente por contacto activo (mensual: 0,10/0,05/0,025/0,004 USD). Precio final según país de facturación, sin impuestos. Cobro aparte de mensajes de WhatsApp de Meta: no verificado.",
+      "usoComercialGratis": true,
+      "latam": "Precio determinado por país de facturación; acepta Visa, Mastercard, Amex y Discover. Soporte en español: no verificado.",
+      "compatibleCon": [
+        "node",
+        "python",
+        "zapier",
+        "make"
+      ],
+      "mcp": null,
+      "fuente": "https://manychat.com/pricing",
+      "verificado": "2026-10-24",
+      "empresa": "manychat"
+    },
+    {
+      "id": "respond-io",
+      "nombre": "respond.io",
+      "categoria": "chatbots",
+      "especialidad": "Bandeja omnicanal para equipos de ventas y soporte con agentes de IA, workflows, difusiones, llamadas y gestión de ciclo de vida del cliente.",
+      "rasgos": [
+        "omnicanal",
+        "bandeja-compartida",
+        "chatbot-ia",
+        "campanas-masivas",
+        "crm-ventas",
+        "whatsapp",
+        "instagram-dm",
+        "messenger",
+        "api-http",
+        "mcp-oficial"
+      ],
+      "usarCuando": [
+        "Equipo de varios agentes atendiendo WhatsApp y otras redes con reglas de asignación",
+        "Quieres agentes de IA y workflows sin programar",
+        "Necesitas API, webhooks e integración con HubSpot, Salesforce o n8n"
+      ],
+      "evitarCuando": [
+        "Presupuesto muy bajo o negocio de una sola persona (desde 79 USD/mes)",
+        "Necesitas difusiones o API en el plan básico: llegan desde Growth"
+      ],
+      "fuerte": [
+        "Créditos de IA incluidos y agentes de IA sin costo extra desde Growth",
+        "MCP, API de desarrollador, webhooks y HTTP requests en workflows",
+        "Certificación ISO 27001",
+        "Excedentes de contactos no cortan la operación"
+      ],
+      "debil": [
+        "Las tarifas de WhatsApp de Meta no están incluidas y se recargan aparte",
+        "Webhooks entrantes/salientes solo desde Advanced (279 USD/mes)",
+        "Prueba de solo 7 días"
+      ],
+      "gratis": "Sin plan gratis; prueba de 7 días sin tarjeta (funciones de Growth, 5 usuarios, 1.000 contactos activos, sin difusiones)",
+      "precio": "Mensual en USD: Starter 79, Growth 159, Advanced 279, Enterprise a medida (anual con hasta 20% de descuento). Desde 1.000 contactos activos al mes; excedente 12 USD por 100 contactos (Growth) o 15 USD (Advanced). Usuarios extra 12–24 USD/mes. Mensajes de WhatsApp: los cobra Meta aparte, recargando saldo en la plataforma.",
+      "usoComercialGratis": null,
+      "latam": "Acepta tarjetas internacionales; transferencia bancaria para alto volumen. Soporte 24/7 (idiomas no verificados). Presencia en LatAm: no verificado.",
+      "compatibleCon": [
+        "node",
+        "python",
+        "nextjs",
+        "n8n",
+        "zapier",
+        "make"
+      ],
+      "mcp": "MCP oficial listado en sus integraciones (URL del servidor no verificada)",
+      "fuente": "https://respond.io/pricing",
+      "verificado": "2026-10-24",
+      "empresa": "respond-io"
+    },
+    {
+      "id": "wati",
+      "nombre": "Wati",
+      "categoria": "chatbots",
+      "especialidad": "Plataforma sobre la API oficial de WhatsApp con bandeja de equipo, chatbots, difusiones, anuncios Click-to-WhatsApp y herramientas para Shopify; también Instagram, Messenger y TikTok.",
+      "rasgos": [
+        "api-whatsapp-oficial",
+        "whatsapp",
+        "omnicanal",
+        "bandeja-compartida",
+        "chatbot-no-code",
+        "chatbot-ia",
+        "campanas-masivas",
+        "instagram-dm",
+        "messenger",
+        "tiktok-dm",
+        "pos-ecommerce",
+        "api-http"
+      ],
+      "usarCuando": [
+        "WhatsApp es tu canal principal de ventas y quieres activar la API oficial sin costo de instalación",
+        "Tienes tienda Shopify y quieres carritos abandonados y catálogo en WhatsApp",
+        "Quieres campañas masivas con plantillas"
+      ],
+      "evitarCuando": [
+        "Necesitas webhooks en el plan de entrada (Growth no tiene webhooks)",
+        "Quieres agentes de IA incluidos: Astra se cobra aparte",
+        "Esperas reembolso si cancelas: no reembolsa"
+      ],
+      "fuerte": [
+        "Alta en API oficial de WhatsApp sin costo y ayuda con verificación",
+        "Sitio en español y portugués",
+        "Shopify, catálogo y anuncios CTWA",
+        "Números adicionales a 29 USD/mes"
+      ],
+      "debil": [
+        "Mensajes de WhatsApp se cobran aparte según la tarifa de Wati",
+        "Límite de disparos de automatización por plan (1.000 en Growth)",
+        "Sin reembolsos"
+      ],
+      "gratis": "Sin plan gratis; prueba de 7 días",
+      "precio": "Facturado anual en USD: Growth 59/mes (3 usuarios, 15.000 difusiones/mes, 10.000 llamadas API, sin webhooks), Pro 119/mes (5 usuarios, usuario extra 39), Business a medida. Cada mensaje de WhatsApp se cobra aparte según su tarifa (marketing, utilidad, autenticación). Complementos: disparos de automatización desde 40 USD/mes, IA Co-pilot 30 USD/mes, Shopify 4,99 USD/mes.",
+      "usoComercialGratis": null,
+      "latam": "Sitio en español y portugués; soporte por correo en inglés y portugués en Growth. Tarjeta internacional obligatoria. Oficinas en LatAm: no verificado.",
+      "compatibleCon": [
+        "node",
+        "python",
+        "zapier"
+      ],
+      "mcp": "no verificado",
+      "fuente": "https://www.wati.io/pricing/",
+      "verificado": "2026-10-24",
+      "empresa": "wati"
+    },
+    {
+      "id": "kommo",
+      "nombre": "Kommo (antes amoCRM)",
+      "categoria": "chatbots",
+      "especialidad": "CRM de ventas por mensajería: embudo de leads con WhatsApp, Instagram, Facebook, TikTok, Telegram, correo y chat web en una bandeja, con agentes de IA.",
+      "rasgos": [
+        "crm-ventas",
+        "omnicanal",
+        "bandeja-compartida",
+        "chatbot-ia",
+        "whatsapp",
+        "instagram-dm",
+        "messenger",
+        "tiktok-dm",
+        "api-http"
+      ],
+      "usarCuando": [
+        "Tu equipo cierra ventas por chat y necesita embudo, etapas y tareas",
+        "Quieres un CRM con WhatsApp integrado y varios vendedores",
+        "Necesitas API REST y webhooks para conectar tu app"
+      ],
+      "evitarCuando": [
+        "Eres una sola persona con presupuesto mínimo: cobra por usuario con mínimo de 6 meses",
+        "Solo quieres automatizar comentarios de Instagram"
+      ],
+      "fuerte": [
+        "Embudo de ventas completo con canales de chat",
+        "API REST, WebSDK y webhooks",
+        "Agentes de IA (hasta 3 en Advanced, hasta 50 en Pro)",
+        "Varios números de WhatsApp en Pro"
+      ],
+      "debil": [
+        "Suscripción mínima de 6 meses",
+        "Precio por usuario: crece rápido con el equipo",
+        "Cobro de mensajes de WhatsApp de Meta: no verificado"
+      ],
+      "gratis": "Sin plan gratis; prueba de 14 días sin tarjeta",
+      "precio": "Por usuario al mes en USD, periodo mínimo de 6 meses: Base 25, Advanced 35, Pro 45; Enterprise a medida. Cobro aparte de mensajes de WhatsApp de Meta: no verificado.",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "node",
+        "python",
+        "nextjs"
+      ],
+      "mcp": "no verificado",
+      "fuente": "https://www.kommo.com/pricing/",
+      "verificado": "2026-10-24",
+      "empresa": "kommo"
+    },
+    {
+      "id": "chatwoot",
+      "nombre": "Chatwoot",
+      "categoria": "chatbots",
+      "especialidad": "Bandeja de atención omnicanal de código abierto (licencia MIT) con chat web, correo, WhatsApp Cloud API, Instagram, Messenger, Telegram, Line y SMS; nube o autoalojado, con agente de IA Captain.",
+      "rasgos": [
+        "omnicanal",
+        "bandeja-compartida",
+        "self-host",
+        "chatbot-ia",
+        "whatsapp",
+        "instagram-dm",
+        "messenger",
+        "sms",
+        "api-http",
+        "presupuesto-cero",
+        "uso-comercial-gratis"
+      ],
+      "usarCuando": [
+        "Quieres ser dueño de tus datos y alojarlo en tu servidor (Docker, Helm)",
+        "Vas a integrar la bandeja con tu propia app vía API y webhooks",
+        "Presupuesto cero y alguien técnico que lo mantenga"
+      ],
+      "evitarCuando": [
+        "No tienes quién administre un servidor y necesitas todos los canales: en la nube los canales completos son de pago",
+        "Necesitas un constructor visual de chatbots de ventas listo para usar"
+      ],
+      "fuerte": [
+        "Código abierto MIT, autoalojable sin costo de licencia",
+        "API abierta y webhooks",
+        "Conectas tu propia cuenta de WhatsApp Cloud API (sin intermediario)",
+        "Versión v4.19.1 publicada el 24-oct-2026, proyecto activo"
+      ],
+      "debil": [
+        "Autoalojarlo exige mantener servidor, actualizaciones y respaldos",
+        "La IA Captain no está en el plan gratis de la nube",
+        "Sin TikTok verificado"
+      ],
+      "gratis": "Nube Hacker: 0 USD, hasta 2 agentes y 500 conversaciones al mes (sin todos los canales ni Captain). Autoalojado: edición comunitaria MIT gratis.",
+      "precio": "Nube por agente al mes en USD: Startups 19 (300 créditos de Captain), Business 39 (500), Enterprise 99 (800); créditos extra de IA 20 USD por 1.000. Prueba de 15 días. Con WhatsApp Cloud API propio, Meta cobra sus tarifas aparte (detalle no verificado en su página).",
+      "usoComercialGratis": true,
+      "latam": "Autoalojable en cualquier región, incluida LatAm; interfaz multilenguaje y traducción automática. Soporte comercial en español: no verificado.",
+      "compatibleCon": [
+        "node",
+        "python",
+        "nextjs",
+        "react-vite",
+        "contenedor-docker"
+      ],
+      "mcp": "no verificado",
+      "fuente": "https://www.chatwoot.com/pricing",
+      "verificado": "2026-10-24",
+      "empresa": "chatwoot"
+    },
+    {
+      "id": "callbell",
+      "nombre": "Callbell",
+      "categoria": "chatbots",
+      "especialidad": "Chat multiagente para equipos de ventas y soporte en WhatsApp, Instagram Direct y Facebook Messenger.",
+      "rasgos": [
+        "bandeja-compartida",
+        "omnicanal",
+        "whatsapp",
+        "instagram-dm",
+        "messenger",
+        "presupuesto-bajo",
+        "api-http"
+      ],
+      "usarCuando": [
+        "Pocos agentes compartiendo un número de WhatsApp",
+        "Quieres un precio por agente bajo y simple"
+      ],
+      "evitarCuando": [
+        "Necesitas IA o automatización avanzada en planes de entrada (ChatGPT solo en Enterprise)",
+        "Necesitas API en el plan básico (API desde Multiagente Plus)"
+      ],
+      "fuerte": [
+        "Precio de entrada bajo por agente",
+        "Sitio en español"
+      ],
+      "debil": [
+        "WhatsApp e Instagram requieren créditos consumibles mensuales aparte",
+        "Moneda de los precios no confirmada en la página",
+        "Funciones de IA solo en Enterprise"
+      ],
+      "gratis": "Prueba de 7 días; la página de precios no muestra plan gratis (la descripción del sitio menciona uno de 0 €/mes: no verificado)",
+      "precio": "Chat Multiagente 15 por agente/mes; Multiagente Plus 20 por agente/mes (incluye API e integraciones); Enterprise a medida (la página muestra '$'; moneda exacta no verificada). Créditos consumibles aparte: Instagram Direct 22/mes, WhatsApp desde 22/mes.",
+      "usoComercialGratis": null,
+      "latam": "Sitio y página de precios en español. Presencia y soporte en LatAm: no verificado.",
+      "compatibleCon": [
+        "node",
+        "python"
+      ],
+      "mcp": "no verificado",
+      "fuente": "https://www.callbell.eu/es/precios/",
+      "verificado": "2026-10-24",
+      "empresa": "callbell"
+    },
+    {
+      "id": "treble",
+      "nombre": "Treble.ai",
+      "categoria": "chatbots",
+      "especialidad": "Plataforma de marketing y ventas por WhatsApp sobre la API oficial: difusiones, chatbots, IA, Click-to-WhatsApp, catálogo y chat multiagente, con integración nativa a HubSpot y Salesforce.",
+      "rasgos": [
+        "api-whatsapp-oficial",
+        "whatsapp",
+        "campanas-masivas",
+        "chatbot-ia",
+        "bandeja-compartida",
+        "crm-ventas",
+        "api-http"
+      ],
+      "usarCuando": [
+        "Empresa mediana o grande que usa HubSpot o Salesforce y quiere WhatsApp conectado al CRM",
+        "Campañas masivas y seguimiento por WhatsApp con IA"
+      ],
+      "evitarCuando": [
+        "Necesitas Instagram o Messenger (solo WhatsApp)",
+        "Eres principiante con presupuesto bajo: no publica precios y vende por demo"
+      ],
+      "fuerte": [
+        "BSP oficial de WhatsApp",
+        "Integraciones nativas con HubSpot y Salesforce, más API propia",
+        "IA para FAQs, calificar leads, resumir y redactar"
+      ],
+      "debil": [
+        "Sin precios públicos ni prueba verificada",
+        "Solo canal WhatsApp"
+      ],
+      "gratis": "no verificado",
+      "precio": "Sin precios públicos en su sitio; se solicita demo. Cobro de tarifas de Meta: no verificado.",
+      "usoComercialGratis": null,
+      "latam": "Sitio en español y portugués; la empresa se conoce como colombiana, pero oficinas y países no aparecen en la página (no verificado).",
+      "compatibleCon": [
+        "node",
+        "python"
+      ],
+      "mcp": "no verificado",
+      "fuente": "https://treble.ai/",
+      "verificado": "2026-10-24",
+      "empresa": "treble"
+    },
+    {
+      "id": "leadsales",
+      "nombre": "Leadsales",
+      "categoria": "chatbots",
+      "especialidad": "CRM mexicano para vender por WhatsApp, Facebook e Instagram: embudos de conversaciones, multiagente y agente de IA (Lead Agent) para WhatsApp.",
+      "rasgos": [
+        "crm-ventas",
+        "bandeja-compartida",
+        "omnicanal",
+        "api-whatsapp-oficial",
+        "whatsapp",
+        "instagram-dm",
+        "messenger",
+        "chatbot-ia"
+      ],
+      "usarCuando": [
+        "Equipo de ventas en México o LatAm que vende por chat y necesita embudos",
+        "Quieres precio en pesos mexicanos y saldo de WhatsApp incluido"
+      ],
+      "evitarCuando": [
+        "Necesitas WhatsApp en el plan básico (no incluye API de WhatsApp ni campañas)",
+        "Necesitas API o webhooks documentados (no verificado)"
+      ],
+      "fuerte": [
+        "Precios en USD y MXN",
+        "Conexión a la API oficial de WhatsApp sin costo de activación desde Professional",
+        "Saldo mensual para mensajes incluido (10 o 20 USD)",
+        "Agente de IA para WhatsApp incluido desde Professional"
+      ],
+      "debil": [
+        "Plan Basic sin WhatsApp",
+        "Precio de entrada alto para una persona (97 USD/mes)",
+        "API/webhooks: no verificado"
+      ],
+      "gratis": "Sin plan gratis; prueba de 14 días",
+      "precio": "Mensual: Basic 97 USD (2.362,92 MXN; 3 usuarios, sin WhatsApp API), Professional 133 USD (3.239,88 MXN; 4 usuarios, WhatsApp API e incluye 10 USD de saldo al mes), Advanced 247 USD (6.016,92 MXN; 5 usuarios, 20 USD de saldo). También trimestral, semestral y anual. Consumo de WhatsApp por encima del saldo incluido: no verificado.",
+      "usoComercialGratis": null,
+      "latam": "Empresa con precios en MXN, orientada a México y LatAm; sitio en español.",
+      "compatibleCon": [],
+      "mcp": "no verificado",
+      "fuente": "https://leadsales.io/en/pricing/",
+      "verificado": "2026-10-24",
+      "empresa": "leadsales"
+    },
+    {
+      "id": "b2chat",
+      "nombre": "B2Chat",
+      "categoria": "chatbots",
+      "especialidad": "Plataforma colombiana multiagente y multicanal: WhatsApp API, Facebook Messenger, Instagram, Telegram y LiveChat en una bandeja, con bots y asistente de IA como complementos.",
+      "rasgos": [
+        "bandeja-compartida",
+        "omnicanal",
+        "whatsapp",
+        "instagram-dm",
+        "messenger",
+        "chatbot-ia"
+      ],
+      "usarCuando": [
+        "Empresa en Colombia que necesita varios agentes en una línea de WhatsApp",
+        "Quieres precios en USD con descuento anual y soporte local"
+      ],
+      "evitarCuando": [
+        "Presupuesto muy bajo con WhatsApp (desde 84–105 USD/mes)",
+        "Necesitas IA incluida: el asistente de IA cuesta 80 USD/mes adicionales"
+      ],
+      "fuerte": [
+        "Empresa y sitio de Colombia",
+        "Plan sin WhatsApp barato para otros canales",
+        "SDK de integración incluido"
+      ],
+      "debil": [
+        "Bots de FAQ, satisfacción e IA como complementos pagos",
+        "API de desborde cuesta 162 USD adicionales",
+        "Cobro de tarifas de Meta y prueba gratis: no verificado"
+      ],
+      "gratis": "no verificado",
+      "precio": "USD/mes (mensual / anual): Básico sin WhatsApp 33 / 28 (2 usuarios, 2 canales); Básico con WhatsApp 105 / 84 (2 usuarios, 1 línea); Premium 187 / 149 (5 usuarios, 1 línea, bots de FAQ y satisfacción incluidos); Enterprise a medida. Asistente IA +80 USD/mes. Cobro de tarifas de Meta: no verificado.",
+      "usoComercialGratis": null,
+      "latam": "Empresa colombiana (sitio es-CO), precios en USD.",
+      "compatibleCon": [],
+      "mcp": "no verificado",
+      "fuente": "https://www.b2chat.io/precios/",
+      "verificado": "2026-10-24",
+      "empresa": "b2chat"
+    },
+    {
       "id": "supabase-realtime",
       "nombre": "Supabase Realtime",
       "categoria": "tiempo-real",
@@ -4176,6 +4912,774 @@
       "fuente": "https://openrouter.ai/pricing",
       "verificado": "2026-10-24",
       "empresa": "openrouter"
+    },
+    {
+      "id": "higgsfield",
+      "nombre": "Higgsfield",
+      "categoria": "ia-media",
+      "especialidad": "Plataforma web para crear video e imagen con IA (control de cámara, anuncios, influencers IA) y, aparte, API de pago por uso con más de 50 modelos de video e imagen (Kling, Seedance, Wan, MiniMax, Ideogram y modelos propios Soul).",
+      "rasgos": [
+        "generacion-video",
+        "generacion-imagenes",
+        "interfaz-web",
+        "api-generativa",
+        "multi-modelo",
+        "creditos-prepago",
+        "uso-comercial-salidas",
+        "mcp-oficial"
+      ],
+      "usarCuando": [
+        "Quieres probar sin código muchos modelos de video desde una sola interfaz",
+        "Tu app necesita video con IA y prefieres una API con varios modelos y saldo prepagado en dólares"
+      ],
+      "evitarCuando": [
+        "Necesitas uso comercial gratis: el plan gratis no lo incluye",
+        "Buscas el precio más bajo de un modelo concreto: compáralo con el proveedor original o con fal"
+      ],
+      "fuerte": [
+        "La API cobra por generación sin suscripción; las fallidas no se cobran y el gasto se detiene en saldo cero",
+        "Licencia comercial de lo generado por la API",
+        "Modelos propios (Soul, DoP) que no están en otros agregadores"
+      ],
+      "debil": [
+        "Plataforma web y API son productos separados: los créditos del plan no sirven para la API",
+        "El saldo de la API vence un año después de recargarlo"
+      ],
+      "gratis": "Plan Free de 0 USD con 0 créditos y algunas generaciones gratis de herramientas puntuales; sin uso comercial. La API no tiene plan gratis (no verificado si regala saldo inicial).",
+      "precio": "Web: Starter 19 USD/mes (270 créditos), Plus 47 USD/mes (1.200), Ultra 99 USD/mes (3.000), facturación anual; equipos desde 65 USD por puesto/mes. API: saldo prepagado en USD, video por segundo de salida ('desde unos centavos por segundo') e imagen por imagen; tarifa por modelo en open.higgsfield.ai.",
+      "usoComercialGratis": false,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python"
+      ],
+      "mcp": "MCP oficial de Higgsfield (usa créditos del plan, no de la API); endpoint no verificado",
+      "fuente": "https://higgsfield.ai/pricing ; https://higgsfield.ai/blog/higgsfield-api",
+      "verificado": "2026-10-24",
+      "empresa": "higgsfield"
+    },
+    {
+      "id": "magnific",
+      "nombre": "Magnific (antes Freepik) y su API",
+      "categoria": "ia-media",
+      "especialidad": "Freepik cambió su nombre a Magnific: suite de IA con el famoso upscaler Magnific, generación de imagen (Mystic, FLUX), video, edición (quitar fondo, filtros) y banco de recursos, todo también por API (antes 'Freepik API').",
+      "rasgos": [
+        "upscale",
+        "generacion-imagenes",
+        "edicion-imagenes",
+        "generacion-video",
+        "interfaz-web",
+        "api-generativa",
+        "multi-modelo",
+        "creditos-prepago",
+        "uso-comercial-salidas",
+        "mcp-oficial"
+      ],
+      "usarCuando": [
+        "Necesitas ampliar y mejorar fotos (upscale) con mucho detalle",
+        "Quieres generación de imagen y quitar fondos en la misma API, más un banco de stock"
+      ],
+      "evitarCuando": [
+        "Solo necesitas un modelo barato de imagen: el proveedor original o un agregador puede costar menos",
+        "Necesitas precios del upscaler por API cerrados antes de empezar (no los pude verificar)"
+      ],
+      "fuerte": [
+        "Upscaler de referencia en el mercado",
+        "Planes con licencia comercial de IA",
+        "Una sola cuenta cubre stock, edición, imagen y video"
+      ],
+      "debil": [
+        "El cambio de marca Freepik→Magnific puede confundir: dominios y documentación antiguos redirigen a magnific.com",
+        "Precio del upscaler por API no publicado en la página de precios revisada"
+      ],
+      "gratis": "no verificado (la página de planes menciona un plan Free, sin detalle confirmado)",
+      "precio": "Planes web (promo octubre 2026, facturación anual): Premium 7,25 USD/mes (normal 20 USD), Premium+ 33,75 USD/mes (normal 45), Pro Starter 82,50 USD/mes (normal 110). API por créditos: Mystic 1K 0,069 USD, 2K 0,119 USD, 4K 0,38 USD por imagen; FLUX 2 Pro 0,036 USD; FLUX 2 Turbo 0,01 USD; FLUX Dev 0,012 USD.",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python"
+      ],
+      "mcp": "MCP oficial anunciado en https://www.magnific.com/api (usa créditos del plan); endpoint no verificado",
+      "fuente": "https://www.magnific.com/api ; https://www.magnific.com/api/pricing ; https://www.magnific.com/pricing",
+      "verificado": "2026-10-24",
+      "empresa": "magnific"
+    },
+    {
+      "id": "apimart",
+      "nombre": "APIMart",
+      "categoria": "ia-media",
+      "especialidad": "AGREGADOR (revendedor) con más de 190 modelos de chat, imagen, video y audio (Veo, Kling, Seedance, Nano Banana, GPT Image, Claude, Gemini) detrás de una API compatible con OpenAI, con precios que dice ser 20% menores al oficial.",
+      "rasgos": [
+        "multi-modelo",
+        "gateway-modelos",
+        "api-generativa",
+        "generacion-imagenes",
+        "generacion-video",
+        "ia-llm",
+        "presupuesto-bajo"
+      ],
+      "usarCuando": [
+        "Prototipo personal donde el precio pesa más que la confiabilidad",
+        "Quieres probar muchos modelos con una sola clave compatible con OpenAI"
+      ],
+      "evitarCuando": [
+        "Tu app va a producción con clientes: es un intermediario pequeño con poca reputación verificable",
+        "Vas a revender o empaquetar el servicio: sus términos prohíben revender o 'white-label' sin autorización",
+        "Necesitas soporte o garantías de proveedor directo"
+      ],
+      "fuerte": [
+        "Una API con muchos modelos de video e imagen",
+        "Dice cobrar solo solicitudes exitosas",
+        "Reembolso del saldo no usado dentro de 7 días tras la recarga"
+      ],
+      "debil": [
+        "Opera APIMART PTE. LTD. (Singapur); afirma usar rutas 'oficiales y autorizadas' pero no lo pude confirmar con los proveedores",
+        "Trustpilot: solo 3 reseñas en 12 meses, una se queja de precios engañosos",
+        "Lo consumido y los créditos promocionales no se reembolsan"
+      ],
+      "gratis": "Registro gratis; créditos gratis no verificados",
+      "precio": "Pago por uso sin mínimos; cada modelo a un precio que declara 20% bajo el oficial, hasta 28% con membresías Platinum/Diamond. Cifras por modelo no verificadas.",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python"
+      ],
+      "mcp": null,
+      "fuente": "https://apimart.ai ; https://apimart.ai/terms",
+      "verificado": "2026-10-24",
+      "empresa": "apimart",
+      "aviso": "evitar-en-nuevos"
+    },
+    {
+      "id": "fal",
+      "nombre": "fal.ai",
+      "categoria": "ia-media",
+      "especialidad": "AGREGADOR e infraestructura para medios generativos: más de 1.000 modelos de imagen, video, audio y 3D (FLUX, Kling, Seedance, ElevenLabs, etc.) en GPUs sin servidor, con cola para trabajos largos.",
+      "rasgos": [
+        "multi-modelo",
+        "api-generativa",
+        "generacion-imagenes",
+        "generacion-video",
+        "edicion-imagenes",
+        "upscale",
+        "voz-sintetica",
+        "gpu",
+        "mcp-oficial"
+      ],
+      "usarCuando": [
+        "Tu app necesita imagen y video con IA y quieres cambiar de modelo sin cambiar de proveedor",
+        "Quieres un precio por imagen o por segundo de video, sin suscripción",
+        "Vas a desplegar un modelo propio en GPU por hora"
+      ],
+      "evitarCuando": [
+        "Necesitas una interfaz sin código para usuarios finales",
+        "Necesitas la licencia de cada modelo resuelta: depende del modelo, revísala modelo por modelo"
+      ],
+      "fuerte": [
+        "Catálogo enorme y rápido de modelos nuevos",
+        "Precios publicados por modelo (por megapíxel, imagen o segundo)",
+        "MCP oficial alojado"
+      ],
+      "debil": [
+        "Plan gratis o créditos de bienvenida no confirmados",
+        "La licencia comercial depende del modelo elegido (no verificada en la página de precios)"
+      ],
+      "gratis": "no verificado",
+      "precio": "Pago por uso. Ejemplos: FLUX.1 [schnell] 0,003 USD por megapíxel; Kling 2.5 turbo/pro 0,07 USD por segundo; Kling 3 Pro texto/imagen a video 0,14 USD por segundo. GPUs dedicadas desde 2,49 USD/hora (H100) hasta 12,99 USD/hora (B300).",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python",
+        "workers"
+      ],
+      "mcp": "https://mcp.fal.ai/mcp",
+      "fuente": "https://fal.ai/pricing ; https://fal.ai/mcp",
+      "verificado": "2026-10-24",
+      "empresa": "fal",
+      "porDefecto": true
+    },
+    {
+      "id": "replicate",
+      "nombre": "Replicate (parte de Cloudflare)",
+      "categoria": "ia-media",
+      "especialidad": "AGREGADOR con decenas de miles de modelos abiertos y comerciales (FLUX, Ideogram, Recraft, Wan…) ejecutables por API; también despliega modelos propios. Cloudflare lo compró: anunciado el 17-nov-2025 y ya es 'oficialmente parte de Cloudflare'.",
+      "rasgos": [
+        "multi-modelo",
+        "api-generativa",
+        "generacion-imagenes",
+        "generacion-video",
+        "gpu",
+        "mcp-oficial"
+      ],
+      "usarCuando": [
+        "Quieres el catálogo más amplio de modelos abiertos",
+        "Necesitas correr un modelo propio o un ajuste fino sin administrar servidores",
+        "Tu app ya vive en Cloudflare"
+      ],
+      "evitarCuando": [
+        "Necesitas costos 100% previsibles con modelos privados: se cobra todo el tiempo que la instancia está encendida",
+        "Buscas interfaz sin código"
+      ],
+      "fuerte": [
+        "Precios por imagen o por segundo publicados por modelo",
+        "MCP oficial local y alojado",
+        "Respaldo de Cloudflare"
+      ],
+      "debil": [
+        "Tras la compra la plataforma se integra a Cloudflare; puede haber cambios de producto",
+        "Sin plan gratis indicado en la página de precios"
+      ],
+      "gratis": "no verificado (la página de precios no menciona plan gratis)",
+      "precio": "Pago por uso. Ejemplos: flux-1.1-pro 0,04 USD/imagen; flux-dev 0,025 USD/imagen; flux-schnell 3 USD por mil imágenes; ideogram-v3-quality 0,09 USD/imagen; wan-2.1 imagen a video 720p 0,25 USD por segundo. Hardware por segundo: T4 0,000225 USD/s, H100 0,001525 USD/s.",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python",
+        "workers"
+      ],
+      "mcp": "https://mcp.replicate.com (paquete npm replicate-mcp)",
+      "fuente": "https://replicate.com/pricing ; https://blog.cloudflare.com/why-replicate-joining-cloudflare/",
+      "verificado": "2026-10-24",
+      "empresa": "replicate"
+    },
+    {
+      "id": "runway-api",
+      "nombre": "Runway API",
+      "categoria": "ia-media",
+      "especialidad": "Proveedor directo de video con IA (Gen-4.5, Gen-4 Turbo, Aleph para editar video) e imagen (Gen-4 Image) por API con créditos.",
+      "rasgos": [
+        "generacion-video",
+        "generacion-imagenes",
+        "edicion-imagenes",
+        "api-generativa",
+        "interfaz-web",
+        "creditos-prepago",
+        "mcp-oficial"
+      ],
+      "usarCuando": [
+        "Necesitas video cinematográfico de alta calidad o editar un video existente con texto (Aleph)",
+        "Quieres un proveedor directo con precio por segundo claro"
+      ],
+      "evitarCuando": [
+        "El presupuesto es mínimo: Gen-4.5 cuesta 0,12 USD por segundo",
+        "Necesitas un plan gratis para probar por API (no verificado)"
+      ],
+      "fuerte": [
+        "Precio simple: 1 crédito = 0,01 USD",
+        "Gen-4 Turbo barato para borradores (0,05 USD/s)",
+        "MCP oficial"
+      ],
+      "debil": [
+        "Aleph cobra 28 créditos por segundo con mínimo de 56 créditos por generación",
+        "Créditos gratis y compra mínima no verificados"
+      ],
+      "gratis": "no verificado",
+      "precio": "0,01 USD por crédito. Gen-4.5: 12 créditos/s; Gen-4 Turbo: 5 créditos/s; Aleph 2: 28 créditos/s (mínimo 56); Gen-4 Image: 5 créditos (720p) u 8 (1080p) por imagen; Gen-4 Image Turbo: 2 créditos por imagen.",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python"
+      ],
+      "mcp": "https://mcp.runwayml.com/mcp",
+      "fuente": "https://docs.dev.runwayml.com/guides/pricing/ ; https://help.runwayml.com/hc/en-us/articles/51931843164691-Connecting-to-Runway-MCP",
+      "verificado": "2026-10-24",
+      "empresa": "runway-api"
+    },
+    {
+      "id": "kling-api",
+      "nombre": "Kling API (oficial, Kuaishou)",
+      "categoria": "ia-media",
+      "especialidad": "Proveedor directo de video con IA (Kling 3.0, Omni, con audio nativo, avatar, lip sync, efectos) e imagen (Kling Image 3.0) por paquetes prepagados.",
+      "rasgos": [
+        "generacion-video",
+        "generacion-imagenes",
+        "avatares-video",
+        "api-generativa",
+        "creditos-prepago"
+      ],
+      "usarCuando": [
+        "Ya tienes volumen alto de video y te conviene comprar directo al fabricante",
+        "Necesitas funciones de comercio (videos de producto, prenda en modelo)"
+      ],
+      "evitarCuando": [
+        "Eres principiante o estás probando: el paquete de video más chico cuesta 700 USD y vence en 180 días; usa Kling vía fal, Higgsfield o Ideogram",
+        "Necesitas Kling 4.0: aún no está disponible por API (solo precios de vista previa)"
+      ],
+      "fuerte": [
+        "Video con audio nativo y 4K",
+        "Precio por segundo claro en unidades",
+        "Soluciones de e-commerce listas"
+      ],
+      "debil": [
+        "Barrera de entrada alta: paquetes de 700 USD (video) y 350 USD (imagen)",
+        "Saldo vence a los 180 días sin renovación"
+      ],
+      "gratis": "Existe un paquete 'General (Trial)' cuyo contenido no pude verificar",
+      "precio": "Video: 1 unidad = 0,14 USD (paquete desde 700 USD por 5.000 unidades, 20 concurrencias, 180 días). Kling 3.0 sin audio 0,6 u/s (720p), 0,8 u/s (1080p), 3 u/s (4K); con audio 0,9/1,2 u/s; Kling 3.0 Turbo con audio 0,8/1,0 u/s; Avatar 0,4/0,8 u/s. Imagen: 1 unidad = 0,0035 USD (desde 350 USD), Kling Image 3.0 8 unidades por imagen.",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python"
+      ],
+      "mcp": null,
+      "fuente": "https://kling.ai/dev/pricing",
+      "verificado": "2026-10-24",
+      "empresa": "kling-api"
+    },
+    {
+      "id": "luma-api",
+      "nombre": "Luma AI API (Dream Machine)",
+      "categoria": "ia-media",
+      "especialidad": "Proveedor directo de video con IA (Ray3.2: texto/imagen a video, video a video, reencuadre) con salida SDR, HDR y EXR, más la app web Dream Machine.",
+      "rasgos": [
+        "generacion-video",
+        "generacion-imagenes",
+        "api-generativa",
+        "interfaz-web"
+      ],
+      "usarCuando": [
+        "Necesitas clips cortos con precio fijo por video de 5 o 10 segundos",
+        "Necesitas HDR o reencuadrar un video existente"
+      ],
+      "evitarCuando": [
+        "Necesitas 1080p barato: 10 s en 1080p cuesta 3,60 USD",
+        "Buscas un plan gratis por API (no verificado)"
+      ],
+      "fuerte": [
+        "Precio claro por clip y resolución",
+        "540p muy barato para prototipos (0,15 USD por 5 s)",
+        "Opciones HDR para producción"
+      ],
+      "debil": [
+        "HDR cuesta el doble y HDR+EXR el triple",
+        "Precios de imagen (Uni-1.1) y licencia comercial por API no verificados"
+      ],
+      "gratis": "no verificado",
+      "precio": "Ray3.2 SDR, texto/imagen a video: 5 s = 0,15 USD (540p), 0,30 (720p), 1,20 (1080p); 10 s = 0,45 / 0,90 / 3,60 USD. Video a video 5 s: 0,72 / 1,44 / 2,16 USD. Reencuadre por segundo: 0,06 / 0,12 / 0,36 USD. App web: plan Pro 90 USD/mes.",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python"
+      ],
+      "mcp": null,
+      "fuente": "https://lumalabs.ai/api ; https://lumalabs.ai/pricing",
+      "verificado": "2026-10-24",
+      "empresa": "luma-api"
+    },
+    {
+      "id": "google-imagen-veo",
+      "nombre": "Google Gemini API / Vertex AI (Nano Banana, Imagen, Veo)",
+      "categoria": "ia-media",
+      "especialidad": "Proveedor directo: imagen con los modelos Gemini 'Nano Banana' (generar y editar con texto, buen texto dentro de la imagen) e Imagen; video con Veo 3.1 (con audio sincronizado) vía Gemini API o Vertex AI.",
+      "rasgos": [
+        "generacion-imagenes",
+        "edicion-imagenes",
+        "generacion-video",
+        "api-generativa",
+        "interfaz-web",
+        "enterprise-cumplimiento"
+      ],
+      "usarCuando": [
+        "Necesitas editar imágenes con instrucciones en lenguaje natural y consistencia de personaje",
+        "Ya usas Gemini o Google Cloud en tu app",
+        "Necesitas video con voz y efectos de sonido generados"
+      ],
+      "evitarCuando": [
+        "Quieres generar imágenes gratis por API: los modelos de imagen no están en el nivel gratis (solo se prueban en AI Studio)",
+        "Necesitas precios de Veo en la Gemini API confirmados (no los pude verificar)"
+      ],
+      "fuerte": [
+        "Nano Banana 2.1 a 0,0336 USD por imagen 1K y la mitad en lote (batch)",
+        "Edición conversacional y texto legible en imágenes",
+        "En el nivel pago los datos no se usan para mejorar productos"
+      ],
+      "debil": [
+        "Sin nivel gratis para imagen por API",
+        "Dos consolas (AI Studio y Vertex) con precios y nombres que cambian seguido"
+      ],
+      "gratis": "Modelos de imagen: 'Not available' en el nivel gratis de la Gemini API; se pueden probar en Google AI Studio. Veo en nivel gratis: no verificado.",
+      "precio": "Gemini API por imagen (estándar): Nano Banana 2.1 0,0336 USD (1K), 0,0504 (2K), 0,113 (4K); Nano Banana 2 (3.1 Flash Image) 0,067 (1K), 0,151 (4K); Nano Banana Pro 0,134 (1K/2K), 0,24 (4K); Nano Banana 2.5 Flash 0,039. Lote: 50% menos. Vertex AI lista Veo 3.1 a 0,40 USD con audio y 0,20 sin audio 'por unidad' (unidad no verificada, probablemente por segundo); Veo 3.1 Fast 0,10/0,08.",
+      "usoComercialGratis": false,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python",
+        "workers"
+      ],
+      "mcp": null,
+      "fuente": "https://ai.google.dev/gemini-api/docs/pricing ; https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing",
+      "verificado": "2026-10-24",
+      "empresa": "google"
+    },
+    {
+      "id": "openai-imagenes",
+      "nombre": "OpenAI API (GPT Image)",
+      "categoria": "ia-media",
+      "especialidad": "Proveedor directo de generación y edición de imágenes con los modelos gpt-image-2, gpt-image-2.5 (Flare y Sunburst). OJO: la API de video Sora se cerró el 24-sep-2026; ya no hay video por API de OpenAI.",
+      "rasgos": [
+        "generacion-imagenes",
+        "edicion-imagenes",
+        "api-generativa"
+      ],
+      "usarCuando": [
+        "Ya usas la API de OpenAI y quieres imágenes y edición con la misma clave",
+        "Necesitas que el modelo siga instrucciones largas y escriba texto en la imagen"
+      ],
+      "evitarCuando": [
+        "Necesitas video: Sora (web/app) cerró el 26-abr-2026 y su API el 24-sep-2026",
+        "Quieres precio fijo por imagen: se cobra por tokens"
+      ],
+      "fuerte": [
+        "Generar y editar en el mismo modelo",
+        "Integración sencilla si ya usas OpenAI"
+      ],
+      "debil": [
+        "Cobro por tokens: el costo por imagen varía con tamaño y calidad",
+        "Sin video por API"
+      ],
+      "gratis": "no verificado",
+      "precio": "GPT-Image-2.5 (Flare y Sunburst): imagen 8 USD por millón de tokens de entrada, 2 USD en caché y 30 USD por millón de tokens de salida; texto 5 USD por millón de entrada. Precio por imagen según tamaño/calidad no publicado en la página revisada.",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python",
+        "workers"
+      ],
+      "mcp": null,
+      "fuente": "https://developers.openai.com/api/docs/pricing ; https://help.openai.com/en/articles/20001152-what-to-know-about-the-sora-discontinuation",
+      "verificado": "2026-10-24",
+      "empresa": "openai-api"
+    },
+    {
+      "id": "black-forest-labs",
+      "nombre": "Black Forest Labs (FLUX API)",
+      "categoria": "ia-media",
+      "especialidad": "Creador de los modelos FLUX: API directa de imagen (FLUX 3 Image, Klein, FLUX.2 pro/flex/max) y herramientas (outpainting, borrador, prueba virtual de ropa), además de FLUX 3 video y licencias para pesos abiertos.",
+      "rasgos": [
+        "generacion-imagenes",
+        "edicion-imagenes",
+        "generacion-video",
+        "api-generativa",
+        "creditos-prepago",
+        "presupuesto-bajo"
+      ],
+      "usarCuando": [
+        "Quieres imágenes fotorrealistas a buen precio directo del fabricante",
+        "Necesitas imágenes muy baratas en volumen (Klein desde 0,008 USD)",
+        "Quieres alojar los pesos abiertos con licencia"
+      ],
+      "evitarCuando": [
+        "Necesitas video maduro con audio: hay opciones más probadas",
+        "Necesitas confirmar la licencia comercial de las salidas antes de empezar (no verificada)"
+      ],
+      "fuerte": [
+        "FLUX 3 Image Klein: 0,009 USD por imagen 1K",
+        "Herramientas de edición en la misma API",
+        "Los mismos modelos se consiguen también en fal y Replicate"
+      ],
+      "debil": [
+        "4K caro con FLUX 3 Image (0,607 USD)",
+        "Créditos gratis y precio por crédito no verificados"
+      ],
+      "gratis": "no verificado",
+      "precio": "Créditos de pago por uso. FLUX 3 Image: 0,041 USD (768²), 0,048 (1K), 0,07 (1,5K), 0,10 (2K), 0,607 (4K) por imagen. FLUX 3 Image Klein: 0,008 / 0,009 / 0,011 / 0,014 / 0,036 USD.",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python"
+      ],
+      "mcp": null,
+      "fuente": "https://bfl.ai/pricing",
+      "verificado": "2026-10-24",
+      "empresa": "black-forest-labs"
+    },
+    {
+      "id": "ideogram",
+      "nombre": "Ideogram",
+      "categoria": "ia-media",
+      "especialidad": "Proveedor directo de imagen fuerte en texto dentro de la imagen, logos y diseño (Ideogram 4.5/4.0, SVG vectorial, fondo transparente); su API ahora también revende Nano Banana, GPT Image, Seedance, MiniMax, Kling y upscale Topaz.",
+      "rasgos": [
+        "generacion-imagenes",
+        "edicion-imagenes",
+        "upscale",
+        "generacion-video",
+        "api-generativa",
+        "multi-modelo",
+        "interfaz-web",
+        "creditos-prepago",
+        "uso-comercial-salidas"
+      ],
+      "usarCuando": [
+        "Tu app genera piezas con texto legible: pósters, anuncios, logos, miniaturas",
+        "Necesitas SVG vectorial o fondo transparente por API",
+        "Quieres pago por uso desde 0,01 USD por crédito"
+      ],
+      "evitarCuando": [
+        "Necesitas privacidad en el plan gratis: las imágenes se publican por defecto",
+        "Necesitas pagar con PayPal: solo tarjeta vía Stripe"
+      ],
+      "fuerte": [
+        "Muy bueno para tipografía en imágenes",
+        "Edición, reencuadre y cambio de fondo al mismo precio que generar",
+        "Declara que no reclama propiedad de lo generado y permite uso comercial"
+      ],
+      "debil": [
+        "Límite por defecto de 10 solicitudes simultáneas",
+        "Precios pueden cambiar con aviso de 14 días"
+      ],
+      "gratis": "Cuentas gratis elegibles reciben créditos semanales (cantidad variable) en la web; sin prueba gratis de planes. API: pago por uso.",
+      "precio": "API por imagen: Ideogram 4.5 Low 0,03 USD, Medium 0,06, High 0,10 (1K/2K); 4.0 Turbo 0,03, Default 0,06, Quality 0,10; quitar fondo 0,01; SVG desde 0,13; upscale Topaz 0,03-0,09 USD por megapíxel; entrenar modelo propio 40 USD. Web: Plus 15 USD/mes (anual), Pro 42 USD/mes, crédito suelto 0,01 USD.",
+      "usoComercialGratis": true,
+      "latam": "Pago con tarjeta internacional vía Stripe; región no verificada",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python"
+      ],
+      "mcp": null,
+      "fuente": "https://ideogram.ai/pricing/?pricing_tab=api",
+      "verificado": "2026-10-24",
+      "empresa": "ideogram"
+    },
+    {
+      "id": "leonardo",
+      "nombre": "Leonardo.Ai (de Canva)",
+      "categoria": "ia-media",
+      "especialidad": "Plataforma web y API de imagen, video, 3D y audio que integra modelos propios y de terceros (Seedance 2.5, Kling 3.0 Turbo, GPT-Image-2, Nano Banana 2). Pertenece a Canva.",
+      "rasgos": [
+        "generacion-imagenes",
+        "generacion-video",
+        "edicion-imagenes",
+        "interfaz-web",
+        "api-generativa",
+        "multi-modelo",
+        "uso-comercial-salidas"
+      ],
+      "usarCuando": [
+        "Quieres probar gratis con tokens diarios y luego integrar la misma herramienta por API",
+        "Necesitas imagen y video de varios modelos desde una sola cuenta"
+      ],
+      "evitarCuando": [
+        "Quieres ser dueño de lo generado sin pagar: en el plan gratis Leonardo conserva los derechos y tú recibes licencia no exclusiva",
+        "Necesitas precios por API publicados con claridad (no verificados)"
+      ],
+      "fuerte": [
+        "150 tokens diarios gratis en la web",
+        "Uso comercial permitido incluso en el plan gratis (licencia no exclusiva)",
+        "Respaldo de Canva"
+      ],
+      "debil": [
+        "Tarifas de la API pago por uso no visibles en la página revisada",
+        "En el plan gratis la propiedad de las imágenes es de Leonardo"
+      ],
+      "gratis": "Web: 150 tokens por día. API: pago por uso o plan personalizado; créditos de prueba no verificados.",
+      "precio": "API: modalidad pago por uso y 'API Custom'; cifras no verificadas.",
+      "usoComercialGratis": true,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python"
+      ],
+      "mcp": null,
+      "fuente": "https://leonardo.ai/pricing ; https://leonardo.ai/api",
+      "verificado": "2026-10-24",
+      "empresa": "leonardo"
+    },
+    {
+      "id": "elevenlabs",
+      "nombre": "ElevenLabs",
+      "categoria": "ia-media",
+      "especialidad": "Proveedor directo de voz con IA: texto a voz multilingüe (incluye español), clonación de voz, efectos de sonido y música por API.",
+      "rasgos": [
+        "voz-sintetica",
+        "musica-ia",
+        "api-generativa",
+        "interfaz-web",
+        "uso-comercial-salidas",
+        "mcp-oficial"
+      ],
+      "usarCuando": [
+        "Tu app necesita narración, doblaje o voces de personajes con calidad alta",
+        "Quieres clonar una voz (desde el plan Starter)",
+        "Necesitas música generada por API"
+      ],
+      "evitarCuando": [
+        "Vas a publicar algo comercial con el plan gratis: no incluye licencia comercial",
+        "Necesitas el TTS más barato posible en volumen: compara con Gemini TTS"
+      ],
+      "fuerte": [
+        "Voces muy naturales y multilingües",
+        "Flash/Turbo a mitad de precio para baja latencia",
+        "MCP oficial (local y remoto)"
+      ],
+      "debil": [
+        "El plan gratis no permite uso comercial",
+        "Tarifas por carácter suben rápido con mucho texto"
+      ],
+      "gratis": "10.000 créditos al mes, sin licencia comercial",
+      "precio": "Planes: Starter 6 USD/mes (primer mes 1 USD; incluye licencia comercial y clonación instantánea), Creator 22 USD/mes, Pro 99, Scale 299, Business 990. API: texto a voz 0,08 USD por 1.000 caracteres (multilingüe) o 0,04 USD (Flash/Turbo); música 0,15 USD por minuto.",
+      "usoComercialGratis": false,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python"
+      ],
+      "mcp": "https://api.elevenlabs.io/v1/mcp (remoto) ; paquete elevenlabs-mcp (github.com/elevenlabs/elevenlabs-mcp)",
+      "fuente": "https://elevenlabs.io/pricing ; https://elevenlabs.io/pricing/api ; https://elevenlabs.io/mcp",
+      "verificado": "2026-10-24",
+      "empresa": "elevenlabs"
+    },
+    {
+      "id": "heygen",
+      "nombre": "HeyGen",
+      "categoria": "ia-media",
+      "especialidad": "Proveedor directo de videos con avatares que hablan (gemelo digital, avatar de estudio o desde foto), traducción y doblaje con lip sync, por web y API de pago por uso.",
+      "rasgos": [
+        "avatares-video",
+        "voz-sintetica",
+        "generacion-video",
+        "api-generativa",
+        "interfaz-web",
+        "creditos-prepago",
+        "mcp-oficial"
+      ],
+      "usarCuando": [
+        "Tu app produce videos de presentador (cursos, ventas, onboarding) a partir de un guion",
+        "Necesitas traducir videos con sincronía de labios"
+      ],
+      "evitarCuando": [
+        "Quieres probar gratis por API: desde febrero 2026 no hay créditos gratis de API",
+        "Necesitas muchos minutos con Avatar IV/V: 4,83 a 7,20 USD por minuto"
+      ],
+      "fuerte": [
+        "Pago por uso desde 5 USD, sin suscripción para la API",
+        "Avatar III barato (0,60-0,99 USD/min)",
+        "MCP remoto oficial con OAuth"
+      ],
+      "debil": [
+        "Avatares de última generación caros por minuto",
+        "El MCP usa el plan web y créditos premium, no el saldo de la API"
+      ],
+      "gratis": "Sin créditos gratis de API desde feb-2026; mínimo para empezar 5 USD. Modelo de voz 'turbo-free' sin costo con límites compartidos.",
+      "precio": "API pago por uso (1 crédito ≈ 0,05 USD): Avatar V gemelo digital 7,20 USD/min; Avatar IV 4,83 USD/min (gemelo o estudio), 2,31 USD/min (foto); Avatar III 0,60-0,99 USD/min; voz (TTS) 0,12 USD/min. Planes web: Pro desde 49 USD/mes.",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python"
+      ],
+      "mcp": "https://mcp.heygen.com/mcp/v1/",
+      "fuente": "https://help.heygen.com/en/articles/10060327-heygen-api-pricing-explained ; https://developers.heygen.com/mcp/overview ; https://www.heygen.com/faq",
+      "verificado": "2026-10-24",
+      "empresa": "heygen"
+    },
+    {
+      "id": "hedra",
+      "nombre": "Hedra",
+      "categoria": "ia-media",
+      "especialidad": "Proveedor directo de video de personajes que hablan (Character 3, omnimodal: imagen + audio a video) con API de pago por uso y estudio web; su API también ofrece otros modelos de video, imagen, audio y LLM.",
+      "rasgos": [
+        "avatares-video",
+        "generacion-video",
+        "api-generativa",
+        "interfaz-web",
+        "multi-modelo"
+      ],
+      "usarCuando": [
+        "Necesitas animar un personaje o foto que habla con un audio, a bajo costo por segundo",
+        "Quieres pago por uso sin suscripción ni mínimo"
+      ],
+      "evitarCuando": [
+        "Necesitas un flujo empresarial de presentador con traducción: HeyGen o Synthesia lo cubren mejor",
+        "Necesitas licencia comercial confirmada en plan gratis (no verificada)"
+      ],
+      "fuerte": [
+        "Character 3 desde 0,025 USD por segundo (540p)",
+        "Sin suscripción, puestos ni mínimo en la API"
+      ],
+      "debil": [
+        "Plan gratis y licencia no verificados",
+        "Marca menos conocida para clientes corporativos"
+      ],
+      "gratis": "no verificado",
+      "precio": "Character 3: 0,025 USD/s (540p), 0,05 USD/s (720p), 0,0625 USD/s (1080p). Estudio web desde 20 USD/mes.",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python"
+      ],
+      "mcp": null,
+      "fuente": "https://www.hedra.com/pricing ; https://www.hedra.com/models/video/hedra/character-3",
+      "verificado": "2026-10-24",
+      "empresa": "hedra"
+    },
+    {
+      "id": "synthesia",
+      "nombre": "Synthesia",
+      "categoria": "ia-media",
+      "especialidad": "Plataforma empresarial de videos con avatares para formación y comunicación interna, con más de 140 idiomas; API limitada a planes Pro y Enterprise.",
+      "rasgos": [
+        "avatares-video",
+        "voz-sintetica",
+        "interfaz-web",
+        "api-generativa",
+        "enterprise-cumplimiento"
+      ],
+      "usarCuando": [
+        "Una empresa necesita videos de capacitación en muchos idiomas sin grabar",
+        "Necesitas avatares interactivos o doblaje por API a precio por minuto"
+      ],
+      "evitarCuando": [
+        "Quieres API en un plan barato: Starter no la incluye",
+        "Tu app genera mucho video por API: Pro limita a 360 minutos al año"
+      ],
+      "fuerte": [
+        "Plan gratis con 10 minutos al mes",
+        "Avatares interactivos por API desde 0,10 USD/min",
+        "Orientado a empresas"
+      ],
+      "debil": [
+        "El plan gratis pone marca de agua",
+        "Minutos de API descontados del mismo saldo del plan"
+      ],
+      "gratis": "Basic 0 USD: 10 minutos de video o doblaje al mes + 500 créditos, con marca de agua; sin API.",
+      "precio": "Starter 19 USD/mes (14 anual), Pro 89 USD/mes (59 anual, API hasta 360 min/año), Enterprise a medida. API: avatares interactivos 0,10 USD/min (solo avatar) o 0,20 USD/min (avatar + voz + LLM); doblaje 0,40 USD/min (voz) u 0,80 USD/min (con lip sync).",
+      "usoComercialGratis": null,
+      "latam": "no verificado",
+      "compatibleCon": [
+        "nextjs",
+        "node",
+        "python"
+      ],
+      "mcp": null,
+      "fuente": "https://www.synthesia.io/pricing",
+      "verificado": "2026-10-24",
+      "empresa": "synthesia"
     },
     {
       "id": "sentry",

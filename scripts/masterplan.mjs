@@ -443,13 +443,15 @@ const ANCLAS = {
   imagenes: ['transformacion-imagenes'],
   'cdn-dns': [],
   correo: ['correo-transaccional', 'correo-masivo'],
-  mensajeria: ['whatsapp', 'sms', 'push'],
+  mensajeria: ['whatsapp', 'sms', 'push', 'api-whatsapp-oficial'],
+  chatbots: ['omnicanal', 'bandeja-compartida', 'chatbot-no-code', 'chatbot-ia', 'crm-ventas', 'campanas-masivas', 'pos-ecommerce', 'instagram-dm', 'messenger', 'tiktok-dm'],
   'tiempo-real': ['presencia', 'colaboracion-multiusuario', 'pubsub', 'websockets'],
   trabajos: ['worker-cola', 'cron', 'reintentos', 'workflows-durables', 'cola-simple', 'programador'],
   'cache-kv': [],
   busqueda: ['busqueda-texto', 'busqueda-tolerante-errores'],
   vectores: ['busqueda-semantica', 'embeddings'],
   'ia-modelos': ['ia-llm', 'gateway-modelos'],
+  'ia-media': ['generacion-imagenes', 'edicion-imagenes', 'upscale', 'generacion-video', 'avatares-video', 'voz-sintetica', 'musica-ia'],
   observabilidad: ['errores', 'logs', 'uptime', 'trazas'],
   analitica: ['analitica-producto', 'analitica-web-privada', 'replays-sesion'],
   cms: ['cms-headless', 'editor-visual', 'cms-self-host'],
@@ -460,7 +462,8 @@ const ANCLAS = {
 }
 const CATEGORIAS = Object.keys(ANCLAS)
 const MODIFICADORES = new Set(['region-latam', 'uso-comercial-gratis', 'presupuesto-cero', 'presupuesto-bajo', 'enterprise-cumplimiento',
-  'self-host', 'escala-a-cero', 'mcp-oficial', 'preview-por-pr', 'monorepo', 'backups-automaticos', 'multi-region', 'cdn-global', 'rls'])
+  'self-host', 'escala-a-cero', 'mcp-oficial', 'preview-por-pr', 'monorepo', 'backups-automaticos', 'multi-region', 'cdn-global', 'rls',
+  'api-generativa', 'multi-modelo', 'interfaz-web', 'creditos-prepago', 'uso-comercial-salidas'])
 const RASGOS = new Set([...Object.values(ANCLAS).flat(), ...MODIFICADORES, 'websockets', 'auth-integrada-db', 'plantillas',
   'workflows-durables', 'cola-simple', 'programador', 'transformacion-imagenes'])
 const CAMPOS_FICHA = ['id', 'nombre', 'categoria', 'especialidad', 'rasgos', 'usarCuando', 'evitarCuando', 'gratis', 'precio', 'fuente', 'verificado']
@@ -513,7 +516,7 @@ function necesidadesDe(args) {
 }
 
 // La ubicación importa donde hay latencia, residencia de datos o medios de pago locales.
-const CATS_REGION = new Set(['hosting-web', 'backend', 'serverless-borde', 'base-de-datos', 'almacenamiento', 'video', 'imagenes', 'cdn-dns', 'pagos', 'mensajeria'])
+const CATS_REGION = new Set(['hosting-web', 'backend', 'serverless-borde', 'base-de-datos', 'almacenamiento', 'video', 'imagenes', 'cdn-dns', 'pagos', 'mensajeria', 'chatbots'])
 
 function puntuarCategoria(lista, cat, nec, pide, otros) {
   const relevantes = [...pide].filter(r => ANCLAS[cat].includes(r) || (MODIFICADORES.has(r) && r !== 'region-latam'))
@@ -543,14 +546,34 @@ function puntuarCategoria(lista, cat, nec, pide, otros) {
   // Empate: gana la opción marcada porDefecto en el catálogo (la más probada para principiantes).
   candidatos.sort((a, b) => b.puntos - a.puntos || a.falta.length - b.falta.length || Number(b.porDefecto) - Number(a.porDefecto) || a.id.localeCompare(b.id))
   const completos = candidatos.filter(c => !c.falta.length)
-  const gana = completos[0] || candidatos[0] || null
+  let gana = completos[0] || null
+  // Nadie cubre todo solo: busca la mejor pareja que juntos lo cubran (mejor si son de la misma empresa).
+  if (!gana && candidatos.length > 1) {
+    const rasgosDe = new Map(lista.filter(x => x.categoria === cat).map(x => [x.id, new Set(x.rasgos || [])]))
+    const necesarios = ANCLAS[cat].filter(r => pide.has(r))
+    let mejor = null
+    for (let i = 0; i < candidatos.length; i++) for (let j = i + 1; j < candidatos.length; j++) {
+      const [a, b] = [candidatos[i], candidatos[j]]
+      if (!necesarios.every(r => rasgosDe.get(a.id).has(r) || rasgosDe.get(b.id).has(r))) continue
+      const juntos = familia(a.id) === familia(b.id)
+      const puntos = a.puntos + b.puntos + (juntos ? 4 : 0)
+      if (!mejor || (juntos && !mejor.juntos) || (juntos === mejor.juntos && puntos > mejor.puntos)) mejor = { a, b, juntos, puntos }
+    }
+    if (mejor) gana = {
+      id: `${mejor.a.id}+${mejor.b.id}`, nombre: `${mejor.a.nombre} + ${mejor.b.nombre}`, puntos: mejor.puntos, falta: [],
+      combo: [mejor.a.id, mejor.b.id], porDefecto: false, especialidad: `${mejor.a.especialidad} / ${mejor.b.especialidad}`,
+      razones: [`juntos cubren: ${necesarios.join(', ')}`, ...(mejor.juntos ? ['misma empresa: se integran entre sí'] : ['dos servicios distintos: confirma que se integran'])],
+    }
+  }
+  gana ||= candidatos[0] || null
+  const enCombo = new Set(gana?.combo || [])
   return {
     categoria: cat,
     pide: ANCLAS[cat].filter(r => pide.has(r)),
     recomendado: gana,
-    alternativas: candidatos.filter(c => c !== gana).slice(0, 2),
-    descartes: [...descartes, ...candidatos.filter(c => c !== gana && c.falta.length).slice(0, 3).map(c => ({ id: c.id, motivo: `no cubre ${c.falta.join(', ')}` }))],
-    sinCobertura: !completos.length,
+    alternativas: candidatos.filter(c => c !== gana && !enCombo.has(c.id)).slice(0, 2),
+    descartes: [...descartes, ...candidatos.filter(c => c !== gana && !enCombo.has(c.id) && c.falta.length).slice(0, 3).map(c => ({ id: c.id, motivo: `no cubre ${c.falta.join(', ')}` }))],
+    sinCobertura: !gana || gana.falta.length > 0,
   }
 }
 
@@ -566,6 +589,18 @@ function recomendar(lista, nec) {
     const igual = nuevo.every((r, i) => r.recomendado?.id === res[i].recomendado?.id)
     res = nuevo
     if (igual) break
+  }
+  // Si la plataforma de chatbots elegida ya conecta WhatsApp (o lo que pida mensajería), no se agrega otra pieza.
+  const chat = res.find(r => r.categoria === 'chatbots')?.recomendado
+  const men = res.find(r => r.categoria === 'mensajeria')
+  if (chat && men && !nec.categorias.includes('mensajeria')) {
+    const ids = chat.combo || [chat.id]
+    const cubre = new Set(lista.filter(p => ids.includes(p.id)).flatMap(p => p.rasgos || []))
+    if (men.pide.every(r => cubre.has(r))) {
+      men.cubiertoPor = chat.nombre
+      men.alternativas = [men.recomendado, ...men.alternativas].filter(Boolean).slice(0, 2)
+      men.recomendado = null
+    }
   }
   return res
 }
@@ -603,6 +638,7 @@ function cmdProveedores([sub, ...args]) {
     if (args.includes('--json')) return console.log(JSON.stringify(r, null, 2))
     for (const c of r) {
       console.log(`\n## ${c.categoria}${c.pide.length ? ` (pide: ${c.pide.join(', ')})` : ''}`)
+      if (c.cubiertoPor) { console.log(`  → ya lo cubre ${c.cubiertoPor}; si igual quieres la API directa: ${c.alternativas.map(a => a.nombre).join(' o ')}`); continue }
       if (!c.recomendado) { console.log('  sin proveedores en el catálogo'); continue }
       console.log(`  → ${c.recomendado.nombre} · ${c.recomendado.razones.join(' · ') || 'opción general'}`)
       for (const a of c.alternativas) console.log(`    alternativa: ${a.nombre} · ${a.razones.join(' · ') || 'opción general'}`)

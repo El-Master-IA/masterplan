@@ -1,7 +1,7 @@
 {
   "name": "masterplan",
   "displayName": "Masterplan",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Construye software desde cero con bases sólidas: te entrevista, diseña frontend, backend, datos, APIs y seguridad, construye paso a paso con un agente por tarea, audita, publica y mantiene. Specs vivas, puertas verificadas por máquina y un mod que conecta tus sesiones para que nada se cargue en una sola conversación. En español.",
   "author": {
     "name": "Alexander Cast · La Bóveda del Master",
