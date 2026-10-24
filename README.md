@@ -33,17 +33,19 @@ cuenta en los servicios que te recomiende para tu proyecto (te dice cuáles y cu
 
 ## Empezar
 
-Abre Claude Code en una carpeta vacía (o en tu proyecto existente) y escribe:
+Abre Claude Code en una carpeta vacía (o en tu proyecto existente) y cuéntale tu idea con tus palabras:
 
 ```
-/masterplan:empezar Quiero un sistema de reservas para barberías
+Quiero construir un sistema de citas para barberías. Hoy los clientes escriben por WhatsApp y se cruzan las horas.
 ```
+
+(El atajo es `/masterplan:empezar <tu idea>`.)
 
 Masterplan lee primero lo que ya hay, te hace **una pregunta a la vez** con su recomendación y
-avanza por fases. Al cerrar cada fase te pide seguir en una **sesión nueva** con:
+avanza por fases. Al cerrar cada fase te pide seguir en una **sesión nueva** diciéndole:
 
 ```
-/masterplan:seguir
+Sigamos con mi proyecto.
 ```
 
 Así ninguna conversación carga todo el proyecto.

@@ -20,7 +20,9 @@ Mira el directorio: `package.json`, `requirements.txt`, `supabase/`, `src/`, `.g
 
 ## 3. Carpeta de contexto
 Si existe `contexto/` (o la persona pegó documentos, capturas, links), léela antes de preguntar:
-brief, referencias visuales, marca, competencia, notas de reuniones. Resume en 5 líneas lo que ya
+brief, referencias visuales, marca, competencia, notas de reuniones. **`contexto/idea.md` es la idea
+contada por la persona en sus palabras** (la guarda el prompt de instalación): úsala como respuesta a
+las preguntas de la fase 1 que ya contesta, y no se la vuelvas a pedir. Resume en 5 líneas lo que ya
 sabes.
 
 ## 4. Crea el contrato

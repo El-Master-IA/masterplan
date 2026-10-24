@@ -121,7 +121,7 @@ Paralelo solo cuando las tareas no tocan los mismos archivos (olas de `tareas.js
 - **Relevo al cerrar cada fase:** escribe `masterplan/relevos/<NN>-<fase>.md` con
   `plantillas/relevo.md` (qué se decidió, qué sigue, qué leer primero). Actualiza `proyecto.json`.
   Luego di: "Fase lista. Para seguir con contexto limpio, abre una sesión nueva en esta carpeta y
-  escribe `/masterplan:seguir`." Fases cortas (1–2) pueden seguir en la misma sesión si el
+  dime: *Sigamos con mi proyecto*." (equivale a `/masterplan:seguir`). Fases cortas (1–2) pueden seguir en la misma sesión si el
   contexto está bajo.
 - **Fase 6 en varias sesiones:** cada ola de tareas puede correr en una sesión propia. Las tareas
   se toman de `tareas.json` (estado `pendiente → en-curso → hecha`), así dos sesiones no toman la
@@ -131,6 +131,12 @@ Paralelo solo cuando las tareas no tocan los mismos archivos (olas de `tareas.js
   registra esta sesión con su fase al empezar, avisa a la sesión de la fase siguiente cuando
   termines y lee el buzón al arrancar. Si no están, todo funciona igual con los archivos de
   `masterplan/relevos/` y `masterplan/buzon/`.
+
+## Lenguaje natural primero
+La persona no tiene que saber comandos. Entiende frases normales y respóndelas como el comando
+equivalente: "sigamos con mi proyecto" → seguir · "¿cómo vamos?" → estado · "quiero agregarle X" →
+cambio · "revisa la seguridad" → auditar · "explícamelo más fácil" / "háblame más técnico" → voz.
+Cuando sugieras el siguiente paso, dalo como frase natural; menciona el comando solo como atajo.
 
 ## Estilo
 

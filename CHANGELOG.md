@@ -1,5 +1,10 @@
 # Cambios
 
+## 1.2.1 · 2026-10-24
+
+- Lenguaje natural primero: "sigamos con mi proyecto", "¿cómo vamos?", "quiero agregarle X" o "revisa la seguridad" funcionan igual que los comandos, y el plugin sugiere el siguiente paso como frase.
+- La fase 0 usa `contexto/idea.md` (la idea en palabras de la persona, que guarda el prompt de instalación) y no la vuelve a preguntar.
+
 ## 1.2.0 · 2026-10-24
 
 - Categoría nueva **chatbots**: Pancake, Botcake, LucidBot, ManyChat, respond.io, Wati, Kommo, Chatwoot, Callbell, Treble, Leadsales y B2Chat. En mensajería: Zernio, 360dialog y Gupshup (API oficial de WhatsApp).
