@@ -195,6 +195,28 @@ claude plugin validate .claude-plugin/plugin.json
 claude --plugin-dir .                         # probar el plugin desde esta carpeta
 ```
 
+## Créditos
+
+Masterplan se construyó con apoyo del trabajo de **Enrique Rocha** ([tododeia.com](https://www.tododeia.com)
+· [@soyenriquerocha](https://www.instagram.com/soyenriquerocha/)), que publica sus plugins de Claude Code
+con licencia MIT. Antes de armarlo estudiamos sus repos y adaptamos varias ideas. Esto es lo que
+tomamos y de dónde:
+
+| Repo de Enrique Rocha | Lo que tomamos |
+|---|---|
+| [the-architect](https://github.com/Hainrixz/the-architect) | La maqueta de todo: entrevistar, diseñar y escribir un plano que otra sesión construye, con Non-Goals, preguntas abiertas, pre-mortem y criterios EARS con un comando de verificación por paso |
+| [claude-seo-ai](https://github.com/Hainrixz/claude-seo-ai) | El "kit de auditor": esquema de hallazgos, dos notas, un solo escritor, arreglos solo con permiso y comparar auditorías |
+| [agente-pagokit](https://github.com/Hainrixz/agente-pagokit) | Validadores que bloquean mientras se escribe, con una excepción que queda registrada |
+| [all-deploy](https://github.com/Hainrixz/all-deploy) | Reglas duras de publicación: vista previa, chequeo de salud y producción, y bloquear si un chequeo no puede correr |
+| [claude-db](https://github.com/Hainrixz/claude-db) | La guardia sobre SQL, la severidad con nivel de confianza y la "siguiente acción más pequeña" |
+| [cyber-neo](https://github.com/Hainrixz/cyber-neo) (autor mhenry, publicado por Tododeia) | La auditoría de solo lectura por dominios en paralelo y la tabla de atajos que no se deben tomar |
+| [claude-webkit](https://github.com/Hainrixz/claude-webkit) | Los puntos de decisión contados y las reglas de diseño negativas verificables |
+
+Lo que cambiamos aquí: construir con un agente por tarea, publicar y mantener, los kits por tipo de
+proyecto, los relevos entre sesiones, el validador del plano y un motor común para auditar
+seguridad, datos, accesibilidad y rendimiento. Si te sirve Masterplan, mira también el trabajo de
+Enrique.
+
 ## Licencia
 
-MIT © 2026 Alexander Cast · La Bóveda del Master. Ver [LICENSE](LICENSE).
+MIT © 2026 Alexander Cast · La Bóveda del Master, con el crédito a Enrique Rocha de arriba. Ver [LICENSE](LICENSE).
