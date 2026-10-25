@@ -33,11 +33,14 @@
           "items": { "type": "string" },
           "description": "Archivos generados por herramientas se escriben con patrón (p. ej. supabase/migrations/…_rls.sql)."
         },
-        "hacer": { "type": "string", "minLength": 10 },
+        "hacer": { "type": "string", "minLength": 10, "maxLength": 600, "description": "Qué hacer y qué decidir. El detalle vive en la spec citada." },
         "criterios": { "type": "array", "minItems": 2, "maxItems": 6, "items": { "$ref": "#/$defs/criterioEars" } },
         "verificar": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
         "checkpoint": { "type": "string", "description": "Comando de commit + tag mp-<id>." },
         "estado": { "enum": ["pendiente", "en-curso", "hecha", "bloqueada"] },
+        "fase_producto": { "enum": ["nucleo", "ampliacion"], "description": "ampliacion = se puede mover a v1.1 sin romper dependencias. Una tarea del núcleo no depende de una ampliación." },
+        "hito": { "const": "visible", "description": "Primer corte que una persona real puede usar. Debe caer en la primera mitad de las olas." },
+        "sesion": { "type": "string", "description": "Lo escribe el conductor al lanzar la tarea en su propia sesión." },
         "motivo": { "type": "string", "description": "Obligatorio en la práctica cuando estado = bloqueada." }
       },
       "if": { "properties": { "estado": { "const": "bloqueada" } } },

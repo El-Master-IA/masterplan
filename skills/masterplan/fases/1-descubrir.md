@@ -33,7 +33,19 @@ capacidades dentro de un tipo.
 
 Di: "Esto es un **<tipo>** porque <señal de sus respuestas>." y espera confirmación.
 
+## Rigor
+Propón el `rigor` del proyecto (una línea, con tu recomendación; la persona lo cambia cuando quiera).
+Controla cuántas vueltas de revisión del plano, cuánta auditoría por tarea y cuánto se rediseña:
+
+| Rigor | Cuándo | Efecto |
+|---|---|---|
+| `bajo` | Herramienta interna o prototipo, hasta ~10 usuarios conocidos, sin cobros ni datos de terceros | 1 vuelta de revisor-plano; revisión y seguridad por ola; solo BLOCKER bloquea |
+| `medio` (defecto) | Producto con usuarios reales externos, sin pagos ni datos sensibles | 2 vueltas; seguridad por tarea de auth/datos/pagos |
+| `alto` | Cobros, datos personales sensibles, salud, finanzas o muchos usuarios | 3 vueltas; revisión y seguridad por tarea |
+
+Guárdalo en `proyecto.json.rigor` y en `decisiones.log`.
+
 ## Puerta
 - [ ] Tipo confirmado por la persona
-- [ ] `proyecto.json`: `tipo`, `audiencia`, `escala`, `etapa`, `restricciones`, `metricaExito`, `fase: 2`
+- [ ] `proyecto.json`: `tipo`, `audiencia`, `escala`, `etapa`, `rigor`, `restricciones`, `metricaExito`, `fase: 2`
 - [ ] Decisiones en `decisiones.log`

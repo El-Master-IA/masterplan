@@ -1,5 +1,17 @@
 # Cambios
 
+## 1.4.0 · 2026-10-25
+
+Construir más rápido sin perder las puertas. Medido en un proyecto real (53 tareas, herramienta interna): 2 h 31 de documentos antes de la primera línea, 22 tareas construidas sin una sola pantalla usable y ~25 min por tarea en serie.
+
+- **Construcción en paralelo, una sesión por tarea.** Comando nuevo `/masterplan:ola` y CLI `masterplan.mjs ola [n] [--escribir|--json]`: calcula las tareas libres de la ola (sin dependencias pendientes ni archivos compartidos), respeta `paralelo_max` (5 por defecto) y escribe un brief autocontenido por tarea con su spec y su worktree/rama `mp-<id>`. El conductor lanza una sesión nueva por tarea (herramienta de sesiones del cliente, `claude --worktree`, subagentes con worktree o briefs manuales), no hace polling, integra en orden y sigue aunque una tarea quede bloqueada. `tarea <id> en-curso --sesion=<id>` guarda quién la tiene.
+- **`rigor` por proyecto** (`bajo|medio|alto`, propuesto en la fase 1): vueltas del revisor-plano (1/2/3), revisión y auditoría de seguridad por ola o por tarea, y qué severidades bloquean. Solo BLOCKER/MAJOR obligan otra vuelta; lo demás va a `masterplan/backlog.md` (máx. una tarea de endurecimiento por ola). Los agentes revisor-código y auditor-seguridad marcan `ESPECULATIVO` lo inalcanzable para el tamaño del proyecto.
+- **Plan en cortes verticales.** `validar` exige (en planes de 6+ tareas) una tarea con `hito: "visible"` en la primera mitad de las olas; `fase_producto: nucleo|ampliacion` permite mover ampliaciones a v1.1 y se prohíbe que el núcleo dependa de ellas; `hacer` de máximo 600 caracteres (aviso MINOR).
+- **Entorno de pruebas decidido en la fase 3** (`proyecto.json.entorno`): base local en contenedor si hay Docker, para poder paralelizar sin bases de pago extra.
+- **Menos papel.** `relevo` autocompleta estado de tareas, bloqueos, tags, evidencia y decisiones nuevas (una página); una sola evidencia por tarea; regla anti-rediseño en la fase 4.
+- **`pgtap-resumen`**: lista los asertos que fallan de una salida TAP/pgTAP.
+- Pruebas nuevas en `tests/v130.test.mjs` (ahora v1.4.0); `npm test` corre todas.
+
 ## 1.3.0 · 2026-10-24
 
 Dos caminos: **Constructor** y **Auditor**.

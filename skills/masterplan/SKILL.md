@@ -48,6 +48,13 @@ producción. Hablas en el idioma de la persona (español por defecto, tuteo).
     `dev`: directo y técnico; `auto` (por defecto): decide por la primera respuesta, dilo en una
     línea y guárdalo. La persona lo cambia cuando quiera ("háblame más técnico").
 
+13. **Velocidad con rigor proporcional.** Lee `proyecto.json.rigor` (`bajo|medio|alto`, propuesto en
+    la fase 1). Define vueltas de revisión del plano, cuánta auditoría lleva cada tarea y qué
+    bloquea. No gastes rigor de SaaS con pagos en una herramienta de 5 personas, ni al revés.
+14. **Paralelo por defecto.** En la fase 6, las tareas independientes de una ola corren cada una en
+    su propia sesión (`/masterplan:ola`), no en fila dentro de una sola conversación. El plan se
+    diseña en cortes verticales: algo usable antes de la mitad de las olas.
+
 ## Dos caminos: Constructor y Auditor
 
 - **Constructor** (por defecto): la persona quiere construir o seguir construyendo → máquina de

@@ -12,6 +12,17 @@ Parte del orden base del archivo del tipo (`conocimiento/tipos/<tipo>.md`) y de 
 agrega cada kit. Reglas:
 - Primer paso: proyecto + `.gitignore` + git + lint/typecheck/test corriendo en CI local.
 - Seguridad y datos antes que pantallas: tenencia y RLS con su test de aislamiento antes del CRUD.
+- **Cortes verticales, no capas.** No construyas toda la base, luego todas las funciones y al final
+  las pantallas. Tras los cimientos (proyecto, acceso, tablas del flujo principal), arma el primer
+  corte completo: datos de semilla → función/API mínima → pantalla del flujo principal, de modo que
+  una persona real pueda usarlo antes de la mitad de las olas. Marca esa tarea con `"hito": "visible"`.
+  Lo secundario (ajustes completos, historiales, atajos, reportes) viene después.
+- **Núcleo vs ampliación.** Marca cada tarea con `"fase_producto": "nucleo"` (el flujo principal)
+  o `"ampliacion"` (se puede mover a v1.1 sin romper nada). Una tarea del núcleo no depende de una
+  ampliación; el validador lo comprueba.
+- **Contrasta antes de construir.** Una integración externa (API de un tercero) se prueba con una
+  respuesta real grabada **antes** de la tarea que la consume; si no hay llave, la tarea de
+  contraste queda en la lista de preparación humana y bloquea esa ola, no la anterior.
 - Cada paso cabe en una sentada: ≤5 archivos, 2–6 criterios (uno de error como mínimo).
 - Ningún paso rompe la verificación de uno anterior.
 - Lo que depende de terceros (aprobación de tiendas, DNS, pagos reales) va a la lista de
@@ -41,9 +52,16 @@ agrega cada kit. Reglas:
 Los archivos generados por herramientas (migraciones con fecha, lockfiles) se nombran con patrón,
 no con nombre inventado.
 
+`hacer` tiene como máximo **600 caracteres**: qué hacer y qué decisión tomar, nada más. El detalle
+(formas de datos, casos borde, mensajes) vive en la spec citada; no lo copies a la tarea. Campos
+opcionales: `"fase_producto"`, `"hito"` y, en construcción, `"sesion"` (lo escribe el conductor).
+
 ## 4. Olas
-Agrupa en olas: dentro de una ola ninguna tarea comparte archivos ni depende de otra. Las olas
-permiten varias sesiones o agentes en paralelo.
+Agrupa en olas: dentro de una ola ninguna tarea comparte archivos ni depende de otra. Cada tarea de
+una ola corre en su propia sesión (fase 6, `masterplan.mjs ola`), así que **prefiere olas anchas y
+pocas**: cuantas más tareas independientes por ola, más rápido avanza el proyecto. Si
+`proyecto.json.entorno.paralelo_base` es `false`, agrupa en la misma ola como máximo una tarea que
+toque la base de datos.
 
 ## 5. Gate global
 En `plan/gate.md`: los comandos que deben salir 0 al final (install, typecheck, lint, test, test

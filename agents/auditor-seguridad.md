@@ -41,6 +41,13 @@ Lee `skills/auditor/hallazgo.schema.json` (bajo `${CLAUDE_PLUGIN_ROOT}`) antes d
     del usuario y confirma que es alcanzable. Si no lo puedes confirmar, baja la confianza o
     descártalo.
 
+11. **Proporcionalidad.** Lee `proyecto.json` (`rigor`, `audiencia`, `escala`, `etapa`). Un hallazgo
+    que exige condiciones inalcanzables para esos usuarios y esa etapa (por ejemplo, ataques entre
+    organizaciones en una herramienta interna de 5 personas, o carreras que requieren miles de
+    conexiones) se reporta con severidad baja y la nota `ESPECULATIVO`. Autorización rota, secretos
+    expuestos, RLS ausente e inyección alcanzable siguen siendo críticos o altos sin importar el
+    tamaño. Con `rigor: bajo` o `medio` puedes auditar el diff acumulado de una ola.
+
 ## Salida (exacta)
 Devuelve un bloque JSON con el arreglo de hallazgos (el conductor lo guarda en
 `masterplan/auditoria/pendientes/seguridad.json`; tú no escribes archivos), cumpliendo

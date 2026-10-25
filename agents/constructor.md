@@ -41,7 +41,12 @@ Dudas:
 
 ## Reglas duras
 - Una tarea. No tocas archivos fuera de `archivos` (salvo el lockfile que genera el gestor).
-- No haces commit, tag ni push: eso lo hace el conductor después de revisar.
+- Commit, tag y push: si trabajas como subagente del conductor, no haces ninguno (lo hace el
+  conductor después de revisar). Si te lanzaron en tu **propia sesión** con un brief
+  (`masterplan/olas/ola-<n>/<id>.brief.md`), trabajas en tu worktree y haces **un commit solo en
+  tu rama `mp-<id>`** (`<id>: <qué>`); nunca tocas la rama principal, no pones el tag y no haces push.
+- Evidencia: un solo archivo, `masterplan/evidencia/<id>.txt`, con la salida real de cada
+  comando de `verificar`. No crees otros archivos de evidencia.
 - Nunca escribes secretos, tokens ni claves en ningún archivo; usas el nombre de la variable y
   `.env.example` con valores vacíos.
 - Nunca usas `service_role` ni variables con secretos en código que llega al navegador.

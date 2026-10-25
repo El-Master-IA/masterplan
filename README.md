@@ -108,15 +108,18 @@ registrado.
   datos, diseñador, revisor del plano, constructor, revisor de código, auditor de seguridad,
   auditor de frontend, auditor de bases técnicas y desplegador.
 - **Comandos:** `/masterplan:empezar`, `/masterplan:seguir`, `/masterplan:rapido`,
+  `/masterplan:ola` (construcción en paralelo, una sesión nueva por tarea),
   `/masterplan:estado`, `/masterplan:auditar`, `/masterplan:cambio`, `/masterplan:relevo`.
+- **Velocidad (1.3):** `rigor` bajo/medio/alto por proyecto, plan en cortes verticales con un primer
+  hito visible antes de la mitad, olas en paralelo en sesiones propias y relevos autogenerados.
 - **Políticas de seguridad (hooks)** que bloquean mientras se escribe: la llave `service_role` en el
   navegador, secretos con prefijo `VITE_`, llaves escritas en el código, escribir `.env`, push
   forzado, `db reset` contra una base remota. Y avisan: tablas sin RLS, webhooks sin firma,
   migraciones editadas, HTML sin sanitizar. Solo actúan en carpetas con un proyecto Masterplan.
 - **Conexiones (MCP) listas:** Supabase (solo lectura), Vercel, Context7 (documentación al día) y
   Playwright (pruebas de interfaz). Supabase y Vercel te piden iniciar sesión la primera vez.
-- **CLI sin dependencias** `scripts/masterplan.mjs`: `estado`, `validar`, `tarea`, `auditoria`,
-  `deriva`, `cambio`, `relevo`, `buzon` y `proveedores` (`recomendar`, `lista`, `ver`, `validar`).
+- **CLI sin dependencias** `scripts/masterplan.mjs`: `estado`, `validar`, `tarea`, `ola`, `auditoria`,
+  `deriva`, `cambio`, `relevo`, `buzon`, `pgtap-resumen` y `proveedores` (`recomendar`, `lista`, `ver`, `validar`).
 
 ## Elegir herramientas
 

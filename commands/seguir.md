@@ -21,3 +21,5 @@ Nota de la persona: $ARGUMENTS
    próxima tarea `pendiente` con sus dependencias en `hecha`.
 6. Lee completo `${CLAUDE_PLUGIN_ROOT}/skills/masterplan/fases/<n>-<fase>.md` de la fase actual y
    ejecútala en esta sesión.
+7. Fase 6 con 2 o más tareas libres en la misma ola: propón `/masterplan:ola` (una sesión nueva por
+   tarea, en paralelo) en lugar de construirlas una por una en esta conversación.

@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-// Masterplan CLI: estado, validación del plano, tareas, auditoría, deriva, cambios, relevos, buzón y proveedores.
+// Masterplan CLI: estado, validación del plano, tareas, olas en paralelo, auditoría, deriva, cambios, relevos, buzón y proveedores.
 // Sin dependencias. Se ejecuta desde la raíz del proyecto de la persona.
 // Uso: node masterplan.mjs <comando> [args]   (node masterplan.mjs ayuda)
 
 import fs from 'node:fs'
 import path from 'node:path'
+import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 
 const RAIZ = process.cwd()
@@ -14,6 +15,10 @@ const PLANTILLAS = path.join(PLUGIN, 'skills', 'masterplan', 'plantillas')
 
 const FASES = ['contexto', 'descubrir', 'recortar', 'disenar', 'puertas', 'planear', 'construir', 'publicar', 'operar']
 const ESTADOS_TAREA = ['pendiente', 'en-curso', 'hecha', 'bloqueada']
+const RIGOR = ['bajo', 'medio', 'alto']
+const FASES_PRODUCTO = ['nucleo', 'ampliacion']
+const HACER_MAX = 600
+const PARALELO_MAX = 5
 const PALABRAS_VAGAS = /\b(funciona|se ve bien|queda bien|quedó conectado|está implementado|esta implementado|funcione correctamente|works|looks good|is implemented)\b/i
 const ID_SPEC = /\b[A-Z]{2,6}-\d{3}\b/g
 const PESO = { critica: 25, alta: 10, media: 3, baja: 1 }
@@ -62,12 +67,14 @@ function cmdEstado() {
   const faltan = ['nombre', 'modo', 'fase', 'creado'].filter(k => pr[k] === undefined || pr[k] === '')
   if (faltan.length) fallar(`proyecto.json incompleto: falta ${faltan.join(', ')}`)
   if (!Number.isInteger(pr.fase) || pr.fase < 0 || pr.fase > 8) fallar('proyecto.json: "fase" debe ser un entero de 0 a 8')
+  if (pr.rigor !== undefined && !RIGOR.includes(pr.rigor)) fallar(`proyecto.json: "rigor" debe ser ${RIGOR.join(' | ')}`)
+  if (pr.paralelo_max !== undefined && !(Number.isInteger(pr.paralelo_max) && pr.paralelo_max >= 1 && pr.paralelo_max <= 10)) fallar('proyecto.json: "paralelo_max" debe ser un entero de 1 a 10')
   const ts = tareas()
   const cuenta = Object.fromEntries(ESTADOS_TAREA.map(e => [e, ts.filter(t => t.estado === e).length]))
   const relevos = archivos(path.join(MP, 'relevos'), p => p.endsWith('.md')).sort()
   const buzon = archivos(path.join(MP, 'buzon'), p => p.endsWith('.md') && !p.includes(`${path.sep}leidos${path.sep}`))
   console.log(`Proyecto: ${pr.nombre}  (${pr.modo}${pr.tipo ? ', ' + pr.tipo : ''})`)
-  console.log(`Fase: ${pr.fase} · ${FASES[pr.fase]}`)
+  console.log(`Fase: ${pr.fase} · ${FASES[pr.fase]} · rigor ${pr.rigor || 'medio (por defecto)'}`)
   if (ts.length) console.log(`Tareas: ${cuenta.hecha}/${ts.length} hechas · ${cuenta['en-curso']} en curso · ${cuenta.bloqueada} bloqueadas`)
   const sig = siguientes(ts)
   if (sig.length) console.log(`Siguiente: ${sig.map(t => `${t.id} (${t.titulo})`).join(', ')}`)
@@ -169,6 +176,9 @@ function validarTareas(ts, idsSpec, add) {
     const a = t.archivos || []
     if (!a.length || a.length > 5) add('MAJOR', d, `toca ${a.length} archivos; deben ser de 1 a 5`)
     if (t.checkpoint && !/git tag\s+mp-T\d+/.test(t.checkpoint)) add('MAJOR', d, 'el checkpoint no crea el tag mp-T<n>')
+    if (typeof t.hacer === 'string' && t.hacer.length > HACER_MAX) add('MINOR', d, `"hacer" tiene ${t.hacer.length} caracteres (máx. ${HACER_MAX}): deja el detalle en la spec citada`)
+    if (t.fase_producto !== undefined && !FASES_PRODUCTO.includes(t.fase_producto)) add('MAJOR', d, `fase_producto inválida: ${t.fase_producto} (usa ${FASES_PRODUCTO.join(' | ')})`)
+    if (t.hito !== undefined && t.hito !== 'visible') add('MAJOR', d, `hito inválido: ${t.hito} (solo "visible")`)
     for (const s of t.specs || []) if (idsSpec.size && !idsSpec.has(s)) add('MAJOR', d, `cita un requisito que no existe: ${s}`)
   }
   for (const t of ts) {
@@ -176,6 +186,17 @@ function validarTareas(ts, idsSpec, add) {
       const o = porId.get(dep)
       if (!o) add('BLOCKER', `${donde} › ${t.id}`, `depende de una tarea inexistente: ${dep}`)
       else if (o.ola >= t.ola) add('MAJOR', `${donde} › ${t.id}`, `depende de ${dep}, que está en la misma ola o en una posterior`)
+      else if (t.fase_producto !== 'ampliacion' && o.fase_producto === 'ampliacion') add('MAJOR', `${donde} › ${t.id}`, `es del núcleo pero depende de ${dep}, que es una ampliación: no se podría mover a v1.1`)
+    }
+  }
+  // Primer hito visible antes de la mitad del plan
+  const maxOla = Math.max(...ts.map(t => t.ola || 1))
+  if (ts.length >= 6 && maxOla >= 2) {
+    const visibles = ts.filter(t => t.hito === 'visible')
+    if (!visibles.length) add('MAJOR', donde, 'ninguna tarea marca hito:"visible": una persona debe poder usar el flujo principal (con datos de semilla) en la primera mitad del plan')
+    else {
+      const primera = Math.min(...visibles.map(t => t.ola))
+      if (primera > Math.ceil(maxOla / 2)) add('MAJOR', donde, `el primer hito visible llega en la ola ${primera} de ${maxOla}: súbelo a la ola ${Math.ceil(maxOla / 2)} o antes (cortes verticales, no capas)`)
     }
   }
   // Ciclos
@@ -214,7 +235,8 @@ function variablesSinDocumentar() {
 }
 
 // ---------- tareas ----------
-function cmdTarea([id, estado, ...resto]) {
+function cmdTarea([id, estado, ...resto0]) {
+  let resto = resto0
   if (!id) return cmdSiguiente()
   if (!ESTADOS_TAREA.includes(estado)) fallar(`Estado inválido. Usa: ${ESTADOS_TAREA.join(' | ')}`)
   const ts = tareas()
@@ -227,6 +249,10 @@ function cmdTarea([id, estado, ...resto]) {
     if (pend.length) fallar(`${id} depende de tareas sin terminar: ${pend.join(', ')}`, 2)
   }
   t.estado = estado
+  const ses = resto.find(x => x.startsWith('--sesion='))
+  if (ses && estado === 'en-curso') t.sesion = ses.slice(9)
+  if (estado !== 'en-curso') delete t.sesion
+  if (ses) resto = resto.filter(x => x !== ses)
   if (estado === 'bloqueada') t.motivo = resto.join(' ') || t.motivo || 'sin motivo'
   else delete t.motivo
   t.actualizado = ahora()
@@ -238,6 +264,105 @@ function cmdSiguiente() {
   if (!sig.length) return console.log('No hay tareas disponibles (todas hechas, en curso o esperando dependencias).')
   const ola = Math.min(...sig.map(t => t.ola))
   for (const t of sig.filter(x => x.ola === ola)) console.log(`${t.id} · ola ${t.ola} · ${t.titulo}`)
+}
+
+// ---------- olas en paralelo (una sesión por tarea) ----------
+function textoSpec(id) {
+  for (const f of archivos(path.join(MP, 'specs'), p => p.endsWith('.md'))) {
+    const ls = leer(f).split(/\r?\n/)
+    const i = ls.findIndex(l => new RegExp(`^#{2,4}\\s+${id}\\b`).test(l))
+    if (i < 0) continue
+    const nivel = ls[i].match(/^#+/)[0].length
+    let j = i + 1
+    while (j < ls.length && !(/^#+\s/.test(ls[j]) && ls[j].match(/^#+/)[0].length <= nivel)) j++
+    return ls.slice(i, j).join('\n').trim()
+  }
+  return `(no se encontró ${id} en masterplan/specs/)`
+}
+
+function briefTarea(t, pr, ola) {
+  const nombre = path.basename(RAIZ)
+  const rama = `mp-${t.id}`
+  const worktree = path.join(path.dirname(RAIZ), `${nombre}-${rama}`)
+  const specs = (t.specs || []).map(textoSpec).join('\n\n') || '(la tarea no cita specs)'
+  const md = `# Brief · ${t.id} · ${t.titulo}
+
+Eres el constructor de UNA tarea de Masterplan, en tu propia sesión. Trabaja solo aquí.
+
+- Proyecto (principal): ${RAIZ}
+- Tu worktree: ${worktree}   (rama ${rama})
+- Perfil: ${pr.perfil || '(ver proyecto.json)'} · rigor: ${pr.rigor || 'medio'} · ola ${ola}
+- Kit: ${t.kit || '(ninguno)'}
+- Antes de empezar: \`git worktree add "${worktree}" -b ${rama}\` y trabaja dentro de ese directorio. Lee su \`CLAUDE.md\`.
+
+## Tarea
+\`\`\`json
+${JSON.stringify(t, null, 2)}
+\`\`\`
+
+## Specs citadas
+${specs}
+
+## Cierre
+1. Test primero cuando se pueda; implementa solo lo que pide \`hacer\`, solo en \`archivos\`.
+2. Corre cada comando de \`verificar\`. Guarda la salida real en \`masterplan/evidencia/${t.id}.txt\` (un solo archivo).
+3. Haz commit solo en la rama ${rama}: \`${t.id}: <qué>\`. No toques la rama principal ni pongas el tag; lo hace el conductor al integrar.
+4. Si necesitas un archivo fuera de \`archivos\`, detente y repórtalo. Tres intentos fallidos → reporta "bloqueada" con el motivo.
+5. Tu último mensaje: criterios cumplidos, salida de verificación (exit), rama y commit, dudas. Avisa al conductor por el buzón (\`mcp__masterplan__enviar\` o \`masterplan.mjs buzon enviar\`).
+`
+  return { id: t.id, titulo: t.titulo, rama, worktree, md }
+}
+
+function cmdOla(args) {
+  const pr = proyecto()
+  const ts = tareas()
+  const libres = siguientes(ts)
+  if (!libres.length) return console.log('No hay tareas libres (todas hechas, en curso o esperando dependencias).')
+  const num = args.find(a => /^\d+$/.test(a))
+  const ola = num ? Number(num) : Math.min(...libres.map(t => t.ola))
+  const deOla = libres.filter(t => t.ola === ola)
+  if (!deOla.length) fallar(`No hay tareas libres en la ola ${ola}. Libres en: ${[...new Set(libres.map(t => t.ola))].join(', ')}`)
+  const max = pr.paralelo_max ?? PARALELO_MAX
+  const lote = [], conflictos = [], usados = new Map()
+  for (const t of deOla) {
+    const choca = (t.archivos || []).find(a => usados.has(a))
+    if (choca) { conflictos.push(`${t.id} comparte ${choca} con ${usados.get(choca)}: va después`); continue }
+    if (lote.length >= max) continue
+    for (const a of t.archivos || []) usados.set(a, t.id)
+    lote.push(t)
+  }
+  const esperan = deOla.filter(t => !lote.includes(t)).map(t => t.id)
+  const briefs = lote.map(t => briefTarea(t, pr, ola))
+  const dir = path.join(MP, 'olas', `ola-${ola}`)
+  if (args.includes('--escribir')) for (const b of briefs) escribir(path.join(dir, `${b.id}.brief.md`), b.md)
+  const resumen = {
+    ola, paralelo_max: max, rigor: pr.rigor || 'medio',
+    lanzar: briefs.map(b => ({ id: b.id, titulo: b.titulo, rama: b.rama, worktree: b.worktree, brief: args.includes('--escribir') ? rel(path.join(dir, `${b.id}.brief.md`)) : undefined })),
+    esperan, conflictos,
+    revision: (pr.rigor || 'medio') === 'alto' ? 'revisor-codigo y auditor-seguridad por tarea' : 'una revisión por ola sobre el diff acumulado (seguridad solo en kits auth/datos/pagos)'
+  }
+  if (args.includes('--json')) return console.log(JSON.stringify({ ...resumen, briefs: briefs.map(b => ({ id: b.id, brief: b.md })) }, null, 2))
+  console.log(`Ola ${ola} · ${lote.length} sesión(es) en paralelo (máx. ${max}) · rigor ${resumen.rigor}`)
+  for (const b of resumen.lanzar) console.log(`  ${b.id} · ${b.titulo} → rama ${b.rama}${b.brief ? ` · ${b.brief}` : ''}`)
+  if (esperan.length) console.log(`En espera (límite o archivos): ${esperan.join(', ')}`)
+  for (const c of conflictos) console.log(`⚠ ${c}`)
+  console.log(`Revisión: ${resumen.revision}`)
+  if (!args.includes('--escribir')) console.log('Añade --escribir para dejar los briefs en masterplan/olas/ola-' + ola + '/ (o --json para leerlos completos).')
+}
+
+// ---------- resumen de pruebas pgTAP / TAP ----------
+function cmdPgtap([archivo]) {
+  const texto = !archivo || archivo === '-' ? fs.readFileSync(0, 'utf8') : leer(archivo)
+  const ls = texto.split(/\r?\n/)
+  const fallan = ls.filter(l => /^\s*not ok\b/.test(l) || /Failed test/.test(l) || /Looks like you (failed|planned)/.test(l))
+  const ok = ls.filter(l => /^\s*ok\b/.test(l)).length
+  const malos = ls.filter(l => /^\s*not ok\b/.test(l)).length
+  const plan = ls.find(l => /^1\.\.\d+/.test(l.trim()))
+  const error = ls.filter(l => /"_tag"\s*:\s*"Error"|ERROR:|exception/i.test(l)).slice(0, 5)
+  console.log(`asertos: ${ok} ok · ${malos} fallan${plan ? ` · plan ${plan.trim()}` : ''}`)
+  for (const l of fallan) console.log(`  ${l.trim()}`)
+  for (const l of error) console.log(`  ! ${l.trim().slice(0, 200)}`)
+  process.exit(malos || error.length || (plan && ok + malos < Number(plan.trim().split('..')[1])) ? 1 : 0)
 }
 
 // ---------- auditoría ----------
@@ -412,14 +537,50 @@ function cmdCambio([sub, dir]) {
 }
 
 // ---------- relevos ----------
+function bloqueAutomatico(pr) {
+  const ts = tareas()
+  const l = []
+  if (ts.length) {
+    const por = e => ts.filter(t => t.estado === e).map(t => t.id)
+    const hechas = por('hecha'), curso = por('en-curso')
+    l.push(`- Tareas: ${hechas.length}/${ts.length} hechas${hechas.length ? ` (última: ${hechas.at(-1)})` : ''}`)
+    if (curso.length) l.push(`- En curso: ${curso.map(id => { const t = ts.find(x => x.id === id); return t.sesion ? `${id} (sesión ${t.sesion})` : id }).join(', ')}`)
+    for (const t of ts.filter(x => x.estado === 'bloqueada')) l.push(`- Bloqueada: ${t.id} — ${t.motivo || 'sin motivo'}`)
+    const sig = siguientes(ts)
+    if (sig.length) { const o = Math.min(...sig.map(t => t.ola)); l.push(`- Siguiente ola libre: ${o} → ${sig.filter(t => t.ola === o).map(t => t.id).join(', ')} (\`masterplan.mjs ola ${o}\`)`) }
+  }
+  try {
+    const tags = spawnSync('git', ['tag', '--list', 'mp-T*'], { cwd: RAIZ, encoding: 'utf8' }).stdout.split('\n').map(x => x.trim()).filter(Boolean)
+    if (tags.length) l.push(`- Tags: ${tags.length} (último: ${tags.sort().at(-1)})`)
+  } catch { /* sin git */ }
+  const ev = archivos(path.join(MP, 'evidencia'), p => p.endsWith('.txt')).length
+  if (ev) l.push(`- Evidencia: ${ev} archivo(s) en masterplan/evidencia/`)
+  const dl = path.join(MP, 'decisiones.log')
+  if (existe(dl)) {
+    const ls = leer(dl).split('\n').map(x => x.trim()).filter(Boolean)
+    const desde = pr.relevo?.decisiones ?? 0
+    const nuevas = ls.slice(desde)
+    if (nuevas.length) {
+      l.push(`- Decisiones nuevas (${nuevas.length}):`)
+      for (const d of nuevas.slice(-12)) { const [, id, txt] = d.split(' | '); l.push(`  - ${id}: ${(txt || d).slice(0, 140)}`) }
+      if (nuevas.length > 12) l.push(`  - … y ${nuevas.length - 12} anteriores en decisiones.log`)
+    }
+    pr.relevo = { ...(pr.relevo || {}), decisiones: ls.length }
+  }
+  return l.join('\n')
+}
+
 function cmdRelevo([nombre]) {
   const pr = proyecto()
   const n = nombre || `${String(pr.fase).padStart(2, '0')}-${FASES[pr.fase]}`
   const p = path.join(MP, 'relevos', `${n}.md`)
   const base = existe(path.join(PLANTILLAS, 'relevo.md')) ? leer(path.join(PLANTILLAS, 'relevo.md')) : '# Relevo\n'
-  if (!existe(p)) escribir(p, base.replace(/\{fecha\}/g, hoy()).replace(/\{fase\}/g, n).replace(/\{proyecto\}/g, pr.nombre))
+  if (!existe(p)) {
+    const auto = bloqueAutomatico(pr)
+    escribir(p, base.replace(/\{fecha\}/g, hoy()).replace(/\{fase\}/g, n).replace(/\{proyecto\}/g, pr.nombre).replace(/\{auto\}/g, auto || '- (sin tareas ni decisiones nuevas)'))
+  }
   guardarProyecto(pr)
-  console.log(`✓ ${rel(p)} — complétalo y abre una sesión nueva con /masterplan:seguir`)
+  console.log(`✓ ${rel(p)} — el estado va autocompletado; añade solo 3–5 líneas de contexto (qué sigue, riesgos) y abre una sesión nueva con /masterplan:seguir`)
 }
 
 // ---------- buzón (respaldo sin mod) ----------
@@ -682,7 +843,9 @@ const AYUDA = `Masterplan · comandos (desde la raíz de tu proyecto)
   estado                         fase, tareas, último relevo y buzón
   validar [--json]               revisa el plano y el plan (sale 1 si hay BLOCKER)
   tarea                          muestra las tareas disponibles de la ola actual
-  tarea <id> <estado> [motivo]   pendiente | en-curso | hecha | bloqueada
+  tarea <id> <estado> [motivo]   pendiente | en-curso | hecha | bloqueada  (en-curso acepta --sesion=<id>)
+  ola [n] [--escribir] [--json]  tareas libres de la ola para lanzar en paralelo, una sesión por tarea, con sus briefs
+  pgtap-resumen <archivo|->      lista los asertos que fallan en una salida TAP/pgTAP
   auditoria fusionar|comparar    une hallazgos y calcula las dos notas / compara las 2 últimas
   deriva                         specs sin prueba, tablas sin RLS, variables sin documentar
   cambio nuevo "<qué>"           abre un cambio (delta) sobre las specs vivas
@@ -702,6 +865,8 @@ try {
     case 'deriva': cmdDeriva(); break
     case 'cambio': cmdCambio(args); break
     case 'relevo': cmdRelevo(args); break
+    case 'ola': cmdOla(args); break
+    case 'pgtap-resumen': cmdPgtap(args); break
     case 'buzon': cmdBuzon(args); break
     case 'proveedores': cmdProveedores(args); break
     case undefined: case 'ayuda': case '--help': case '-h': console.log(AYUDA); break

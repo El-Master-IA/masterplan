@@ -25,8 +25,15 @@ están completos y son verificables, no el código. Un ítem en NO es pregunta a
 ## Puerta D · Validadores
 1. `node "${CLAUDE_PLUGIN_ROOT}/scripts/masterplan.mjs" validar` → 0 BLOCKER.
 2. Despacha `masterplan:revisor-plano` (no lee las preferencias de la persona, para no ablandarse).
-   Devuelve PASS/FAIL con hallazgos por severidad. Corrige y repite hasta PASS (máx. 3 vueltas;
-   a la tercera es un problema de diseño: vuelve a la fase 3).
+   Devuelve PASS/FAIL con hallazgos por severidad. Corrige y repite hasta PASS. Máximo de vueltas
+   según `proyecto.json.rigor`: `bajo` 1, `medio` 2, `alto` 3. Tras la última vuelta, si sigue en
+   FAIL es un problema de diseño: vuelve a la fase 3.
+3. **Solo BLOCKER y MAJOR obligan otra vuelta.** Los MINOR se anotan en `masterplan/backlog.md` o
+   se corrigen de paso, sin nueva revisión.
+4. **Regla anti-rediseño:** si la misma pieza (un modelo, un flujo) ya se rediseñó 2 veces, la
+   tercera no es una versión más completa: simplifica el requisito o recórtalo a un Non-Goal. Un
+   diseño que necesita cinco rediseños para un equipo pequeño está resolviendo un problema que
+   todavía no existe.
 
 ## Presentación (un solo mensaje, < 40 líneas)
 Tabla de stack con una razón por fila · cómo encaja (3–5 líneas) · v1 incluye / v1 NO incluye ·

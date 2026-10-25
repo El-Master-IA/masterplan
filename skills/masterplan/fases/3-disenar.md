@@ -25,6 +25,18 @@ Antes de empezar dile a la persona cuánto va a tardar (normalmente 10–20 min)
 - Despacha `masterplan:investigador` en segundo plano con la lista de paquetes del perfil y los SDK
   de los proveedores: devuelve versión estable actual, fuente y fecha. Se usa en la fase 5.
 
+## 1b. Entorno de pruebas y paralelismo
+Decide ahora cómo se desarrolla y se prueba, porque de eso depende cuántas tareas pueden correr a la vez:
+- **Base de datos en desarrollo.** Pregunta una vez, con recomendación: **local en contenedor si la
+  máquina tiene Docker** (`docker --version`): reset en segundos, pruebas en paralelo (una base o
+  puerto por worktree) y cero costo. Hospedada solo para preview y producción. Si la persona
+  prefiere hospedada: dilo claro ("las tareas que tocan la base irán de a una; las demás en
+  paralelo") y no crees bases o ramas de pago extra solo para paralelizar sin su aprobación.
+- Guárdalo en `proyecto.json.entorno` (`{ "base": "local|hospedada", "paralelo_base": true|false }`)
+  y en `decisiones.log`. El plan de la fase 5 y el conductor de la fase 6 lo respetan.
+- Anota los comandos reales (`db:reset`, `db:test`, `test`) en la sección de comandos del
+  `CLAUDE.md` del proyecto desde la fase 5; el contrato y la práctica deben coincidir.
+
 ## 2. Atributos de calidad
 Elige 3 que mandan y uno que se sacrifica (ver `conocimiento/fundamentos.md`): disponibilidad,
 seguridad, privacidad, rendimiento, costo, velocidad de cambio, accesibilidad. Escríbelos en

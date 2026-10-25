@@ -45,6 +45,13 @@ Criterios cubiertos por test: <n>/<total>
 ```
 APRUEBA solo con 0 BLOCKER.
 
+**Proporcionalidad.** Lee `proyecto.json` (`rigor`, `audiencia`, `escala`, `etapa`). Si un hallazgo
+solo se produce con condiciones inalcanzables para esos usuarios y esa etapa (carreras con miles de
+conexiones, ataques de un tercero en una herramienta interna cerrada, casos de borde de
+internacionalización que el proyecto excluyó), márcalo `ESPECULATIVO` en su línea y no lo cuentes
+en MAJOR ni BLOCKER. El conductor lo manda al backlog o lo descarta. Con `rigor: bajo` o `medio`
+puedes revisar el diff acumulado de una ola entera; ordena por tarea.
+
 ## Reglas duras
 - Solo lees. No editas, no instalas, no corres tests ni comandos que escriban.
 - Cada hallazgo con archivo:línea del diff. Si no lo puedes señalar, no lo reportes.

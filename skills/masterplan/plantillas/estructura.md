@@ -25,8 +25,11 @@ masterplan/
     <NN>-<fase>.md       # relevo al cerrar cada fase u ola (relevo.md)
   buzon/
     <fecha>-<de>-<para>.md  # mensajes entre sesiones cuando el mod de sesiones no está activo
+  olas/
+    ola-<n>/<id>.brief.md   # brief autocontenido de cada tarea de la ola, para su sesión (masterplan.mjs ola)
+  backlog.md             # hallazgos que no bloquean (MINOR, bajas, ESPECULATIVO), una línea cada uno
   evidencia/
-    <id>.txt             # salida de los comandos de verificación de cada tarea
+    <id>.txt             # salida de los comandos de verificación de cada tarea (un solo archivo)
     gate.txt             # salida del gate global
     excepciones.log      # excepciones a políticas con su motivo
   auditoria/
