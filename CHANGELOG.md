@@ -1,5 +1,14 @@
 # Cambios
 
+## 1.5.0 · 2026-10-25
+
+Piloto automático: nadie tiene que escribir `/masterplan:seguir` en otro chat.
+
+- **`/masterplan:auto`** (`proyecto.json.autonomia: "continua"`): al cerrar cada fase u ola, Masterplan lanza solo la sesión siguiente (herramienta de sesiones del cliente o `claude -p`) y sigue, con las olas de la fase 6 en paralelo, hasta llegar a la fase 7.
+- **Se detiene siempre ante lo delicado o lo que solo la persona tiene:** publicar a producción, cobros, mensajes a terceros, borrar datos, cuentas y llaves, gasto nuevo, push forzado, tareas bloqueadas, pendientes anotados (`auto pendiente "…"`) y las preguntas de las fases 1 a 4. Tope de 30 sesiones encadenadas.
+- CLI nuevo `masterplan.mjs auto [--json] [--registrar]` (CONTINUAR/PARAR con el motivo) y `auto activar|desactivar|pendiente|resuelto`. `relevo`, `seguir` y las fases 5 y 6 lo consultan al cerrar en lugar de pedir que abras un chat a mano.
+- Sin autonomía continua todo sigue igual que en 1.4.
+
 ## 1.4.0 · 2026-10-25
 
 Construir más rápido sin perder las puertas. Medido en un proyecto real (53 tareas, herramienta interna): 2 h 31 de documentos antes de la primera línea, 22 tareas construidas sin una sola pantalla usable y ~25 min por tarea en serie.

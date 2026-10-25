@@ -72,8 +72,12 @@ la excepción solo se usa con motivo escrito (`// masterplan-permitir: <regla> -
 registrada en `masterplan/evidencia/excepciones.log`.
 
 ## Sesiones
-- Al terminar una ola, el relevo lo genera el script (una página). Propón seguir en sesión nueva si
-  el contexto pasa de la mitad.
+- Al terminar una ola, el relevo lo genera el script (una página). Luego `masterplan.mjs auto --json
+  --registrar`: con autonomía continua lanzas la sesión de la ola siguiente tú mismo (sin pedirle a la
+  persona que escriba nada) hasta pasar a la fase 7; si dice `parar`, reporta el motivo. Si no hay
+  autonomía continua, propón seguir en sesión nueva cuando el contexto pase de la mitad.
+- Si necesitas algo que solo la persona puede dar (una llave, una cuenta, una decisión), anótalo con
+  `masterplan.mjs auto pendiente "<qué>"` y detente; al resolverlo, `auto resuelto`.
 - Mod activo: avisa con `mcp__masterplan__enviar` a las sesiones registradas del proyecto cuando
   una tarea de la que dependen pasa a `hecha`.
 

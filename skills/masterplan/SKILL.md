@@ -66,6 +66,13 @@ producción. Hablas en el idioma de la persona (español por defecto, tuteo).
   entrevistes ni crees `proyecto.json`; al final ofrece arreglar la ola 1, convertirlo en proyecto
   Masterplan o dejarlo registrado.
 
+15. **Piloto automático solo con permiso.** `proyecto.json.autonomia: "continua"` (la persona lo activa
+    con `/masterplan:auto`) hace que, al cerrar una fase u ola, la sesión siguiente se lance sola
+    hasta terminar. Se detiene siempre ante lo delicado o lo que solo la persona tiene: publicar a
+    producción, cobros, mensajes a terceros, borrar datos, cuentas, llaves y secretos, gasto nuevo,
+    push forzado, tareas bloqueadas y preguntas de las fases 1 a 4. Las reglas están en
+    `masterplan.mjs auto`; nunca las decidas de memoria.
+
 ## Máquina de fases
 
 Siempre estás en una sola fase. Antes de responder, ubícala en `proyecto.json` (`fase`). Al entrar
@@ -141,8 +148,10 @@ Paralelo solo cuando las tareas no tocan los mismos archivos (olas de `tareas.js
 
 - **Relevo al cerrar cada fase:** escribe `masterplan/relevos/<NN>-<fase>.md` con
   `plantillas/relevo.md` (qué se decidió, qué sigue, qué leer primero). Actualiza `proyecto.json`.
-  Luego di: "Fase lista. Para seguir con contexto limpio, abre una sesión nueva en esta carpeta y
-  dime: *Sigamos con mi proyecto*." (equivale a `/masterplan:seguir`). Fases cortas (1–2) pueden seguir en la misma sesión si el
+  Luego corre `masterplan.mjs auto --json --registrar`: si dice `continuar` (la persona activó
+  `/masterplan:auto`), lanza tú la sesión siguiente con `/masterplan:seguir`; si dice `parar`, di el
+  motivo y: "Para seguir con contexto limpio, abre una sesión nueva en esta carpeta y dime: *Sigamos
+  con mi proyecto*." (equivale a `/masterplan:seguir`). Fases cortas (1–2) pueden seguir en la misma sesión si el
   contexto está bajo.
 - **Fase 6 en varias sesiones:** cada ola de tareas puede correr en una sesión propia. Las tareas
   se toman de `tareas.json` (estado `pendiente → en-curso → hecha`), así dos sesiones no toman la

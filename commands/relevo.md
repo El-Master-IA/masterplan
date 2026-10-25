@@ -27,5 +27,10 @@ Nota de la persona: $ARGUMENTS
      relevo y su ruta. Si `mcp__masterplan__sesiones` muestra una sesión registrada en esa fase,
      envíalo a su `sessionId`.
    - Sin mod: `node "${CLAUDE_PLUGIN_ROOT}/scripts/masterplan.mjs" buzon enviar --para fase-<N> "<texto>"`.
-6. Cierra con: "Relevo listo en `<ruta>`. Abre una sesión nueva en esta carpeta y escribe
-   `/masterplan:seguir`."
+6. **Seguir solo si la persona lo permitió.** Corre `node "${CLAUDE_PLUGIN_ROOT}/scripts/masterplan.mjs" auto --json --registrar`.
+   - `continuar`: lanza tú la sesión siguiente con el prompt `/masterplan:seguir` (en Claude Desktop con
+     la herramienta de sesiones `start_session`, contexto `fresh`, misma carpeta; en terminal con
+     `claude -p "/masterplan:seguir"` en segundo plano). Dile a la persona en una línea que ya la lanzaste.
+   - `parar`: dile el motivo en una línea y qué necesitas de ella. Termina con: "Relevo listo en
+     `<ruta>`. Cuando lo resuelvas, abre una sesión nueva en esta carpeta y escribe `/masterplan:seguir`
+     (o `/masterplan:auto` si quieres que siga sola)."

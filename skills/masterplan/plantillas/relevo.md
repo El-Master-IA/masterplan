@@ -28,7 +28,7 @@ cerrar las 3 que quedan, empezando por la de retención de datos.">
 <!-- "Ninguna" si no hay. -->
 
 ## Para seguir
-Abre una sesión nueva en esta carpeta y escribe:
+Con autonomía continua (`/masterplan:auto`) la sesión siguiente se lanza sola. Si no, abre una sesión nueva en esta carpeta y escribe:
 
 ```
 /masterplan:seguir

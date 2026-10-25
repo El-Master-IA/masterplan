@@ -1,4 +1,4 @@
-// Pruebas de 1.4.0: rigor, hito visible, ampliaciones, olas en paralelo, relevo automático y pgtap-resumen.
+// Pruebas de 1.5.0 (rigor, olas, relevo, piloto automático): rigor, hito visible, ampliaciones, olas en paralelo, relevo automático y pgtap-resumen.
 // Correr: node --test tests/
 
 import { test } from 'node:test'
@@ -152,4 +152,49 @@ test('pgtap-resumen: lista los asertos que fallan y sale 1; si todo pasa sale 0'
   assert.match(mal.stdout, /not ok 2 b/)
   const bien = mp(dir, 'pgtap-resumen', 'bien.tap')
   assert.equal(bien.status, 0)
+})
+
+test('auto: guiada para; continua sigue en fase 6 con trabajo y para en fases 1-4 y 7', () => {
+  assert.equal(mp(proyectoConPlan(plan()), 'auto').status, 3)
+  const guiada = JSON.parse(mp(proyectoConPlan(plan()), 'auto', '--json').stdout)
+  assert.equal(guiada.accion, 'parar')
+  const dir = proyectoConPlan(plan(), { autonomia: 'continua' })
+  const c = mp(dir, 'auto', '--json')
+  assert.equal(c.status, 0)
+  assert.equal(JSON.parse(c.stdout).accion, 'continuar')
+  assert.match(JSON.parse(c.stdout).prompt, /masterplan:seguir/)
+  assert.equal(JSON.parse(mp(proyectoConPlan(plan(), { autonomia: 'continua', fase: 3 }), 'auto', '--json').stdout).accion, 'parar')
+  assert.match(JSON.parse(mp(proyectoConPlan(plan(), { autonomia: 'continua', fase: 7 }), 'auto', '--json').stdout).motivo, /producción/)
+})
+
+test('auto: se detiene con tareas bloqueadas, pendientes de la persona y al llegar al tope', () => {
+  const bloq = JSON.parse(mp(proyectoConPlan(plan({ T01: { estado: 'bloqueada', motivo: 'falla 3 veces' } }), { autonomia: 'continua' }), 'auto', '--json').stdout)
+  assert.match(bloq.motivo, /T01 \(falla 3 veces\)/)
+  const dir = proyectoConPlan(plan(), { autonomia: 'continua' })
+  mp(dir, 'auto', 'pendiente', 'llave de Kalodata')
+  assert.match(JSON.parse(mp(dir, 'auto', '--json').stdout).motivo, /llave de Kalodata/)
+  mp(dir, 'auto', 'resuelto')
+  assert.equal(JSON.parse(mp(dir, 'auto', '--json').stdout).accion, 'continuar')
+  const tope = proyectoConPlan(plan(), { autonomia: 'continua', auto: { sesiones: 30, max: 30 } })
+  assert.match(JSON.parse(mp(tope, 'auto', '--json').stdout).motivo, /tope 30/)
+})
+
+test('auto: --registrar cuenta las sesiones; activar y desactivar cambian la autonomía; valor inválido falla', () => {
+  const dir = proyectoConPlan(plan())
+  assert.equal(mp(dir, 'auto', 'activar').status, 0)
+  mp(dir, 'auto', '--registrar')
+  mp(dir, 'auto', '--registrar')
+  const pr = JSON.parse(fs.readFileSync(path.join(dir, 'masterplan', 'proyecto.json'), 'utf8'))
+  assert.equal(pr.autonomia, 'continua')
+  assert.equal(pr.auto.sesiones, 2)
+  mp(dir, 'auto', 'desactivar')
+  assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'masterplan', 'proyecto.json'), 'utf8')).autonomia, 'guiada')
+  assert.equal(mp(proyectoTemporal({ autonomia: 'total' }), 'estado').status, 1)
+})
+
+test('auto: con todas las tareas hechas en fase 6 manda a la fase 7', () => {
+  const hechas = plan().map(t => ({ ...t, estado: 'hecha' }))
+  const d = JSON.parse(mp(proyectoConPlan(hechas, { autonomia: 'continua' }), 'auto', '--json').stdout)
+  assert.equal(d.accion, 'continuar')
+  assert.match(d.motivo, /fase 7/)
 })

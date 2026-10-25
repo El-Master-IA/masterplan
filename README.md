@@ -110,7 +110,8 @@ registrado.
 - **Comandos:** `/masterplan:empezar`, `/masterplan:seguir`, `/masterplan:rapido`,
   `/masterplan:ola` (construcción en paralelo, una sesión nueva por tarea),
   `/masterplan:estado`, `/masterplan:auditar`, `/masterplan:cambio`, `/masterplan:relevo`.
-- **Velocidad (1.3):** `rigor` bajo/medio/alto por proyecto, plan en cortes verticales con un primer
+- **Piloto automático (1.5):** `/masterplan:auto` permite que Masterplan siga solo, sesión tras sesión, hasta terminar; se detiene ante producción, cobros, mensajes, borrados, cuentas y llaves.
+- **Velocidad (1.4):** `rigor` bajo/medio/alto por proyecto, plan en cortes verticales con un primer
   hito visible antes de la mitad, olas en paralelo en sesiones propias y relevos autogenerados.
 - **Políticas de seguridad (hooks)** que bloquean mientras se escribe: la llave `service_role` en el
   navegador, secretos con prefijo `VITE_`, llaves escritas en el código, escribir `.env`, push

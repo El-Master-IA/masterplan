@@ -68,13 +68,14 @@ function cmdEstado() {
   if (faltan.length) fallar(`proyecto.json incompleto: falta ${faltan.join(', ')}`)
   if (!Number.isInteger(pr.fase) || pr.fase < 0 || pr.fase > 8) fallar('proyecto.json: "fase" debe ser un entero de 0 a 8')
   if (pr.rigor !== undefined && !RIGOR.includes(pr.rigor)) fallar(`proyecto.json: "rigor" debe ser ${RIGOR.join(' | ')}`)
+  if (pr.autonomia !== undefined && !AUTONOMIA.includes(pr.autonomia)) fallar(`proyecto.json: "autonomia" debe ser ${AUTONOMIA.join(' | ')}`)
   if (pr.paralelo_max !== undefined && !(Number.isInteger(pr.paralelo_max) && pr.paralelo_max >= 1 && pr.paralelo_max <= 10)) fallar('proyecto.json: "paralelo_max" debe ser un entero de 1 a 10')
   const ts = tareas()
   const cuenta = Object.fromEntries(ESTADOS_TAREA.map(e => [e, ts.filter(t => t.estado === e).length]))
   const relevos = archivos(path.join(MP, 'relevos'), p => p.endsWith('.md')).sort()
   const buzon = archivos(path.join(MP, 'buzon'), p => p.endsWith('.md') && !p.includes(`${path.sep}leidos${path.sep}`))
   console.log(`Proyecto: ${pr.nombre}  (${pr.modo}${pr.tipo ? ', ' + pr.tipo : ''})`)
-  console.log(`Fase: ${pr.fase} · ${FASES[pr.fase]} · rigor ${pr.rigor || 'medio (por defecto)'}`)
+  console.log(`Fase: ${pr.fase} · ${FASES[pr.fase]} · rigor ${pr.rigor || 'medio (por defecto)'} · autonomía ${pr.autonomia || 'guiada'}`)
   if (ts.length) console.log(`Tareas: ${cuenta.hecha}/${ts.length} hechas · ${cuenta['en-curso']} en curso · ${cuenta.bloqueada} bloqueadas`)
   const sig = siguientes(ts)
   if (sig.length) console.log(`Siguiente: ${sig.map(t => `${t.id} (${t.titulo})`).join(', ')}`)
@@ -838,12 +839,77 @@ function cmdProveedores([sub, ...args]) {
   fallar('Uso: masterplan.mjs proveedores recomendar [--rasgos a,b] [--presupuesto cero|bajo|medio|alto] [--json] [--guardar] | lista [--categoria c] | ver <id> | validar')
 }
 
+// ---------- piloto automático: seguir en una sesión nueva sin que la persona escriba nada ----------
+const AUTONOMIA = ['guiada', 'continua']
+const SESIONES_AUTO_MAX = 30
+// Lo que SIEMPRE necesita a la persona, aunque haya dado permisos totales.
+const SIEMPRE_HUMANO = 'publicar a producción, cobrar, enviar mensajes, borrar datos, crear cuentas o llaves, gastar dinero nuevo, rotar secretos, push forzado'
+
+function decisionAuto(pr) {
+  const parar = (motivo, quien = 'persona') => ({ accion: 'parar', motivo, quien })
+  if ((pr.autonomia || 'guiada') !== 'continua') return parar('autonomía guiada: la persona decide cuándo seguir (actívala con /masterplan:auto)')
+  if (pr.fase < 5) return parar(`la fase ${pr.fase} (${FASES[pr.fase]}) es una conversación con la persona: hay respuestas que solo ella tiene`)
+  if (pr.fase >= 7) return parar(`la fase ${pr.fase} termina en publicar o mantener producción: hace falta tu confirmación (${SIEMPRE_HUMANO})`)
+  const pend = (pr.pendientes_humanos || []).filter(Boolean)
+  if (pend.length) return parar(`falta algo que solo la persona puede dar: ${pend.join('; ')}`)
+  const ts = tareas()
+  const bloq = ts.filter(t => t.estado === 'bloqueada')
+  if (bloq.length) return parar(`tareas bloqueadas: ${bloq.map(t => `${t.id} (${t.motivo || 'sin motivo'})`).join(', ')}`)
+  const n = pr.auto?.sesiones ?? 0
+  const max = pr.auto?.max ?? SESIONES_AUTO_MAX
+  if (n >= max) return parar(`ya se encadenaron ${n} sesiones automáticas (tope ${max}): revisa el avance antes de seguir`)
+  if (pr.fase === 6) {
+    if (!ts.length) return parar('no hay plan/tareas.json')
+    const cur = ts.filter(t => t.estado === 'en-curso')
+    const sig = siguientes(ts)
+    if (!sig.length && !cur.length && ts.every(t => t.estado === 'hecha')) return { accion: 'continuar', motivo: 'todas las tareas están hechas: pasar a la fase 7 (verificar)', prompt: '/masterplan:seguir', sesiones: n + 1 }
+    if (!sig.length && !cur.length) return parar('no hay tareas libres ni en curso, pero el plan no está completo: revisa dependencias')
+  }
+  return { accion: 'continuar', motivo: `fase ${pr.fase} (${FASES[pr.fase]}) con trabajo pendiente`, prompt: '/masterplan:seguir', sesiones: n + 1 }
+}
+
+function cmdAuto(args) {
+  const pr = proyecto()
+  if (args[0] === 'activar') {
+    pr.autonomia = 'continua'
+    pr.auto = { sesiones: 0, max: SESIONES_AUTO_MAX, desde: ahora() }
+    guardarProyecto(pr)
+    return console.log(`✓ autonomía continua: Masterplan seguirá solo en sesiones nuevas hasta terminar. Se detiene ante: ${SIEMPRE_HUMANO}, llaves o cuentas que falten, tareas bloqueadas y preguntas que solo tú puedes contestar.`)
+  }
+  if (args[0] === 'desactivar') {
+    pr.autonomia = 'guiada'
+    guardarProyecto(pr)
+    return console.log('✓ autonomía guiada: al cerrar cada fase u ola se te dirá cómo seguir.')
+  }
+  if (args[0] === 'pendiente') {
+    const txt = args.slice(1).join(' ').trim()
+    if (!txt) fallar('Uso: masterplan.mjs auto pendiente "<qué necesita la persona>"')
+    pr.pendientes_humanos = [...(pr.pendientes_humanos || []), txt]
+    guardarProyecto(pr)
+    return console.log(`✓ anotado: ${txt}`)
+  }
+  if (args[0] === 'resuelto') {
+    pr.pendientes_humanos = []
+    guardarProyecto(pr)
+    return console.log('✓ pendientes de la persona resueltos')
+  }
+  const d = decisionAuto(pr)
+  if (d.accion === 'continuar' && args.includes('--registrar')) {
+    pr.auto = { ...(pr.auto || { max: SESIONES_AUTO_MAX }), sesiones: d.sesiones, ultima: ahora() }
+    guardarProyecto(pr)
+  }
+  if (args.includes('--json')) return console.log(JSON.stringify(d, null, 2))
+  console.log(d.accion === 'continuar' ? `CONTINUAR · ${d.motivo} · lanza una sesión nueva con: ${d.prompt}` : `PARAR · ${d.motivo}`)
+  process.exit(d.accion === 'continuar' ? 0 : 3)
+}
+
 // ---------- main ----------
 const AYUDA = `Masterplan · comandos (desde la raíz de tu proyecto)
   estado                         fase, tareas, último relevo y buzón
   validar [--json]               revisa el plano y el plan (sale 1 si hay BLOCKER)
   tarea                          muestra las tareas disponibles de la ola actual
   tarea <id> <estado> [motivo]   pendiente | en-curso | hecha | bloqueada  (en-curso acepta --sesion=<id>)
+  auto [--json] [--registrar]   ¿seguir solo en una sesión nueva? (CONTINUAR/PARAR con el motivo); auto activar|desactivar|pendiente "…"|resuelto
   ola [n] [--escribir] [--json]  tareas libres de la ola para lanzar en paralelo, una sesión por tarea, con sus briefs
   pgtap-resumen <archivo|->      lista los asertos que fallan en una salida TAP/pgTAP
   auditoria fusionar|comparar    une hallazgos y calcula las dos notas / compara las 2 últimas
@@ -866,6 +932,7 @@ try {
     case 'cambio': cmdCambio(args); break
     case 'relevo': cmdRelevo(args); break
     case 'ola': cmdOla(args); break
+    case 'auto': cmdAuto(args); break
     case 'pgtap-resumen': cmdPgtap(args); break
     case 'buzon': cmdBuzon(args); break
     case 'proveedores': cmdProveedores(args); break

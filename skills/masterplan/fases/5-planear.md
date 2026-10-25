@@ -82,4 +82,4 @@ Copia `AGENTS.md` igual de corto para otras herramientas.
 - [ ] `node "${CLAUDE_PLUGIN_ROOT}/scripts/masterplan.mjs" validar` → 0 BLOCKER (revisa tareas, olas, criterios, verify, referencias a specs)
 - [ ] `masterplan:revisor-plano` en PASS sobre el plan
 - [ ] `proyecto.json`: `fase: 6`
-- [ ] Relevo `relevos/05-planear.md`. Propón: "Abre una sesión nueva en esta carpeta y dime: *Sigamos con mi proyecto*, para construir."
+- [ ] Relevo `relevos/05-planear.md`. Corre `masterplan.mjs auto --json --registrar`: con autonomía continua lanza tú la sesión de construcción; si no, propón: "Abre una sesión nueva en esta carpeta y dime: *Sigamos con mi proyecto*, para construir."

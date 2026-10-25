@@ -22,6 +22,9 @@
       "default": "medio",
       "description": "Cuánta revisión lleva el proyecto: vueltas del revisor-plano (1/2/3), y revisión y auditoría por ola (bajo) o por tarea (alto). Se propone en la fase 1."
     },
+    "autonomia": { "enum": ["guiada", "continua"], "default": "guiada", "description": "continua: Masterplan lanza solo la sesión siguiente al cerrar cada fase u ola hasta terminar, salvo lo delicado. La activa la persona con /masterplan:auto." },
+    "auto": { "type": "object", "additionalProperties": true, "description": "Contador de sesiones automáticas encadenadas (lo escribe masterplan.mjs auto)." },
+    "pendientes_humanos": { "type": "array", "items": { "type": "string" }, "description": "Lo que solo la persona puede dar; mientras haya algo aquí el piloto automático se detiene." },
     "paralelo_max": { "type": "integer", "minimum": 1, "maximum": 10, "default": 5, "description": "Máximo de sesiones en paralelo por ola en la fase 6." },
     "entorno": {
       "type": "object",
