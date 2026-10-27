@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/La-Boveda-del-Master/masterplan/skills/auditor/hallazgo.schema.json",
+  "$id": "https://github.com/El-Master-IA/masterplan/skills/auditor/hallazgo.schema.json",
   "title": "Hallazgo de auditoría Masterplan",
   "description": "Un hallazgo de un auditor. Cada agente escribe un array de estos objetos en masterplan/auditoria/pendientes/<agente>.json; `masterplan.mjs auditoria fusionar` los valida, deduplica y calcula las notas.",
   "type": "object",

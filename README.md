@@ -4,7 +4,7 @@
 entrevista, diseña el frontend, el backend, los datos, las APIs y la seguridad, construye paso a
 paso con un agente por tarea, audita, publica y mantiene tu proyecto. En español.
 
-Un kit de [La Bóveda del Master](https://la-boveda-del-master.vercel.app/boveda/masterplan) por
+Un kit de [El Máster IA](https://la-boveda-del-master.vercel.app/lab/masterplan) por
 Alexander Cast.
 
 ---
@@ -14,19 +14,24 @@ Alexander Cast.
 En una terminal con Claude Code:
 
 ```
-/plugin marketplace add La-Boveda-del-Master/masterplan
-/plugin install masterplan@la-boveda-del-master
+/plugin marketplace add El-Master-IA/masterplan
+/plugin install masterplan@el-master-ia
 ```
 
 Desde la shell:
 
 ```bash
-claude plugin marketplace add La-Boveda-del-Master/masterplan
-claude plugin install masterplan@la-boveda-del-master
+claude plugin marketplace add El-Master-IA/masterplan
+claude plugin install masterplan@el-master-ia
 ```
 
 En la app de escritorio (pestaña Code): botón **+** junto al campo de texto → **Plugins** →
-**Add marketplace** con `La-Boveda-del-Master/masterplan` → **Add plugin**.
+**Add marketplace** con `El-Master-IA/masterplan` → **Add plugin**.
+
+> **¿Ya lo tenías instalado?** La organización de GitHub cambió de `La-Boveda-del-Master` a `El-Master-IA` y el
+> marketplace ahora se llama `el-master-ia`. Agrega el marketplace nuevo con los comandos de arriba, instala
+> `masterplan@el-master-ia` y quita el viejo: `claude plugin uninstall masterplan@la-boveda-del-master` y
+> `claude plugin marketplace remove la-boveda-del-master`.
 
 **Necesitas:** Claude Code reciente, Node.js 20 o superior y git. Para construir el SaaS: una
 cuenta en los servicios que te recomiende para tu proyecto (te dice cuáles y cuándo).
@@ -219,4 +224,4 @@ Enrique.
 
 ## Licencia
 
-MIT © 2026 Alexander Cast · La Bóveda del Master, con el crédito a Enrique Rocha de arriba. Ver [LICENSE](LICENSE).
+MIT © 2026 Alexander Cast · El Máster IA, con el crédito a Enrique Rocha de arriba. Ver [LICENSE](LICENSE).

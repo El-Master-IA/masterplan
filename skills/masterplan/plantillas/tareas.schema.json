@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/La-Boveda-del-Master/masterplan/plantillas/tareas.schema.json",
+  "$id": "https://github.com/El-Master-IA/masterplan/plantillas/tareas.schema.json",
   "title": "Masterplan · plan/tareas.json",
   "description": "Lista de tareas del plan. Reglas adicionales que valida masterplan.mjs: ids únicos, dependencias existentes y de olas anteriores, ninguna tarea de la misma ola comparte archivos, specs citadas existen en masterplan/specs/.",
   "type": "array",

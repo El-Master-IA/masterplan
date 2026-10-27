@@ -1,14 +1,14 @@
 {
   "name": "masterplan",
   "displayName": "Masterplan",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Construye software desde cero con bases sólidas: te entrevista, diseña frontend, backend, datos, APIs y seguridad, construye paso a paso con un agente por tarea, audita (también proyectos ya construidos con otras herramientas), publica y mantiene. Specs vivas, puertas verificadas por máquina y un mod que conecta tus sesiones para que nada se cargue en una sola conversación. En español.",
   "author": {
-    "name": "Alexander Cast · La Bóveda del Master",
-    "url": "https://github.com/La-Boveda-del-Master"
+    "name": "Alexander Cast · El Máster IA",
+    "url": "https://github.com/El-Master-IA"
   },
-  "homepage": "https://la-boveda-del-master.vercel.app/boveda/masterplan",
-  "repository": "https://github.com/La-Boveda-del-Master/masterplan",
+  "homepage": "https://la-boveda-del-master.vercel.app/lab/masterplan",
+  "repository": "https://github.com/El-Master-IA/masterplan",
   "license": "MIT",
   "keywords": [
     "arquitectura",

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/La-Boveda-del-Master/masterplan/plantillas/proyecto.schema.json",
+  "$id": "https://github.com/El-Master-IA/masterplan/plantillas/proyecto.schema.json",
   "title": "Masterplan · proyecto.json",
   "description": "Contrato del proyecto. Regla documentada (no validada aquí): alcance.noGoals debe tener al menos 5 elementos para salir de la fase 2.",
   "type": "object",

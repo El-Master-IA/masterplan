@@ -1,5 +1,12 @@
 # Cambios
 
+## 1.5.1 · 2026-10-26
+
+Nombre nuevo de la organización: **El-Master-IA** (antes La-Boveda-del-Master).
+
+- El marketplace pasa a llamarse `el-master-ia`: se instala con `/plugin marketplace add El-Master-IA/masterplan` y `/plugin install masterplan@el-master-ia`. Quien ya lo tenía debe agregar el marketplace nuevo y quitar el viejo (ver README).
+- Autor, enlaces, `homepage` (`/lab/masterplan`), licencia y los `$id` de los esquemas JSON con la marca El Máster IA.
+
 ## 1.5.0 · 2026-10-25
 
 Piloto automático: nadie tiene que escribir `/masterplan:seguir` en otro chat.

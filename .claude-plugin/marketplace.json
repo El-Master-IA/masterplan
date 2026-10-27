@@ -1,18 +1,18 @@
 {
-  "name": "la-boveda-del-master",
+  "name": "el-master-ia",
   "owner": {
-    "name": "Alexander Cast · La Bóveda del Master",
-    "url": "https://github.com/La-Boveda-del-Master"
+    "name": "Alexander Cast · El Máster IA",
+    "url": "https://github.com/El-Master-IA"
   },
   "metadata": {
-    "description": "Kits gratis de La Bóveda del Master para construir con Claude Code."
+    "description": "Kits gratis de El Máster IA para construir con Claude Code."
   },
   "plugins": [
     {
       "name": "masterplan",
       "source": "./",
       "description": "De la idea a un SaaS en producción con bases sólidas de frontend, backend, datos, APIs y seguridad.",
-      "version": "1.5.0"
+      "version": "1.5.1"
     }
   ]
 }
