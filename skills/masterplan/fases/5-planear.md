@@ -8,8 +8,8 @@ Usa el reporte de `masterplan:investigador` de esta sesión (despáchalo si no h
 instalar".
 
 ## 2. Orden de construcción
-Parte del orden base del archivo del tipo (`conocimiento/tipos/<tipo>.md`) y de los pasos que
-agrega cada kit. Reglas:
+Parte del orden base del archivo del tipo (`conocimiento/tipos/<tipo>.md`) y de la sección "Pasos
+que agrega al plan" del `construccion.md` de cada kit del proyecto. Reglas:
 - Primer paso: proyecto + `.gitignore` + git + lint/typecheck/test corriendo en CI local.
 - Seguridad y datos antes que pantallas: tenencia y RLS con su test de aislamiento antes del CRUD.
 - **Cortes verticales, no capas.** No construyas toda la base, luego todas las funciones y al final
@@ -80,6 +80,8 @@ Copia `AGENTS.md` igual de corto para otras herramientas.
 
 ## Puerta
 - [ ] `node "${CLAUDE_PLUGIN_ROOT}/scripts/masterplan.mjs" validar` → 0 BLOCKER (revisa tareas, olas, criterios, verify, referencias a specs)
-- [ ] `masterplan:revisor-plano` en PASS sobre el plan
+- [ ] `masterplan:revisor-plano` sobre el plan, **una sola vuelta** (revisa lo que el script no
+      puede: criterio de error, pasos que rompen pasos anteriores, aislamiento antes del CRUD).
+      Corrige BLOCKER y MAJOR y vuelve a correr `validar`; no se despacha de nuevo.
 - [ ] `proyecto.json`: `fase: 6`
-- [ ] Relevo `relevos/05-planear.md`. Corre `masterplan.mjs auto --json --registrar`: con autonomía continua lanza tú la sesión de construcción; si no, propón: "Abre una sesión nueva en esta carpeta y dime: *Sigamos con mi proyecto*, para construir."
+- [ ] Fin del tramo **Diseñar y aprobar**: `masterplan.mjs relevo 05-planear`. Corre `masterplan.mjs auto --json --registrar`: con autonomía continua lanza tú la sesión de construcción; si no, propón: "Abre una sesión nueva en esta carpeta y dime: *Sigamos con mi proyecto*, para construir."

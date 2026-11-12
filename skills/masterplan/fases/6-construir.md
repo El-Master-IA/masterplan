@@ -6,7 +6,8 @@ tenga que ser el pegamento entre herramientas, y lo más rápido que permitan la
 
 ## Antes de empezar
 - Lee `proyecto.json` (incluye `rigor` y `paralelo_max`), `plan/tareas.json` y el último relevo.
-  Nada más: los documentos de diseño los leen los agentes cuando su tarea los cita.
+  Nada más: los documentos de diseño los leen los agentes cuando su tarea los cita, y cada brief
+  ya trae las specs citadas y lo que aplica del kit (candados, pruebas y trampas).
 - Confirma que el árbol de git está limpio y que el último tag `mp-T*` corresponde a la última
   tarea `hecha`. Si no, reporta y pregunta antes de seguir.
 - Mod activo: `mcp__masterplan__registrar` con `fase: 6` y la ola que tomas.
@@ -29,8 +30,9 @@ tenga que ser el pegamento entre herramientas, y lo más rápido que permitan la
    Devuelve las tareas libres (dependencias en `hecha`, sin archivos compartidos), respeta
    `paralelo_max` (por defecto 5) y deja un **brief autocontenido** por tarea en
    `masterplan/olas/ola-<n>/<id>.brief.md`.
-2. **Confirma con la persona** el número de sesiones (cada una gasta cuota de uso en paralelo) salvo
-   que ya lo haya autorizado para el proyecto.
+2. **Confirma con la persona una sola vez por proyecto** que las olas lancen varias sesiones a la
+   vez (cada una gasta cuota de uso). El resultado de `ola` trae `confirmar: true` solo si aún no
+   lo autorizó; con su sí, corre `masterplan.mjs ola --autorizar` y no vuelvas a preguntarlo.
 3. **Lanza una sesión nueva por tarea** (modo `paralelo`, por defecto con ≥2 tareas libres):
    - Cliente con herramienta de sesiones (Claude Desktop: `start_session`): una sesión por tarea,
      con `use_worktree: true`, contexto `fresh` y como prompt el contenido del brief. Marca cada
@@ -46,11 +48,15 @@ tenga que ser el pegamento entre herramientas, y lo más rápido que permitan la
 5. **Integra** cuando todas reportaron (tú, en una sola sesión, en orden de id):
    a. Trae la rama `mp-<id>` (`git merge --no-ff mp-<id>`); si choca, resuelve y deja el motivo en
       `decisiones.log`.
-   b. Corre cada comando de `verificar` de la tarea y los de las anteriores que tocan los mismos
-      archivos. La salida real queda en `masterplan/evidencia/<id>.txt` (**un solo archivo por
-      tarea**: el de la sesión; tú lo completas, no creas otro).
+   b. Con todas las ramas de la ola integradas, corre **una sola vez** el gate rápido de
+      `plan/gate.md` (typecheck, lint y la suite de pruebas). Cada sesión ya dejó la salida de sus
+      `verificar` en `masterplan/evidencia/<id>.txt` (**un solo archivo por tarea**); no los
+      repitas uno por uno. Solo si el gate falla, corre los `verificar` de las tareas implicadas
+      para ubicar cuál lo rompió y añade esa salida a su evidencia.
    c. Pruebas de base de datos: `masterplan.mjs pgtap-resumen <salida>` para ver qué aserto falla.
-   d. Revisión según el rigor (tabla de arriba), sobre el diff acumulado de la ola.
+   d. Revisión según el rigor (tabla de arriba), sobre el diff acumulado de la ola. Los revisores
+      solo leen: despacha `masterplan:revisor-codigo` y `masterplan:auditor-seguridad` **en el
+      mismo mensaje**, nunca uno después del otro.
    e. Con todo en 0 y sin bloqueos: corre el `checkpoint` de cada tarea y
       `masterplan.mjs tarea <id> hecha`. Una línea a la persona por tarea: "T05 lista: aislamiento
       probado (2/2 tests)."

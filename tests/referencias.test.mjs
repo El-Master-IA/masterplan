@@ -192,3 +192,53 @@ test('cabeceras: description y argument-hint no rompen el YAML (si no, Claude Co
   }
   assert.deepEqual(malos, [])
 })
+
+// ---------- 1.6.0: velocidad ----------
+test('kits: cada kit tiene sus dos mitades (decisión con candados, construcción con pruebas)', () => {
+  for (const d of fs.readdirSync(path.join(RAIZ, 'skills')).filter(x => x.startsWith('kit-'))) {
+    const skill = leer(path.join(RAIZ, 'skills', d, 'SKILL.md'))
+    const cons = leer(path.join(RAIZ, 'skills', d, 'construccion.md'))
+    assert.match(skill, /^## Candados/m, `${d}: SKILL.md sin Candados`)
+    assert.doesNotMatch(skill, /^## (Pasos que agrega al plan|Trampas)/m, `${d}: SKILL.md todavía trae construcción`)
+    assert.match(cons, /^## Pasos que agrega al plan/m, `${d}: construccion.md sin pasos`)
+    assert.match(cons, /^## Pruebas obligatorias/m, `${d}: construccion.md sin pruebas`)
+  }
+})
+
+test('ola: el brief trae los candados, pruebas y trampas del kit de la tarea', () => {
+  const dir = proyectoFase6()
+  const p = path.join(dir, 'masterplan/plan/tareas.json')
+  const ts = JSON.parse(leer(p)); ts[0].kit = 'masterplan:kit-auth'
+  fs.writeFileSync(p, JSON.stringify(ts))
+  const r = mp(dir, 'ola', '--json')
+  assert.equal(r.status, 0, r.stdout + r.stderr)
+  const brief = JSON.parse(r.stdout).briefs[0].brief
+  assert.match(brief, /## Del kit masterplan:kit-auth/)
+  assert.match(brief, /### Candados/)
+  assert.match(brief, /### Pruebas obligatorias/)
+  assert.match(brief, /no abras el kit/)
+})
+
+test('ola: la autorización del paralelo se pide una vez y queda guardada', () => {
+  const dir = proyectoFase6()
+  const p = path.join(dir, 'masterplan/plan/tareas.json')
+  const t = JSON.parse(leer(p))[0]
+  fs.writeFileSync(p, JSON.stringify([t, { ...t, id: 'T02', titulo: 'Tarea T02', archivos: ['src/b.ts'] }]))
+  assert.equal(JSON.parse(mp(dir, 'ola', '--json').stdout).confirmar, true)
+  assert.equal(JSON.parse(mp(dir, 'ola', '--json', '--autorizar').stdout).confirmar, false)
+  assert.equal(JSON.parse(mp(dir, 'ola', '--json').stdout).confirmar, false)
+  const pr = JSON.parse(leer(path.join(dir, 'masterplan/proyecto.json')))
+  const sp = esquema('proyecto.schema.json')
+  assert.deepEqual(validar(pr, sp, sp), [])
+})
+
+test('reglas: fuente única, y los documentos no la contradicen', () => {
+  const r = mp(fs.mkdtempSync(path.join(os.tmpdir(), 'mp-r-')), 'reglas', '--json')
+  assert.equal(r.status, 0, r.stderr)
+  const reglas = JSON.parse(r.stdout)
+  const v = reglas.rigor
+  const puertas = leer(path.join(SKILL, 'fases', '4-puertas.md'))
+  assert.ok(puertas.includes(`\`bajo\` ${v.bajo.vueltas_revisor_plano}, \`medio\` ${v.medio.vueltas_revisor_plano}, \`alto\` ${v.alto.vueltas_revisor_plano}`), 'fase 4 no coincide con las vueltas del CLI')
+  assert.ok(leer(path.join(SKILL, 'SKILL.md')).includes(`como máximo ${reglas.preguntas_max_diseno} preguntas`))
+  assert.deepEqual(reglas.tramos.flatMap(t => t.fases), [0, 1, 2, 3, 4, 5, 6, 7, 8])
+})

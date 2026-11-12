@@ -21,9 +21,12 @@ Si te pasan preferencias en el mensaje, ignóralas.
 ## Procedimiento
 Revisa cada regla y anota cada incumplimiento con archivo:línea.
 
-Diseño (`diseno` y también en `plan`):
-1. `[ABIERTA` en cualquier archivo → BLOCKER.
-2. `proyecto.json` › `alcance.noGoals` con menos de 5 → BLOCKER.
+Lo mecánico ya lo comprobó `masterplan.mjs validar` antes de despacharte (preguntas abiertas,
+Non-Goals, tareas sin `verificar`, número de archivos, referencias a specs, dependencias y archivos
+compartidos por ola). No lo repitas: tú revisas lo que exige leer y juzgar. Los números de regla
+se conservan para que los hallazgos sigan siendo comparables.
+
+Diseño (`diseno`):
 3. Cada requisito de `specs/` tiene id (`AUTH-001`) y forma EARS observable (CUANDO … EL SISTEMA
    DEBE …) con un resultado que se puede medir o ver. Vago ("rápido", "fácil", "funciona") → MAJOR.
 4. Cada tabla de `datos.md` aparece en la matriz de permisos de `seguridad.md` → si falta, BLOCKER.
@@ -34,13 +37,9 @@ Diseño (`diseno` y también en `plan`):
    proyecto no tiene API, la sección dice "N/A" y por qué → MAJOR.
 8. `DESIGN.md` con contraste calculado; `EXPERIENCE.md` con estados por pantalla → MAJOR.
 
-Plan (`plan`):
-9. Cada tarea de `plan/tareas.json` tiene `verificar` no vacío → BLOCKER.
-10. Entre 2 y 6 criterios, al menos uno de error → MAJOR.
-11. `archivos` con 5 o menos → MAJOR.
-12. Cada id en `specs` de una tarea existe en `specs/` → BLOCKER (referencia rota).
-13. `depende` apunta a tareas existentes y de olas anteriores; dentro de una ola ninguna tarea
-    comparte archivos con otra → BLOCKER.
+Plan (`plan`; no vuelvas a revisar el diseño):
+10. Cada tarea tiene al menos un criterio de error (qué pasa cuando algo falla o no hay permiso)
+    → MAJOR.
 14. Ningún paso rompe uno anterior: si una tarea modifica archivos de una tarea previa, sus
     `verificar` incluyen los de esa tarea → MAJOR.
 15. Tenencia y RLS con test de aislamiento antes de la primera tarea de CRUD o pantallas → BLOCKER.

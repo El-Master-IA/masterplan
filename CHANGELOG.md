@@ -1,5 +1,21 @@
 # Cambios
 
+## 1.6.0 · 2026-11-11
+
+Velocidad: menos sesiones, menos preguntas, menos lectura y menos revisiones en fila. Las puertas siguen todas.
+
+- **Tramos en vez de un relevo por fase.** Las fases se agrupan en Definir (0, 1, 2), Diseñar y aprobar (3, 4, 5), Construir (6, una sesión por ola) y Publicar (7). Dentro de un tramo se sigue en la misma conversación; el relevo se escribe al cerrar el tramo o si el contexto pasa de la mitad. Antes eran siete relevos, ahora son cuatro.
+- **Presupuesto de preguntas.** En todo el diseño (fases 3 y 4) se hacen como máximo 5 preguntas. Las preguntas de los kits ya no se hacen una por una: se toma el default del tipo de producto y se muestran en un bloque "Asumí esto" que corriges en una línea.
+- **Kits en dos mitades.** Cada kit se partió en `SKILL.md` (decisiones y candados, para diseñar) y `construccion.md` (pasos, pruebas, lista de producción y trampas). La fase 3 lee 807 líneas de kits en lugar de 1.321 si el proyecto usa los diez.
+- **Fase 3 en paralelo.** Primero `arquitectura.md`; después, en un solo mensaje, `arquitecto-datos` y `disenador`, mientras el conductor escribe `api.md` y las specs.
+- **Fase 4 con agentes independientes y en paralelo.** Agente nuevo `masterplan:critico` (pre-mortem y checklists) despachado junto con `masterplan:revisor-plano`.
+- **Revisor del plano sin repetir al script.** Ya no revisa lo que `validar` comprueba. Vueltas máximas: rigor bajo 1, medio 1, alto 2 (antes 1, 2 y 3). En la fase 5, una sola vuelta.
+- **Fase 6 más corta.** El brief de cada tarea trae los candados, pruebas y trampas de su kit, así el constructor no abre el kit. Tras integrar la ola se corre el gate una vez en lugar de repetir los `verificar` de cada tarea. `revisor-codigo` y `auditor-seguridad` van en el mismo mensaje.
+- **El paralelo se autoriza una vez por proyecto** (`masterplan.mjs ola --autorizar`, `proyecto.json.paralelo_autorizado`).
+- **`masterplan.mjs reglas`**: fuente única de "siempre pregunta a la persona", vueltas y revisión por rigor, tramos y tope de preguntas. Los documentos la citan en vez de copiarla, y un test comprueba que no la contradigan.
+
+Compatibilidad: los proyectos en curso siguen igual; las fases no cambian de número y los campos nuevos de `proyecto.json` son opcionales.
+
 ## 1.5.2 · 2026-11-11
 
 Limpieza y correcciones: el plugin deja de contradecirse. Nada cambia en cómo se usa.

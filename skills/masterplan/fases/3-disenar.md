@@ -19,8 +19,14 @@ Antes de empezar dile a la persona cuánto va a tardar (normalmente 10–20 min)
 - Lista las capacidades que el alcance exige: auth, datos, api, frontend, pagos, deploy,
   observabilidad, correo, archivos, video, trabajos en segundo plano, tiempo real, chatbots y
   ventas por chat, IA (modelos de texto e IA generativa de imagen, video y voz). Para cada
-  una hay un kit (`masterplan:kit-*`): lee su SKILL.md antes de decidirla. Los kits explican el
-  camino con Supabase y dicen qué cambia con otros proveedores.
+  una hay un kit (`masterplan:kit-*`): lee **solo su `SKILL.md`** (decisiones y candados) antes de
+  decidirla; `construccion.md` no hace falta en esta fase. Los kits explican el camino con
+  Supabase y dicen qué cambia con otros proveedores.
+- **Las preguntas de los kits no se hacen una por una.** Toma el "Default recomendado" de cada
+  una según el tipo, la audiencia y el rigor del proyecto, y preséntalas todas en un solo bloque
+  "Asumí esto" (capacidad · decisión · qué cambiaría). Sube a pregunta únicamente lo que cambia el
+  costo mensual, el alcance o el trato de datos personales, dentro del presupuesto de 5 preguntas
+  de todo el diseño (regla 2). Cada default va a `decisiones.log` con fuente `default-kit`.
 - Revisa `conocimiento/compatibilidad.md`.
 - Despacha `masterplan:investigador` en segundo plano con la lista de paquetes del perfil y los SDK
   de los proveedores: devuelve versión estable actual, fuente y fecha. Se usa en la fase 5.
@@ -43,7 +49,15 @@ seguridad, privacidad, rendimiento, costo, velocidad de cambio, accesibilidad. E
 `arquitectura.md`.
 
 ## 3. Documentos (usa `plantillas/`)
-Escríbelos en este orden; cada uno lee los anteriores.
+Dos pasos, no siete en fila:
+1. **Tú escribes `arquitectura.md`** (corto: C4, atributos de calidad, estilo, ADR-001). Es lo
+   único que todos los demás necesitan leer.
+2. **En un solo mensaje, en paralelo:** `masterplan:arquitecto-datos` (datos.md y la parte de RLS
+   de seguridad.md) y `masterplan:disenador` (DESIGN.md y EXPERIENCE.md). El diseñador no necesita
+   el modelo de datos, solo el brief, el flujo principal y la arquitectura. Mientras trabajan, tú
+   escribes `api.md` y las specs.
+3. Cuando vuelven, completas `seguridad.md` (amenazas, secretos, privacidad) y cruzas una sola
+   vez: cada entidad de `datos.md` aparece en `api.md` y en las pantallas de `EXPERIENCE.md`.
 
 | Documento | Quién | Debe contener |
 |---|---|---|
@@ -66,4 +80,5 @@ salta. Usa los planes vigentes; si no los verificaste hoy, márcalo "verificar".
 - [ ] Los 7 documentos existen y `node "${CLAUDE_PLUGIN_ROOT}/scripts/masterplan.mjs" validar` no
       reporta BLOCKER de estructura
 - [ ] `proyecto.json`: `necesidades`, `proveedores`, `perfil`, `capacidades[]`, `calidad`, `fase: 4`
-- [ ] Relevo `relevos/03-disenar.md` y propuesta de sesión nueva para las puertas
+- [ ] Sigue a la fase 4 en esta misma sesión (mismo tramo). Solo si el contexto ya pasó de la
+      mitad: `masterplan.mjs relevo 03-disenar` y sesión nueva.

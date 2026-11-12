@@ -1,9 +1,11 @@
 ---
-description: Cierra la fase u ola actual escribiendo el relevo y deja listas las instrucciones para la sesión siguiente
+description: Cierra el tramo u ola actual escribiendo el relevo y deja listas las instrucciones para la sesión siguiente
 argument-hint: "[nota para la sesión siguiente]"
 ---
 
-Carga la skill `masterplan`. Este comando cierra; no empieza trabajo nuevo.
+Carga la skill `masterplan`. Este comando cierra; no empieza trabajo nuevo. El relevo se escribe al
+cerrar un tramo (fases 2, 5, cada ola de la 6 y la 7) o cuando el contexto pasa de la mitad; entre
+fases del mismo tramo no hace falta.
 
 Nota de la persona: $ARGUMENTS
 

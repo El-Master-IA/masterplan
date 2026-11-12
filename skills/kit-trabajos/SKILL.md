@@ -25,7 +25,7 @@ Correos y mensajes, procesamiento de archivos o video, reportes, sincronización
 llamadas largas a modelos de IA, recordatorios, limpieza nocturna, webhooks entrantes que
 disparan trabajo.
 
-## Preguntas de negocio (máx. 3)
+## Preguntas de negocio (se asume el default)
 | # | Pregunta | Default recomendado | Qué cambia |
 |---|---|---|---|
 | 1 | "¿Qué tiene que pasar sin que el usuario espere? ¿Cuánto tarda lo más lento?" | Correos y procesamiento de menos de 1 minuto | Cola simple vs. proceso largo |
@@ -57,11 +57,6 @@ disparan trabajo.
 6. **Secretos** del proveedor solo en el servidor; los endpoints que reciben trabajos verifican la
    firma del proveedor.
 
-## Archivos que produce
-`src/trabajos/<nombre>.ts` (un archivo por trabajo, con su clave de idempotencia), registro del
-cron o de la cola según el proveedor, endpoint firmado que recibe los trabajos (si el proveedor los
-entrega por HTTP), `docs/trabajos.md` con la lista de trabajos, frecuencia, reintentos y alertas.
-
 ## Candados
 | Código | Regla | Cómo se verifica |
 |---|---|---|
@@ -72,26 +67,7 @@ entrega por HTTP), `docs/trabajos.md` con la lista de trabajos, frecuencia, rein
 | TRA-05 | Los mensajes llevan ids, no datos personales | revisión del código del trabajo |
 | TRA-06 | Cron documentado con zona horaria explícita | `docs/trabajos.md` |
 
-## Pasos que agrega al plan
-1. Infraestructura de trabajos del proveedor elegido y un trabajo de prueba.
-   - CUANDO se encola el trabajo de prueba EL SISTEMA DEBE ejecutarlo y registrar `hecho` en menos de 1 minuto
-   - CUANDO el trabajo falla tres veces EL SISTEMA DEBE moverlo a fallidos y emitir una alerta
-2. Primer trabajo real (ej. correo de bienvenida) con idempotencia.
-   - CUANDO el mismo evento llega dos veces EL SISTEMA DEBE enviar un solo correo
-3. Cron necesarios con su zona horaria.
-   - CUANDO llega la hora programada EL SISTEMA DEBE ejecutar el trabajo una vez
-4. Estado visible al usuario para procesos largos (procesando / listo / error).
-
-## Pruebas obligatorias
-Doble ejecución sin efecto doble · fallo forzado llega a fallidos · firma falsa rechazada · cron
-probado con reloj simulado.
-
-## Lista de producción
-Alertas de fallidos conectadas a `kit-observabilidad` · límites del plan del proveedor anotados con
-fecha · costo a 1× y 10× · procedimiento para reprocesar fallidos.
-
-## Trampas
-- `setTimeout` o colas en memoria en serverless: desaparecen al terminar la función.
-- Reintentar sin idempotencia: correos y cobros duplicados.
-- Un solo trabajo gigante: pártelo en pasos para no perder todo a la mitad.
-- Cron en UTC sin decirlo: el recordatorio "de las 8" llega a las 3.
+## Construcción
+Archivos, pasos del plan, pruebas obligatorias, lista de producción y trampas están en
+`construccion.md` (junto a este archivo). Lo lee quien planea (fase 5) y quien construye (fase 6);
+para decidir en la fase 3 basta este archivo.

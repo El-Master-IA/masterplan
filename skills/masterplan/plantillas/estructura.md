@@ -22,7 +22,7 @@ masterplan/
     tareas.json          # tareas con olas, criterios EARS, verificación y checkpoint (tareas.schema.json)
     gate.md              # comandos que deben salir 0 al final + lista de lanzamiento manual
   relevos/
-    <NN>-<fase>.md       # relevo al cerrar cada fase u ola (relevo.md)
+    <NN>-<fase>.md       # relevo al cerrar cada tramo u ola (relevo.md)
   buzon/
     <fecha>-<de>-<para>.md  # mensajes entre sesiones cuando el mod de sesiones no está activo
   olas/

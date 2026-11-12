@@ -25,4 +25,6 @@ primer X, invita a Y, paga"). Ese flujo será la prueba de punta a punta de la f
 ## Puerta
 - [ ] La persona eligió una versión
 - [ ] `proyecto.json`: `alcance.version`, `alcance.flujoPrincipal[]`, `alcance.noGoals[]` (≥5), `fase: 3`
-- [ ] Relevo escrito (`relevos/02-recortar.md`) y propuesta de sesión nueva para la fase 3
+- [ ] Fin del tramo **Definir**: `masterplan.mjs relevo 02-recortar` y propuesta de sesión nueva
+      para diseñar. Si la conversación fue corta (contexto por debajo de la mitad), ofrece seguir
+      aquí mismo con la fase 3.

@@ -40,10 +40,11 @@ Controla cuántas vueltas de revisión del plano, cuánta auditoría por tarea y
 | Rigor | Cuándo | Efecto |
 |---|---|---|
 | `bajo` | Herramienta interna o prototipo, hasta ~10 usuarios conocidos, sin cobros ni datos de terceros | 1 vuelta de revisor-plano; revisión y seguridad por ola; solo BLOCKER bloquea |
-| `medio` (defecto) | Producto con usuarios reales externos, sin pagos ni datos sensibles | 2 vueltas; seguridad por tarea de auth/datos/pagos |
-| `alto` | Cobros, datos personales sensibles, salud, finanzas o muchos usuarios | 3 vueltas; revisión y seguridad por tarea |
+| `medio` (defecto) | Producto con usuarios reales externos, sin pagos ni datos sensibles | 1 vuelta; seguridad por tarea de auth/datos/pagos |
+| `alto` | Cobros, datos personales sensibles, salud, finanzas o muchos usuarios | 2 vueltas; revisión y seguridad por tarea |
 
-Guárdalo en `proyecto.json.rigor` y en `decisiones.log`.
+Guárdalo en `proyecto.json.rigor` y en `decisiones.log`. Los números exactos los da
+`masterplan.mjs reglas`.
 
 ## Puerta
 - [ ] Tipo confirmado por la persona

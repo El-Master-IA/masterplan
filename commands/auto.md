@@ -14,12 +14,11 @@ Argumentos: $ARGUMENTS
 3. `desactivar`: corre `masterplan.mjs auto desactivar` y confirma.
 4. `activar` (o la persona dice "sigue tú hasta terminar", "dame permisos totales"): explica en una
    lista corta lo que va a pasar y pide un "sí" explícito:
-   - Al cerrar cada fase u ola, Masterplan lanza solo la sesión siguiente (`/masterplan:seguir`) y
+   - Al cerrar cada tramo u ola, Masterplan lanza solo la sesión siguiente (`/masterplan:seguir`) y
      las olas de la fase 6 corren en paralelo (`/masterplan:ola`) sin que escribas nada.
-   - **Siempre se detiene y te pregunta** ante: publicar a producción, cobrar, enviar mensajes a
-     terceros, borrar datos, crear cuentas o llaves, gastar dinero nuevo, rotar secretos, push
-     forzado, cualquier tarea que falle 3 veces, y las preguntas de las fases 1 a 4 (solo tú tienes
-     las respuestas).
+   - **Siempre se detiene y te pregunta** ante la lista "siempre pregunta a la persona" de
+     `masterplan.mjs reglas` (léela del comando, no de memoria), cualquier tarea que falle 3 veces
+     y las preguntas de las fases 1 a 4 (solo tú tienes las respuestas).
    - Tope de 30 sesiones encadenadas por activación.
    - Puedes apagarlo cuando quieras con `/masterplan:auto desactivar`.
    Con el sí, corre `masterplan.mjs auto activar`, anótalo en `decisiones.log` (fuente: la persona,

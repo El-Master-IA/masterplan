@@ -19,6 +19,16 @@ const RIGOR = ['bajo', 'medio', 'alto']
 const FASES_PRODUCTO = ['nucleo', 'ampliacion']
 const HACER_MAX = 600
 const PARALELO_MAX = 5
+// Reglas que antes vivían copiadas en varios documentos. Fuente única: `masterplan.mjs reglas`.
+const VUELTAS_REVISOR = { bajo: 1, medio: 1, alto: 2 }
+const PREGUNTAS_MAX = 5
+const TRAMOS = [
+  { nombre: 'definir', fases: [0, 1, 2], relevo: '02-recortar' },
+  { nombre: 'disenar-y-aprobar', fases: [3, 4, 5], relevo: '05-planear' },
+  { nombre: 'construir', fases: [6], relevo: '06-ola-<n> (uno por ola)' },
+  { nombre: 'publicar', fases: [7], relevo: '07-publicar' },
+  { nombre: 'operar', fases: [8], relevo: '(por cambio)' }
+]
 const PALABRAS_VAGAS = /\b(funciona|se ve bien|queda bien|quedó conectado|está implementado|esta implementado|funcione correctamente|works|looks good|is implemented)\b/i
 const ID_SPEC = /\b[A-Z]{2,6}-\d{3}\b/g
 const PESO = { critica: 25, alta: 10, media: 3, baja: 1 }
@@ -286,11 +296,30 @@ function textoSpec(id) {
   return `(no se encontró ${id} en masterplan/specs/)`
 }
 
+// Lo que el constructor necesita del kit, ya dentro del brief: no tiene que abrir el kit entero.
+function seccionMd(archivo, titulo) {
+  if (!existe(archivo)) return ''
+  const parte = leer(archivo).replace(/\r\n/g, '\n').split(/\n(?=## )/).find(p => p.startsWith(`## ${titulo}`))
+  return parte ? parte.split('\n').slice(1).join('\n').trim() : ''
+}
+function extractoKit(kit) {
+  if (!kit) return ''
+  const dir = path.join(PLUGIN, 'skills', kit.replace(/^masterplan:/, ''))
+  const partes = [
+    ['Candados', seccionMd(path.join(dir, 'SKILL.md'), 'Candados')],
+    ['Pruebas obligatorias', seccionMd(path.join(dir, 'construccion.md'), 'Pruebas obligatorias')],
+    ['Trampas', seccionMd(path.join(dir, 'construccion.md'), 'Trampas')]
+  ].filter(([, texto]) => texto)
+  if (!partes.length) return ''
+  return partes.map(([titulo, texto]) => `### ${titulo}\n${texto}`).join('\n\n')
+}
+
 function briefTarea(t, pr, ola) {
   const nombre = path.basename(RAIZ)
   const rama = `mp-${t.id}`
   const worktree = path.join(path.dirname(RAIZ), `${nombre}-${rama}`)
   const specs = (t.specs || []).map(textoSpec).join('\n\n') || '(la tarea no cita specs)'
+  const kit = extractoKit(t.kit)
   const md = `# Brief · ${t.id} · ${t.titulo}
 
 Eres el constructor de UNA tarea de Masterplan, en tu propia sesión. Trabaja solo aquí.
@@ -298,8 +327,8 @@ Eres el constructor de UNA tarea de Masterplan, en tu propia sesión. Trabaja so
 - Proyecto (principal): ${RAIZ}
 - Tu worktree: ${worktree}   (rama ${rama})
 - Perfil: ${pr.perfil || '(ver proyecto.json)'} · rigor: ${pr.rigor || 'medio'} · ola ${ola}
-- Kit: ${t.kit || '(ninguno)'}
-- Antes de empezar: si tu sesión ya arrancó en un worktree propio, úsalo y pásate a la rama ${rama} (\`git switch -c ${rama}\`). Solo si estás en el directorio principal, crea uno: \`git worktree add "${worktree}" -b ${rama}\`. Lee su \`CLAUDE.md\`.
+- Kit: ${t.kit || '(ninguno)'}${t.kit ? (kit ? ' (lo que aplica ya está abajo; no abras el kit)' : ' (lee su construccion.md)') : ''}
+- Antes de empezar: si tu sesión ya arrancó en un worktree propio, úsalo y pásate a la rama ${rama} (\`git switch -c ${rama}\`). Solo si estás en el directorio principal, crea uno: \`git worktree add "${worktree}" -b ${rama}\`. De su \`CLAUDE.md\` lee solo comandos y convenciones.
 
 ## Tarea
 \`\`\`json
@@ -308,7 +337,7 @@ ${JSON.stringify(t, null, 2)}
 
 ## Specs citadas
 ${specs}
-
+${kit ? `\n## Del kit ${t.kit}\n${kit}\n` : ''}
 ## Cierre
 1. Test primero cuando se pueda; implementa solo lo que pide \`hacer\`, solo en \`archivos\`.
 2. Corre cada comando de \`verificar\`. Guarda la salida real en \`masterplan/evidencia/${t.id}.txt\` (un solo archivo).
@@ -321,9 +350,9 @@ ${specs}
 
 // Misma tabla que fases/6-construir.md › Rigor.
 const REVISION = {
-  bajo: 'revisor-codigo una vez por ola sobre el diff acumulado; auditor-seguridad una vez por ola solo si hubo tareas de auth, datos, pagos o secretos; bloquea solo BLOCKER',
-  medio: 'revisor-codigo una vez por ola sobre el diff acumulado; auditor-seguridad por cada tarea de auth, datos o pagos; bloquean BLOCKER y MAJOR',
-  alto: 'revisor-codigo por tarea; auditor-seguridad por cada tarea de auth, datos o pagos y de la ola entera; bloquean BLOCKER y MAJOR'
+  bajo: 'revisor-codigo una vez por ola sobre el diff acumulado; auditor-seguridad una vez por ola solo si hubo tareas de auth, datos, pagos o secretos; los dos en el mismo mensaje; bloquea solo BLOCKER',
+  medio: 'revisor-codigo una vez por ola sobre el diff acumulado; auditor-seguridad por cada tarea de auth, datos o pagos; todos en el mismo mensaje; bloquean BLOCKER y MAJOR',
+  alto: 'revisor-codigo por tarea; auditor-seguridad por cada tarea de auth, datos o pagos y de la ola entera; todos en el mismo mensaje; bloquean BLOCKER y MAJOR'
 }
 
 function cmdOla(args) {
@@ -335,6 +364,7 @@ function cmdOla(args) {
   const ola = num ? Number(num) : Math.min(...libres.map(t => t.ola))
   const deOla = libres.filter(t => t.ola === ola)
   if (!deOla.length) fallar(`No hay tareas libres en la ola ${ola}. Libres en: ${[...new Set(libres.map(t => t.ola))].join(', ')}`)
+  if (args.includes('--autorizar')) { pr.paralelo_autorizado = true; guardarProyecto(pr) }
   const max = pr.paralelo_max ?? PARALELO_MAX
   const lote = [], conflictos = [], usados = new Map()
   for (const t of deOla) {
@@ -352,6 +382,7 @@ function cmdOla(args) {
     ola, paralelo_max: max, rigor: pr.rigor || 'medio',
     lanzar: briefs.map(b => ({ id: b.id, titulo: b.titulo, rama: b.rama, worktree: b.worktree, brief: args.includes('--escribir') ? rel(path.join(dir, `${b.id}.brief.md`)) : undefined })),
     esperan, conflictos,
+    confirmar: !pr.paralelo_autorizado && lote.length > 1,
     revision: REVISION[pr.rigor || 'medio']
   }
   if (args.includes('--json')) return console.log(JSON.stringify({ ...resumen, briefs: briefs.map(b => ({ id: b.id, brief: b.md })) }, null, 2))
@@ -851,6 +882,24 @@ function cmdProveedores([sub, ...args]) {
   fallar('Uso: masterplan.mjs proveedores recomendar [--rasgos a,b] [--presupuesto cero|bajo|medio|alto] [--json] [--guardar] | lista [--categoria c] | ver <id> | validar')
 }
 
+// ---------- reglas (fuente única) ----------
+function cmdReglas(args) {
+  const reglas = {
+    siempre_humano: SIEMPRE_HUMANO.split(', '),
+    preguntas_max_diseno: PREGUNTAS_MAX,
+    rigor: Object.fromEntries(RIGOR.map(r => [r, { vueltas_revisor_plano: VUELTAS_REVISOR[r], revision_por_ola: REVISION[r] }])),
+    tramos: TRAMOS,
+    paralelo_max: PARALELO_MAX,
+    sesiones_auto_max: SESIONES_AUTO_MAX
+  }
+  if (args.includes('--json')) return console.log(JSON.stringify(reglas, null, 2))
+  console.log(`Siempre pregunta a la persona: ${SIEMPRE_HUMANO}.`)
+  console.log(`Preguntas en el diseño (fases 3 y 4): máximo ${PREGUNTAS_MAX} en total.`)
+  for (const r of RIGOR) console.log(`Rigor ${r}: ${VUELTAS_REVISOR[r]} vuelta(s) del revisor del plano · ${REVISION[r]}`)
+  console.log('Tramos (una sesión cada uno; el relevo se escribe al cerrar el tramo):')
+  for (const t of TRAMOS) console.log(`  ${t.nombre}: fases ${t.fases.join(', ')} → relevo ${t.relevo}`)
+}
+
 // ---------- piloto automático: seguir en una sesión nueva sin que la persona escriba nada ----------
 const AUTONOMIA = ['guiada', 'continua']
 const SESIONES_AUTO_MAX = 30
@@ -925,6 +974,7 @@ const AYUDA = `Masterplan · comandos (desde la raíz de tu proyecto)
   ola [n] [--escribir] [--json]  tareas libres de la ola para lanzar en paralelo, una sesión por tarea, con sus briefs
   pgtap-resumen <archivo|->      lista los asertos que fallan en una salida TAP/pgTAP
   auditoria fusionar|comparar    une hallazgos y calcula las tres notas / compara las 2 últimas
+  reglas [--json]                reglas que valen en todo el plugin: siempre humano, rigor, tramos, preguntas
   deriva                         specs sin prueba, tablas sin RLS, variables sin documentar
   cambio nuevo "<qué>"           abre un cambio (delta) sobre las specs vivas
   cambio archivar <carpeta>      aplica el delta a specs/ y lo archiva
@@ -944,6 +994,7 @@ try {
     case 'cambio': cmdCambio(args); break
     case 'relevo': cmdRelevo(args); break
     case 'ola': cmdOla(args); break
+    case 'reglas': cmdReglas(args); break
     case 'auto': cmdAuto(args); break
     case 'pgtap-resumen': cmdPgtap(args); break
     case 'buzon': cmdBuzon(args); break

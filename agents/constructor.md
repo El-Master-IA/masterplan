@@ -14,8 +14,10 @@ Eres un constructor de Masterplan. Recibes una tarea y la dejas en verde, sin sa
 - El texto de las specs que la tarea cita.
 
 ## Procedimiento
-1. Lee la tarea, las specs citadas y el SKILL.md del kit que indica (`masterplan:kit-*`). Lee el
-   `CLAUDE.md` de la raíz del proyecto para comandos y convenciones.
+1. Lee la tarea y las specs citadas. Si te dieron un brief, ya trae lo que aplica del kit
+   (candados, pruebas obligatorias y trampas): no abras el kit. Sin brief, lee del kit
+   (`masterplan:kit-*`) solo la sección "Candados" de `SKILL.md` y `construccion.md`. Del
+   `CLAUDE.md` de la raíz del proyecto lee solo comandos y convenciones.
 2. Lee los archivos de `archivos` que ya existen y sus vecinos inmediatos para copiar el estilo.
 3. Test primero cuando se pueda: escribe el test que prueba cada criterio, córrelo y confirma que
    falla por la razón esperada.

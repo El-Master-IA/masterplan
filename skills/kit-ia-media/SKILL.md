@@ -26,7 +26,7 @@ Precios con fecha en `conocimiento/proveedores.json`; cambian seguido: confírma
 La app genera o edita imágenes, video, voz, música o avatares para sus usuarios, o el negocio
 produce contenido en volumen (fotos de producto, anuncios, doblaje).
 
-## Preguntas de negocio (máx. 3)
+## Preguntas de negocio (se asume el default)
 | # | Pregunta | Default recomendado | Qué cambia |
 |---|---|---|---|
 | 1 | "¿Qué genera la app y cuántas piezas por usuario al mes?" | Imágenes, unas 50 por usuario | Proveedor, costo por usuario y precio de tu plan |
@@ -83,29 +83,7 @@ generaciones(id, org_id, usuario_id, tipo imagen|video|voz|avatar, proveedor, mo
 | GEN-08 | Webhooks del proveedor verificados e idempotentes | test con evento falso y repetido |
 | GEN-09 | Costo por pieza a 1× y 10× y margen del plan de la app en `arquitectura.md` | `revisor-plano` |
 
-## Pasos que agrega al plan
-1. Libro de créditos y tope de gasto.
-   - CUANDO un usuario sin créditos pide generar EL SISTEMA DEBE rechazarlo con error LIMITE
-   - CUANDO una generación falla EL SISTEMA DEBE devolver los créditos reservados
-2. Trabajo de generación con el proveedor elegido y guardado del resultado.
-   - CUANDO el proveedor entrega el resultado EL SISTEMA DEBE guardarlo en el almacenamiento propio y marcar `listo` una vez
-   - CUANDO el proveedor tarda más del máximo EL SISTEMA DEBE marcar `fallido` y devolver créditos
-3. Moderación previa y estados en la interfaz (generando, listo, bloqueado, error).
-   - CUANDO el texto viola la política EL SISTEMA DEBE marcar `bloqueado` sin llamar al proveedor
-4. Galería del usuario con permisos por organización.
-
-## Pruebas obligatorias
-Créditos devueltos en fallo · tope respetado · webhook falso rechazado · resultado guardado en el
-almacenamiento propio · texto bloqueado no llega al proveedor. En CI se usa un **proveedor
-simulado**: nunca se gasta dinero real en las pruebas.
-
-## Lista de producción
-Licencia comercial confirmada · alerta de gasto diario · precio de tu plan con margen sobre el
-costo por pieza · política de contenido publicada · borrado de generaciones con datos personales.
-
-## Trampas
-- Mostrar la URL del proveedor: caduca y la galería se llena de imágenes rotas.
-- Cobrar créditos antes de saber si la generación salió.
-- Prometer "ilimitado" con un costo por pieza.
-- Elegir un modelo por una demo: prueba 10 piezas reales del caso de uso con 2 o 3 modelos vía un
-  agregador antes de decidir.
+## Construcción
+Archivos, pasos del plan, pruebas obligatorias, lista de producción y trampas están en
+`construccion.md` (junto a este archivo). Lo lee quien planea (fase 5) y quien construye (fase 6);
+para decidir en la fase 3 basta este archivo.
