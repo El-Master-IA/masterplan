@@ -88,6 +88,20 @@ tests/e2e/
 | Caché | Declarar explícitamente qué se cachea y cómo se invalida; nada de datos de un usuario en caché compartida |
 | Migraciones y RLS | Igual que el perfil por defecto |
 
+## Bases técnicas en este perfil
+Las 8 bases de `conocimiento/bases-tecnicas.md`, con la herramienta concreta. La ola del esqueleto las deja instaladas.
+
+| Base | Aquí se cumple con |
+|---|---|
+| B1 Capas | `app/` (rutas) → `features/*` → `lib/`; `lib` no importa de `features` ni de `app`. Regla `no-restricted-imports` o `eslint-plugin-boundaries` |
+| B2 Una puerta a los datos | Los clientes de Supabase se crean solo en `lib/supabase/`; las lecturas viven en `features/*/queries.ts` y las escrituras en Server Actions. La regla de lint prohíbe `@supabase/*` fuera de ahí |
+| B3 Configuración validada | `lib/env.ts` con zod, separado en servidor y cliente; `process.env` no se lee en ningún otro archivo |
+| B4 Contratos | Esquemas zod compartidos entre el formulario y la Server Action o el route handler |
+| B5 Errores | `error.tsx` y `not-found.tsx` por segmento, formato de error común para actions y handlers, regla `no-empty` |
+| B6 Tipos | `"strict": true`; tipos de la base generados; `import 'server-only'` en lo que no debe llegar al navegador |
+| B7 Pruebas | Vitest y Playwright configurados en el esqueleto, con una prueba real de cada uno |
+| B8 CI | `.github/workflows/ci.yml`: lint, typecheck, test, build y `mp:deriva` |
+
 ## Edge Functions de Supabase o route handlers
 
 - Webhooks y tareas con secretos pueden vivir en `app/api/*/route.ts` (runtime de Node en Vercel)

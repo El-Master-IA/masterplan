@@ -8,7 +8,11 @@ degrade después del lanzamiento.
 - Todo cambio (feature, bug, refactor) entra con `/masterplan:cambio "<qué>"`: crea
   `masterplan/cambios/<fecha>-<slug>/` con `delta.md` (requisitos AGREGADOS, MODIFICADOS,
   ELIMINADOS con motivo y migración), tareas propias y, para bugs, "lo que NO debe cambiar".
-- El cambio pasa por fases 3 (solo el delta) → 4 → 5 → 6 → 7. Al publicarlo,
+- **El tamaño decide el proceso** (tabla en `commands/cambio.md`): un cambio **pequeño** (una
+  tarea, sin datos, permisos, login ni pagos) se construye, verifica y revisa en la misma sesión;
+  uno **mediano** lleva specs y tareas propias, `validar` y construcción por olas, sin rediseño;
+  solo uno **grande** repite el ciclo 3 (solo el delta) → 4 → 5 → 6 → 7. Publicar siempre pide
+  confirmación. Al publicarlo,
   `masterplan.mjs cambio archivar <carpeta>` aplica el delta a `specs/` y mueve la carpeta a
   `cambios/archivo/`.
 

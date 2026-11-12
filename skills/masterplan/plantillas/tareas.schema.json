@@ -39,7 +39,7 @@
         "checkpoint": { "type": "string", "description": "Comando de commit + tag mp-<id>." },
         "estado": { "enum": ["pendiente", "en-curso", "hecha", "bloqueada"] },
         "fase_producto": { "enum": ["nucleo", "ampliacion"], "description": "ampliacion = se puede mover a v1.1 sin romper dependencias. Una tarea del núcleo no depende de una ampliación." },
-        "hito": { "const": "visible", "description": "Primer corte que una persona real puede usar. Debe caer en la primera mitad de las olas." },
+        "hito": { "enum": ["visible", "esqueleto"], "description": "esqueleto: la tarea que deja el proyecto corriendo de punta a punta con las bases técnicas (ola 1 o 2). visible: primer corte que una persona real puede usar (primera mitad de las olas)." },
         "sesion": { "type": "string", "description": "Lo escribe el conductor al lanzar la tarea en su propia sesión." },
         "motivo": { "type": "string", "description": "Obligatorio en la práctica cuando estado = bloqueada." },
         "actualizado": { "type": "string", "description": "Fecha y hora ISO del último cambio de estado; lo escribe masterplan.mjs tarea." }

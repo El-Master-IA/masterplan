@@ -61,7 +61,7 @@ Dos pasos, no siete en fila:
 
 | Documento | Quién | Debe contener |
 |---|---|---|
-| `masterplan/arquitectura.md` | tú | C4 nivel 1 y 2 en mermaid, atributos de calidad, estilo (monolito modular por defecto), ADR-001 con la decisión más cara de revertir |
+| `masterplan/arquitectura.md` | tú | C4 nivel 1 y 2 en mermaid, atributos de calidad, estilo (monolito modular por defecto), **bases técnicas** (cómo cumple este proyecto cada una de las 8 de `conocimiento/bases-tecnicas.md`, tomando la tabla del perfil), ADR-001 con la decisión más cara de revertir |
 | `masterplan/datos.md` | `masterplan:arquitecto-datos` | Entidades, dueño de cada fila (`org_id`/`user_id`), qué pasa al borrar, dinero en enteros, índices por consulta, retención de datos personales |
 | `masterplan/seguridad.md` | `masterplan:arquitecto-datos` + tú | Mapa de amenazas (STRIDE corto por capacidad), matriz rol × recurso × acción, políticas RLS por tabla, secretos por entorno, régimen de privacidad (Habeas Data/GDPR) |
 | `masterplan/api.md` | tú (con `masterplan:kit-api`) | Contratos por endpoint/función: entrada, salida, errores, auth, límite de uso, idempotencia |

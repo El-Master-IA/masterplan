@@ -20,6 +20,9 @@ arreglo en `masterplan/auditoria/pendientes/<auditor>.json`. Fusiona con
 y un resumen con tres notas separadas (Seguridad, Calidad de experiencia y Bases técnicas), nunca
 mezcladas.
 
+Antes de arreglar, confirma los hallazgos críticos con el verificador independiente (un solo
+despacho con todos, ver `skills/auditor/SKILL.md` paso 3).
+
 Críticos o altos: se arreglan uno por uno con un constructor (explicando cada cambio) y se vuelve a
 auditar; `masterplan.mjs auditoria comparar` muestra qué se cerró.
 

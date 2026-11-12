@@ -10,7 +10,13 @@ instalar".
 ## 2. Orden de construcción
 Parte del orden base del archivo del tipo (`conocimiento/tipos/<tipo>.md`) y de la sección "Pasos
 que agrega al plan" del `construccion.md` de cada kit del proyecto. Reglas:
-- Primer paso: proyecto + `.gitignore` + git + lint/typecheck/test corriendo en CI local.
+- **Primero el esqueleto que corre** (`conocimiento/bases-tecnicas.md`). La ola 1 (y la 2 si no
+  cabe) no construye funciones: deja el proyecto con lint, typecheck, pruebas, build y CI en
+  verde, la estructura del perfil con sus reglas de límites de importación, la configuración
+  validada, el formato de error, una pantalla o endpoint real que atraviesa todas las capas con
+  su prueba, el login si lo hay y el despliegue a vista previa. La tarea que lo cierra lleva
+  `"hito": "esqueleto"`. Si la cuenta de despliegue no está conectada, anótalo con
+  `masterplan.mjs auto pendiente` y el esqueleto se prueba con build y arranque local.
 - Seguridad y datos antes que pantallas: tenencia y RLS con su test de aislamiento antes del CRUD.
 - **Cortes verticales, no capas.** No construyas toda la base, luego todas las funciones y al final
   las pantallas. Tras los cimientos (proyecto, acceso, tablas del flujo principal), arma el primer
@@ -54,7 +60,7 @@ no con nombre inventado.
 
 `hacer` tiene como máximo **600 caracteres**: qué hacer y qué decisión tomar, nada más. El detalle
 (formas de datos, casos borde, mensajes) vive en la spec citada; no lo copies a la tarea. Campos
-opcionales: `"fase_producto"`, `"hito"` y, en construcción, `"sesion"` (lo escribe el conductor).
+opcionales: `"fase_producto"`, `"hito"` (`"esqueleto"` o `"visible"`) y, en construcción, `"sesion"` (lo escribe el conductor).
 
 ## 4. Olas
 Agrupa en olas: dentro de una ola ninguna tarea comparte archivos ni depende de otra. Cada tarea de
@@ -65,7 +71,9 @@ toque la base de datos.
 
 ## 5. Gate global
 En `plan/gate.md`: los comandos que deben salir 0 al final (install, typecheck, lint, test, test
-e2e, build, correr lo construido, auditoría) y la lista de lanzamiento manual.
+e2e, build, correr lo construido, auditoría) y la lista de lanzamiento manual. Marca cuáles forman
+el **gate rápido** (lint, typecheck y pruebas unitarias y de integración): es lo que el conductor
+corre una vez al integrar cada ola. El validador exige lint, typecheck, pruebas y build.
 
 ## 6. Herramienta en el repo
 Copia `${CLAUDE_PLUGIN_ROOT}/scripts/masterplan.mjs` a `masterplan/bin/masterplan.mjs` del proyecto

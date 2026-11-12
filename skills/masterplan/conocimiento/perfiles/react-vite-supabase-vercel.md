@@ -104,6 +104,20 @@ vercel.json            # rewrites de SPA y headers
 | Secretos de servidor | En Edge Functions con `supabase secrets set`; localmente en `supabase/functions/.env` (ignorado por git) |
 | Nombres | Tablas y columnas en `snake_case`; componentes en `PascalCase`; archivos en `kebab-case` |
 
+## Bases técnicas en este perfil
+Las 8 bases de `conocimiento/bases-tecnicas.md`, con la herramienta concreta. La ola del esqueleto las deja instaladas.
+
+| Base | Aquí se cumple con |
+|---|---|
+| B1 Capas | `components/ui` no importa de `features`; una feature no importa el interior de otra (solo su `index.ts`). Regla `no-restricted-imports` o `eslint-plugin-boundaries` en `eslint.config.js` |
+| B2 Una puerta a los datos | `@supabase/supabase-js` solo se importa en `src/lib/supabase.ts` y `src/lib/data/`; la misma regla de lint lo prohíbe en el resto de `src/` |
+| B3 Configuración validada | `src/lib/env.ts` con zod; `import.meta.env` no se lee en ningún otro archivo |
+| B4 Contratos | Esquemas zod en `features/*/schemas.ts`, usados por el formulario y por la Edge Function |
+| B5 Errores | `ErrorBoundary` en `app/`, formato de error común en `supabase/functions/_shared/errores.ts`, regla `no-empty` |
+| B6 Tipos | `"strict": true` en `tsconfig`; `database.types.ts` generado con `db:types` |
+| B7 Pruebas | Vitest y Playwright configurados en el esqueleto, con una prueba real de cada uno |
+| B8 CI | `.github/workflows/ci.yml`: lint, typecheck, test, build y `mp:deriva` |
+
 ## Edge Functions de Supabase
 
 - Runtime Deno, TypeScript. Una carpeta por función en `supabase/functions/`.

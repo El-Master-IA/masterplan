@@ -47,13 +47,30 @@ Quiero construir un sistema de citas para barberías. Hoy los clientes escriben 
 (El atajo es `/masterplan:empezar <tu idea>`.)
 
 Masterplan lee primero lo que ya hay, te hace **una pregunta a la vez** con su recomendación y
-avanza por fases. Al cerrar cada fase te pide seguir en una **sesión nueva** diciéndole:
+avanza por fases, agrupadas en cuatro tramos: definir, diseñar y aprobar, construir y publicar.
+Dentro de un tramo sigue en la misma conversación; al cerrarlo te pide seguir en una **sesión
+nueva** diciéndole:
 
 ```
 Sigamos con mi proyecto.
 ```
 
 Así ninguna conversación carga todo el proyecto.
+
+## Editar o agregar algo
+
+En un proyecto que ya existe, dilo con tus palabras:
+
+```
+Agrégale un filtro por fecha a la lista de citas.
+```
+
+(El atajo es `/masterplan:cambio`.) El tamaño del cambio decide cuánto proceso lleva. Uno
+**pequeño** (un campo, un filtro, un texto, un bug acotado) se construye, se prueba y se revisa en
+la misma sesión. Uno **mediano** lleva sus requisitos y tareas, sin rediseñar. Solo uno **grande**
+(una capacidad nueva, otro modelo de datos) repite diseño, puertas y plan. Lo que toca datos de
+personas, permisos, login o pagos nunca va por el carril rápido, y publicar siempre te pide
+confirmación.
 
 ## Auditar un proyecto que ya tienes
 
@@ -78,11 +95,14 @@ registrado.
 | 1 · Descubrir | Qué construyes, para quién, en qué etapa | Tipo de producto confirmado |
 | 2 · Recortar | Tres versiones de tu idea y lo que v1 NO hace | MVP firmado y 5 Non-Goals |
 | 3 · Diseñar | Arquitectura, datos, API, seguridad, DESIGN.md y EXPERIENCE.md | Ninguna decisión en silencio |
-| 4 · Puertas | Preguntas abiertas, pre-mortem, validador y revisor independiente | Tu "sí" explícito |
-| 5 · Planear | Tareas con criterio verificable, comando de prueba y punto de retorno | Plan validado |
+| 4 · Puertas | Preguntas abiertas, pre-mortem y revisión del plano por agentes que no participaron en el diseño | Tu "sí" explícito |
+| 5 · Planear | Primero el esqueleto que corre con las bases técnicas; después tareas con criterio verificable, comando de prueba y punto de retorno | Plan validado |
 | 6 · Construir | Un agente por tarea, revisor de código, políticas de seguridad activas | Todas las tareas en verde |
-| 7 · Publicar | Auditoría de seguridad y de experiencia, preview, producción con tu confirmación | Sin hallazgos críticos |
-| 8 · Operar | Specs vivas, cambios como deltas, detector de desvíos en CI | El plano describe el sistema real |
+| 7 · Publicar | Auditoría de seguridad, de experiencia y de bases técnicas, preview, producción con tu confirmación | Sin hallazgos críticos |
+| 8 · Operar | Specs vivas, cambios según su tamaño, detector de desvíos en CI | El plano describe el sistema real |
+
+En todo el diseño te hace como máximo 5 preguntas; lo demás lo decide con el default de tu tipo de
+producto y te lo muestra en un bloque "Asumí esto" que corriges en una línea.
 
 ## Qué trae
 
@@ -109,14 +129,22 @@ registrado.
   licencia comercial), pagos para Latinoamérica (Mercado Pago, Wompi con
   PSE/Nequi, Stripe donde aplica, Paddle), deploy en cualquier proveedor y observabilidad.
 - **Auditor** para cualquier proyecto, hecho con Masterplan o no, con tres notas que nunca se mezclan: Seguridad, Calidad de experiencia y Bases técnicas.
-- **11 agentes, uno por tipo de tarea:** explorador, investigador de versiones, arquitecto de
-  datos, diseñador, revisor del plano, constructor, revisor de código, auditor de seguridad,
+- **Bases técnicas desde la primera ola:** capas con una sola dirección, una sola puerta a los
+  datos, configuración validada, contratos en el borde, un solo formato de error, tipos
+  estrictos, pruebas y CI. La primera ola deja un esqueleto que ya corre de punta a punta, y las
+  reglas se comprueban con lint y con el validador, no con buena voluntad.
+- **12 agentes, uno por tipo de tarea:** explorador, investigador de versiones, arquitecto de
+  datos, diseñador, revisor del plano, crítico del diseño, constructor, revisor de código, auditor de seguridad,
   auditor de frontend, auditor de bases técnicas y desplegador.
 - **Comandos:** `/masterplan:empezar`, `/masterplan:seguir`, `/masterplan:rapido`,
   `/masterplan:ola` (construcción en paralelo, una sesión nueva por tarea),
-  `/masterplan:estado`, `/masterplan:auditar`, `/masterplan:cambio`, `/masterplan:relevo`.
+  `/masterplan:estado`, `/masterplan:auditar`, `/masterplan:cambio`, `/masterplan:relevo`,
+  `/masterplan:auto`.
 - **Piloto automático (1.5):** `/masterplan:auto` permite que Masterplan siga solo, sesión tras sesión, hasta terminar; se detiene ante producción, cobros, mensajes, borrados, cuentas y llaves.
-- **Velocidad (1.4):** `rigor` bajo/medio/alto por proyecto, plan en cortes verticales con un primer
+- **Velocidad (2.0):** cuatro tramos de sesión en vez de un relevo por fase, kits en dos mitades
+  (decidir y construir), agentes de diseño y de revisión en paralelo, el brief de cada tarea trae
+  lo que necesita de su kit y `estado` muestra cuánto tomó cada fase.
+- **Rigor (1.4):** `rigor` bajo/medio/alto por proyecto, plan en cortes verticales con un primer
   hito visible antes de la mitad, olas en paralelo en sesiones propias y relevos autogenerados.
 - **Políticas de seguridad (hooks)** que bloquean mientras se escribe: la llave `service_role` en el
   navegador, secretos con prefijo `VITE_`, llaves escritas en el código, escribir `.env`, push
@@ -124,8 +152,8 @@ registrado.
   migraciones editadas, HTML sin sanitizar. Solo actúan en carpetas con un proyecto Masterplan.
 - **Conexiones (MCP) listas:** Supabase (solo lectura), Vercel, Context7 (documentación al día) y
   Playwright (pruebas de interfaz). Supabase y Vercel te piden iniciar sesión la primera vez.
-- **CLI sin dependencias** `scripts/masterplan.mjs`: `estado`, `validar`, `tarea`, `ola`, `auditoria`,
-  `deriva`, `cambio`, `relevo`, `buzon`, `pgtap-resumen` y `proveedores` (`recomendar`, `lista`, `ver`, `validar`).
+- **CLI sin dependencias** `scripts/masterplan.mjs`: `estado`, `fase`, `reglas`, `validar`, `tarea`, `ola`,
+  `auditoria`, `deriva`, `cambio`, `relevo`, `auto`, `buzon`, `pgtap-resumen` y `proveedores` (`recomendar`, `lista`, `ver`, `validar`).
 
 ## Elegir herramientas
 

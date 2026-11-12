@@ -1,5 +1,17 @@
 # Cambios
 
+## 2.0.0 · 2026-11-11
+
+Calidad de lo construido: mejores bases desde la primera ola, cambios pequeños sin ceremonia y tiempos medidos.
+
+- **Bases técnicas** (`conocimiento/bases-tecnicas.md`): ocho bases que todo proyecto trae desde el principio (capas con una sola dirección, una sola puerta a los datos, configuración validada, contratos en el borde, un solo formato de error, tipos estrictos, pruebas y CI), cada una con cómo se comprueba. Cada perfil dice con qué herramienta se cumplen y `arquitectura.md` lo deja escrito por proyecto.
+- **Esqueleto que corre.** La primera ola ya no construye funciones: deja el proyecto corriendo de punta a punta con las bases puestas, una pantalla real, login si aplica y vista previa. La tarea que lo cierra lleva `"hito": "esqueleto"`. Al planear, `validar` exige el esqueleto en la ola 1 o 2 y un gate con lint, typecheck, pruebas y build.
+- **Carril rápido para editar** (`/masterplan:cambio`): el cambio se clasifica en pequeño, mediano o grande. El pequeño se construye, verifica y revisa en la misma sesión; solo el grande repite diseño, puertas y plan. Lo que toca datos, permisos, login o pagos es al menos mediano. `cambio nuevo --tamano=…`. También funciona durante la construcción (fases 6 y 7), no solo después de publicar.
+- **Tiempos por fase.** `masterplan.mjs fase <n>` es la forma de cambiar de fase: anota cuánto tomó la anterior y dice si sigues en la misma sesión o cierras el tramo. `estado` muestra las duraciones.
+- **Auditoría:** el auditor de bases revisa las ocho bases una por una. El verificador independiente es un solo despacho con todos los hallazgos críticos, en vez de uno por hallazgo.
+
+Compatibilidad: los proyectos en curso no reciben exigencias nuevas (el esqueleto y el gate solo se validan al planear un proyecto nuevo). Las fases conservan su número. Es 2.0 por el cambio de forma de trabajar (tramos, kits en dos mitades, carril de cambios), no porque rompa proyectos existentes.
+
 ## 1.6.0 · 2026-11-11
 
 Velocidad: menos sesiones, menos preguntas, menos lectura y menos revisiones en fila. Las puertas siguen todas.

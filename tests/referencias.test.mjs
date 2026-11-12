@@ -242,3 +242,78 @@ test('reglas: fuente única, y los documentos no la contradicen', () => {
   assert.ok(leer(path.join(SKILL, 'SKILL.md')).includes(`como máximo ${reglas.preguntas_max_diseno} preguntas`))
   assert.deepEqual(reglas.tramos.flatMap(t => t.fases), [0, 1, 2, 3, 4, 5, 6, 7, 8])
 })
+
+// ---------- 2.0.0: calidad de lo construido ----------
+test('fase: cambia la fase, anota tiempos y avisa si se cierra el tramo', () => {
+  const dir = proyectoFase6()
+  const p = path.join(dir, 'masterplan/proyecto.json')
+  fs.writeFileSync(p, JSON.stringify({ ...JSON.parse(leer(p)), fase: 1 }))
+  let r = mp(dir, 'fase', '2')
+  assert.equal(r.status, 0, r.stderr)
+  assert.match(r.stdout, /Mismo tramo/)
+  r = mp(dir, 'fase', '3')
+  assert.match(r.stdout, /Cierra el tramo "definir"/)
+  const pr = JSON.parse(leer(p))
+  assert.equal(pr.fase, 3)
+  assert.ok(pr.tiempos['2'].inicio && pr.tiempos['2'].fin, 'la fase 2 debe quedar con inicio y fin')
+  assert.ok(pr.tiempos['3'].inicio && !pr.tiempos['3'].fin, 'la fase 3 debe quedar abierta')
+  const sp = esquema('proyecto.schema.json')
+  assert.deepEqual(validar(pr, sp, sp), [])
+  assert.match(mp(dir, 'estado').stdout, /Tiempos: .*disenar .*en curso/)
+  assert.equal(mp(dir, 'fase', '9').status, 1)
+})
+
+function planDe(n, extra = {}) {
+  return Array.from({ length: n }, (_, i) => ({
+    id: `T0${i + 1}`, titulo: `Tarea ${i + 1}`, ola: i < 3 ? 1 : 2, depende: [], agente: 'masterplan:constructor', specs: ['AUTH-001'],
+    archivos: [`src/${i}.ts`], hacer: 'algo concreto',
+    criterios: ['CUANDO un anónimo pide /app EL SISTEMA DEBE redirigir a /login', 'CUANDO la sesión expira EL SISTEMA DEBE pedir login de nuevo'],
+    verificar: ['npm test'], checkpoint: `git tag mp-T0${i + 1}`, estado: 'pendiente', ...(extra[i] || {})
+  }))
+}
+function proyectoPlaneando(tareas, pr = {}, gate = 'npm run lint\nnpm run typecheck\nnpm test\nnpm run build\n') {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'mp-p-'))
+  const w = (r, t) => { const f = path.join(dir, r); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, t) }
+  w('masterplan/proyecto.json', JSON.stringify({ nombre: 'demo', modo: 'greenfield', fase: 5, creado: '2026-10-24', capacidades: ['auth'], alcance: { flujoPrincipal: ['entra'], noGoals: ['a', 'b', 'c', 'd', 'e'] }, ...pr }))
+  for (const d of ['api.md', 'DESIGN.md', 'EXPERIENCE.md']) w(`masterplan/${d}`, `# ${d}\n`)
+  w('masterplan/datos.md', '# Datos\n## Retención\n')
+  w('masterplan/arquitectura.md', '# Arquitectura\n| 1× | 10× |\n')
+  w('masterplan/seguridad.md', '# Seguridad\n## Matriz rol × recurso\n## Políticas RLS\n')
+  w('masterplan/specs/auth.md', '# Auth\n### AUTH-001\nCUANDO … EL SISTEMA DEBE …\n')
+  w('masterplan/plan/gate.md', gate)
+  w('masterplan/plan/tareas.json', JSON.stringify(tareas))
+  return dir
+}
+
+test('validar: al planear exige el esqueleto en la ola 1 o 2 y un gate con lint, tipos, pruebas y build', () => {
+  const sin = mp(proyectoPlaneando(planDe(6, { 4: { hito: 'visible' } })), 'validar').stdout
+  assert.match(sin, /hito:"esqueleto"/)
+  const con = mp(proyectoPlaneando(planDe(6, { 0: { hito: 'esqueleto' }, 4: { hito: 'visible' } })), 'validar').stdout
+  assert.doesNotMatch(con, /esqueleto/)
+  assert.match(con, /sin hallazgos|0 BLOCKER/)
+  const gatePobre = mp(proyectoPlaneando(planDe(6, { 0: { hito: 'esqueleto' }, 4: { hito: 'visible' } }), {}, 'npm test\n'), 'validar').stdout
+  assert.match(gatePobre, /el gate no incluye lint/)
+  assert.match(gatePobre, /el gate no incluye build/)
+  // Un plan que ya está en construcción no recibe la exigencia nueva
+  const enCurso = mp(proyectoPlaneando(planDe(6, { 4: { hito: 'visible' } }), { fase: 6 }, 'npm test\n'), 'validar').stdout
+  assert.doesNotMatch(enCurso, /esqueleto|el gate no incluye/)
+})
+
+test('cambio: nuevo anota el tamaño y rechaza uno inválido', () => {
+  const dir = proyectoFase6()
+  const r = mp(dir, 'cambio', 'nuevo', 'Filtro por fecha', '--tamano=pequeno')
+  assert.equal(r.status, 0, r.stderr)
+  assert.match(r.stdout, /tamaño pequeno/)
+  const carpeta = fs.readdirSync(path.join(dir, 'masterplan/cambios'))[0]
+  assert.match(leer(path.join(dir, 'masterplan/cambios', carpeta, 'delta.md')), /Tamaño: pequeno/)
+  assert.equal(mp(dir, 'cambio', 'nuevo', 'Otro', '--tamano=enorme').status, 1)
+})
+
+test('bases técnicas: cada perfil dice cómo cumple las 8 bases', () => {
+  const dir = path.join(SKILL, 'conocimiento', 'perfiles')
+  for (const f of fs.readdirSync(dir)) {
+    const t = leer(path.join(dir, f))
+    assert.match(t, /^## Bases técnicas en este perfil/m, f)
+    for (const b of ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8']) assert.ok(t.includes(b), `${f}: falta ${b}`)
+  }
+})

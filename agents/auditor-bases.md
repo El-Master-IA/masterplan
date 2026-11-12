@@ -20,6 +20,10 @@ README.
 Lee `skills/auditor/hallazgo.schema.json` (bajo `${CLAUDE_PLUGIN_ROOT}`) antes de escribir la salida.
 
 ## Procedimiento
+0. **Bases técnicas.** Lee `${CLAUDE_PLUGIN_ROOT}/skills/masterplan/conocimiento/bases-tecnicas.md`
+   y revisa las 8 (B1 a B8) una por una: ¿hay regla de lint que impida saltarse las capas y la
+   puerta única a los datos, o solo es costumbre? ¿la configuración se valida al arrancar? ¿hay un
+   solo formato de error? Usa el código de la base (`B1`…`B8`) como `regla` del hallazgo.
 1. **Arquitectura:** ¿hay capas (interfaz, lógica, datos) o la lógica de negocio y las consultas
    viven dentro de los componentes? Archivos de más de 400 líneas, código duplicado obvio, lógica
    de permisos repetida en vez de una sola función.

@@ -31,6 +31,20 @@ _Monolito modular por defecto. Módulos y su contrato en una línea cada uno._
 | Módulo | Responsabilidad | Expone |
 |---|---|---|
 
+## Bases técnicas
+_Cómo cumple este proyecto cada base de `conocimiento/bases-tecnicas.md` (copia la tabla del perfil y ajusta lo que cambie). Lo que no aplique se dice y por qué._
+
+| Base | En este proyecto | Cómo se comprueba |
+|---|---|---|
+| B1 Capas con una sola dirección | | |
+| B2 Una sola puerta a los datos | | |
+| B3 Configuración validada | | |
+| B4 Contratos en el borde | | |
+| B5 Errores con una sola forma | | |
+| B6 Tipos estrictos | | |
+| B7 Pruebas desde la primera tarea | | |
+| B8 CI desde el día 1 | | |
+
 ## Atributos de calidad
 _Los 3 que mandan y el sacrificado, cada uno con requisito medible (ver fundamentos.md)._
 

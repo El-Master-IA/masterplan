@@ -54,6 +54,14 @@ api/
 - **Autorización en cada ruta** con una sola función; si la base no tiene RLS, el test de aislamiento entre clientes se hace contra la API.
 - **Límites de uso** por IP y por usuario en rutas de login y de escritura.
 
+## Bases técnicas en este perfil
+Las 8 bases de `conocimiento/bases-tecnicas.md`. La ola del esqueleto las deja instaladas.
+- **B1 y B2:** rutas → servicios → datos; el cliente de la base se crea en un solo módulo (`src/db/`) y solo los repositorios lo importan. Regla de lint de límites de importación.
+- **B3:** un módulo de configuración que valida las variables con zod al arrancar y falla diciendo cuál falta.
+- **B4:** cada ruta valida su entrada con un esquema; las respuestas de terceros también.
+- **B5:** un manejador de errores central con un solo formato (código, mensaje, id de petición); sin `catch` vacío.
+- **B6, B7, B8:** TypeScript estricto, pruebas corriendo desde la primera tarea y CI con lint, typecheck, test y build.
+
 ## Scripts esperados
 `dev`, `build`, `start`, `start:worker`, `typecheck`, `lint`, `test`, `db:migrate`, `db:seed`.
 

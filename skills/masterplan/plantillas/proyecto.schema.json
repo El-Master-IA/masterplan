@@ -36,6 +36,11 @@
         "paralelo_base": { "type": "boolean", "description": "true si cada tarea puede tener su propia base o puerto de pruebas." }
       }
     },
+    "tiempos": {
+      "type": "object",
+      "description": "Inicio y fin de cada fase (clave: número de fase). Lo escribe masterplan.mjs; `estado` muestra las duraciones.",
+      "additionalProperties": { "type": "object", "additionalProperties": false, "properties": { "inicio": { "type": "string" }, "fin": { "type": "string" } } }
+    },
     "relevo": { "type": "object", "description": "Lo escribe masterplan.mjs relevo (cuántas líneas de decisiones.log ya se contaron).", "additionalProperties": true },
     "necesidades": {
       "type": "object",

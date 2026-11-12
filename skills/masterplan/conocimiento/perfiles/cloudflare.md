@@ -49,6 +49,14 @@ wrangler.jsonc          bindings: D1, R2, KV, Queues, DO; entornos preview y pro
 - **Entornos separados** (`--env preview`, `--env production`) con bases y buckets distintos.
 - **Migraciones de D1** aplicadas antes de publicar la versión que las usa.
 
+## Bases técnicas en este perfil
+Las 8 bases de `conocimiento/bases-tecnicas.md`. La ola del esqueleto las deja instaladas.
+- **B1 y B2:** rutas → servicios → datos; los bindings (`env.DB`, `env.BUCKET`) solo se usan dentro de `src/datos/`; los handlers reciben funciones, no bindings. Regla de lint de límites de importación.
+- **B3:** un módulo de configuración que valida las variables con zod al arrancar y falla diciendo cuál falta.
+- **B4:** cada ruta valida su entrada con un esquema; las respuestas de terceros también.
+- **B5:** un manejador de errores central con un solo formato (código, mensaje, id de petición); sin `catch` vacío.
+- **B6, B7, B8:** TypeScript estricto, pruebas corriendo desde la primera tarea y CI con lint, typecheck, test y build.
+
 ## Scripts esperados
 `dev` (wrangler dev), `build`, `deploy:preview`, `deploy`, `typecheck`, `lint`, `test`, `db:migrate:local`, `db:migrate:remote`.
 

@@ -73,11 +73,13 @@ Siempre se declara qué no se revisó.
    No editan ni escriben archivos. Cada uno devuelve su arreglo de hallazgos (formato
    `hallazgo.schema.json`) y el conductor lo guarda en
    `masterplan/auditoria/pendientes/<agente>.json`.
-3. **Verificador independiente.** Por cada hallazgo `critica` o `alta`, un agente distinto al que
-   lo encontró intenta confirmarlo con su propia lectura o comando (reproducir la consulta,
-   abrir el archivo en la línea, correr el test). Resultado: `verificado: true`, o
-   `verificado: false` con la razón en `evidencia`, o se baja la confianza a `especulativa`.
-   Medias y bajas se verifican por muestreo.
+3. **Verificador independiente, un solo despacho.** Si hay hallazgos `critica`, despacha **un**
+   agente distinto a los que los encontraron (por ejemplo `masterplan:revisor-codigo`) con la lista
+   completa: intenta confirmar cada uno con su propia lectura o comando (reproducir la consulta,
+   abrir el archivo en la línea, correr el test). Resultado por hallazgo: `verificado: true`, o
+   `verificado: false` con la razón en `evidencia`, o confianza bajada a `especulativa`. Las
+   `alta` las confirmas tú abriendo el archivo en la línea citada; medias y bajas, por muestreo.
+   Sin críticos no hay despacho.
 4. **Fusionar.** `node "${CLAUDE_PLUGIN_ROOT}/scripts/masterplan.mjs" auditoria fusionar`:
    - valida campos obligatorios y severidad; lo inválido va a "Descartados por formato";
    - deduplica por `regla + archivo + linea`; si se repite, gana la severidad mayor;

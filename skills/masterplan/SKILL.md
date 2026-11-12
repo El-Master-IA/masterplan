@@ -101,6 +101,9 @@ modo rápido:        0 → 1 (3 preguntas, defaults declarados) → 3 → 4 → 
 
 No saltes fases. Un ajuste en la fase 4 vuelve a la 3, no avanza.
 
+**Para cambiar de fase usa `masterplan.mjs fase <n>`**, no edites `fase` a mano: anota cuánto tomó
+la fase que cierras (se ve en `estado`) y te dice si sigues en la misma sesión o cierras el tramo.
+
 ## Rutas
 
 Todo archivo de este plugin se abre como `${CLAUDE_PLUGIN_ROOT}/<ruta>`; las rutas de esta skill
@@ -118,6 +121,9 @@ directorio de trabajo de la persona, bajo `masterplan/` (ver `plantillas/estruct
 - `conocimiento/perfiles/` — en qué framework se construye, con versiones y su procedencia:
   `react-vite-supabase-vercel.md`, `nextjs-supabase-vercel.md`, `node-railway.md`, `cloudflare.md`.
 - `conocimiento/fundamentos.md` — los 12 principios y los atributos de calidad.
+- `conocimiento/bases-tecnicas.md` — las 8 bases que todo proyecto trae desde la primera ola
+  (capas, una puerta a los datos, configuración validada, contratos, errores, tipos, pruebas, CI)
+  y el "esqueleto que corre". Cada perfil dice con qué herramienta se cumplen.
 - `conocimiento/compatibilidad.md` — combinaciones que se rompen juntas.
 - Kits por capacidad (skills hermanas): `masterplan:kit-datos`, `masterplan:kit-auth`,
   `masterplan:kit-api`, `masterplan:kit-frontend`, `masterplan:kit-pagos`,
@@ -171,8 +177,8 @@ Paralelo solo cuando las tareas no tocan los mismos archivos (olas de `tareas.js
 
 ## Lenguaje natural primero
 La persona no tiene que saber comandos. Entiende frases normales y respóndelas como el comando
-equivalente: "sigamos con mi proyecto" → seguir · "¿cómo vamos?" → estado · "quiero agregarle X" →
-cambio · "revisa la seguridad" / "audita mi proyecto" → auditar · "explícamelo más fácil" / "háblame más técnico" → voz.
+equivalente: "sigamos con mi proyecto" → seguir · "¿cómo vamos?" → estado · "quiero agregarle X", "cámbiale esto", "arregla este bug" →
+cambio (uno pequeño se hace en la misma sesión) · "revisa la seguridad" / "audita mi proyecto" → auditar · "explícamelo más fácil" / "háblame más técnico" → voz.
 Cuando sugieras el siguiente paso, dalo como frase natural; menciona el comando solo como atajo.
 
 ## Estilo

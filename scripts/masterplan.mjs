@@ -19,6 +19,7 @@ const RIGOR = ['bajo', 'medio', 'alto']
 const FASES_PRODUCTO = ['nucleo', 'ampliacion']
 const HACER_MAX = 600
 const PARALELO_MAX = 5
+const HITOS = ['visible', 'esqueleto']
 // Reglas que antes vivían copiadas en varios documentos. Fuente única: `masterplan.mjs reglas`.
 const VUELTAS_REVISOR = { bajo: 1, medio: 1, alto: 2 }
 const PREGUNTAS_MAX = 5
@@ -67,7 +68,22 @@ function proyecto() {
   if (!existe(p)) fallar('No hay masterplan/proyecto.json en esta carpeta. Empieza con /masterplan:empezar.')
   return leerJSON(p)
 }
-function guardarProyecto(pr) { pr.actualizado = ahora(); escribirJSON(path.join(MP, 'proyecto.json'), pr) }
+// Tiempos por fase: se anota cuándo empieza y cuándo termina cada una, para medir en vez de suponer.
+function anotarTiempos(pr) {
+  if (!Number.isInteger(pr.fase)) return
+  const t = pr.tiempos = pr.tiempos || {}
+  const actual = String(pr.fase)
+  for (const [f, v] of Object.entries(t)) if (f !== actual && v.inicio && !v.fin) v.fin = ahora()
+  if (!t[actual]) t[actual] = { inicio: ahora() }
+  else if (t[actual].fin) delete t[actual].fin // se volvió a esta fase (por ejemplo, de la 4 a la 3)
+}
+function duracion(ms) {
+  const min = Math.round(ms / 60000)
+  if (min < 60) return `${min} min`
+  const h = Math.floor(min / 60)
+  return h < 48 ? `${h} h ${String(min % 60).padStart(2, '0')}` : `${Math.round(h / 24)} días`
+}
+function guardarProyecto(pr) { anotarTiempos(pr); pr.actualizado = ahora(); escribirJSON(path.join(MP, 'proyecto.json'), pr) }
 const rutaTareas = () => path.join(MP, 'plan', 'tareas.json')
 function tareas() { return existe(rutaTareas()) ? leerJSON(rutaTareas()) : [] }
 
@@ -91,6 +107,8 @@ function cmdEstado() {
   if (sig.length) console.log(`Siguiente: ${sig.map(t => `${t.id} (${t.titulo})`).join(', ')}`)
   if (relevos.length) console.log(`Último relevo: ${rel(relevos.at(-1))}`)
   if (buzon.length) console.log(`Buzón: ${buzon.length} mensaje(s) sin leer → node masterplan.mjs buzon leer`)
+  const tiempos = Object.entries(pr.tiempos || {}).filter(([, v]) => v.inicio).sort(([a], [b]) => a - b)
+  if (tiempos.length) console.log(`Tiempos: ${tiempos.map(([f, v]) => `${FASES[f]} ${duracion(new Date(v.fin || Date.now()) - new Date(v.inicio))}${v.fin ? '' : ' (en curso)'}`).join(' · ')}`)
   if (pr.produccion?.url) console.log(`Producción: ${pr.produccion.url}`)
   console.log('✓ contrato válido')
 }
@@ -152,8 +170,14 @@ function cmdValidar(args) {
   // Tareas
   if (pr.fase >= 5 || existe(rutaTareas())) {
     if (!existe(rutaTareas())) add(pr.fase >= 6 ? 'BLOCKER' : 'MAJOR', 'masterplan/plan/tareas.json', 'no existe el plan de tareas')
-    else validarTareas(tareas(), idsSpec, add)
-    if (!existe(path.join(MP, 'plan', 'gate.md'))) add('MAJOR', 'masterplan/plan/gate.md', 'falta el gate global')
+    else validarTareas(tareas(), idsSpec, add, { planeando: pr.fase === 5 && pr.modo !== 'brownfield' })
+    const gate = path.join(MP, 'plan', 'gate.md')
+    if (!existe(gate)) add('MAJOR', 'masterplan/plan/gate.md', 'falta el gate global')
+    else if (pr.fase === 5) {
+      const g = leer(gate).toLowerCase()
+      for (const [nombre, re] of [['lint', /lint/], ['typecheck', /typecheck|tsc|mypy|pyright/], ['pruebas', /test|pytest|vitest|jest/], ['build', /build/]])
+        if (!re.test(g)) add('MAJOR', 'masterplan/plan/gate.md', `el gate no incluye ${nombre} (bases técnicas B6–B8)`)
+    }
   }
 
   // Variables de entorno documentadas
@@ -170,7 +194,7 @@ function cmdValidar(args) {
   process.exit(h.some(x => x.sev === 'BLOCKER') ? 1 : 0)
 }
 
-function validarTareas(ts, idsSpec, add) {
+function validarTareas(ts, idsSpec, add, opciones = {}) {
   const donde = 'masterplan/plan/tareas.json'
   if (!Array.isArray(ts)) return add('BLOCKER', donde, 'debe ser un arreglo de tareas')
   const porId = new Map()
@@ -194,7 +218,7 @@ function validarTareas(ts, idsSpec, add) {
     if (t.checkpoint && !/git tag\s+mp-T\d+/.test(t.checkpoint)) add('MAJOR', d, 'el checkpoint no crea el tag mp-T<n>')
     if (typeof t.hacer === 'string' && t.hacer.length > HACER_MAX) add('MINOR', d, `"hacer" tiene ${t.hacer.length} caracteres (máx. ${HACER_MAX}): deja el detalle en la spec citada`)
     if (t.fase_producto !== undefined && !FASES_PRODUCTO.includes(t.fase_producto)) add('MAJOR', d, `fase_producto inválida: ${t.fase_producto} (usa ${FASES_PRODUCTO.join(' | ')})`)
-    if (t.hito !== undefined && t.hito !== 'visible') add('MAJOR', d, `hito inválido: ${t.hito} (solo "visible")`)
+    if (t.hito !== undefined && !HITOS.includes(t.hito)) add('MAJOR', d, `hito inválido: ${t.hito} (usa ${HITOS.join(' | ')})`)
     for (const s of t.specs || []) if (idsSpec.size && !idsSpec.has(s)) add('MAJOR', d, `cita un requisito que no existe: ${s}`)
   }
   for (const t of ts) {
@@ -207,6 +231,12 @@ function validarTareas(ts, idsSpec, add) {
   }
   // Primer hito visible antes de la mitad del plan
   const maxOla = Math.max(...ts.map(t => t.ola || 1))
+  // Esqueleto que corre (conocimiento/bases-tecnicas.md): solo se exige al planear, para no molestar a los planes ya en construcción.
+  if (opciones.planeando && ts.length >= 6 && maxOla >= 2) {
+    const esq = ts.filter(t => t.hito === 'esqueleto')
+    if (!esq.length) add('MAJOR', donde, 'ninguna tarea marca hito:"esqueleto": la ola 1 o 2 debe dejar el proyecto corriendo de punta a punta con las bases técnicas (lint, tipos, pruebas, CI, capas, configuración validada) antes de cualquier función')
+    else if (Math.min(...esq.map(t => t.ola)) > 2) add('MAJOR', donde, `el esqueleto llega en la ola ${Math.min(...esq.map(t => t.ola))}: debe estar en la ola 1 o 2`)
+  }
   if (ts.length >= 6 && maxOla >= 2) {
     const visibles = ts.filter(t => t.hito === 'visible')
     if (!visibles.length) add('MAJOR', donde, 'ninguna tarea marca hito:"visible": una persona debe poder usar el flujo principal (con datos de semilla) en la primera mitad del plan')
@@ -524,21 +554,24 @@ function tablasSinRLS() {
 }
 
 // ---------- cambios (specs vivas) ----------
-function cmdCambio([sub, dir]) {
+function cmdCambio([sub, dir, ...resto]) {
   if (sub === 'nuevo') {
+    const TAMANOS = ['pequeno', 'mediano', 'grande']
+    const tam = (resto.find(a => a.startsWith('--tamano=')) || '').split('=')[1] || 'mediano'
+    if (!TAMANOS.includes(tam)) fallar(`--tamano debe ser ${TAMANOS.join(' | ')}`)
     const slug = (dir || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
     if (!slug) fallar('Uso: masterplan.mjs cambio nuevo "<descripción corta>"')
     const d = path.join(MP, 'cambios', `${hoy()}-${slug}`)
     if (existe(d)) fallar(`Ya existe ${rel(d)}`)
     escribir(path.join(d, 'delta.md'), [
-      `# Cambio: ${dir}`, '', `Fecha: ${hoy()}`, '', 'Por qué:', '',
+      `# Cambio: ${dir}`, '', `Fecha: ${hoy()}`, `Tamaño: ${tam}`, '', 'Por qué:', '',
       'Lo que NO debe cambiar:', '',
       '## Agregados', '', '<!-- ### AUTH-010 · specs/auth.md  (requisito EARS completo debajo) -->', '',
       '## Modificados', '', '<!-- ### AUTH-004 · specs/auth.md  (versión nueva completa debajo) -->', '',
       '## Eliminados', '', '<!-- ### AUTH-002 · specs/auth.md  Motivo: … Migración: … -->', ''
     ].join('\n'))
     escribirJSON(path.join(d, 'tareas.json'), [])
-    console.log(`✓ ${rel(d)}/delta.md`)
+    console.log(`✓ ${rel(d)}/delta.md (tamaño ${tam}: ${{ pequeno: 'una tarea, se construye y verifica en esta sesión', mediano: 'specs y tareas del cambio, validar y construir; sin rediseño', grande: 'ciclo completo 3 → 7 sobre el delta' }[tam]})`)
     return
   }
   if (sub === 'archivar') {
@@ -882,6 +915,24 @@ function cmdProveedores([sub, ...args]) {
   fallar('Uso: masterplan.mjs proveedores recomendar [--rasgos a,b] [--presupuesto cero|bajo|medio|alto] [--json] [--guardar] | lista [--categoria c] | ver <id> | validar')
 }
 
+// ---------- fase: la única forma de cambiar de fase ----------
+function cmdFase([n]) {
+  const pr = proyecto()
+  if (n === undefined) return console.log(`${pr.fase} · ${FASES[pr.fase]}`)
+  const f = Number(n)
+  if (!Number.isInteger(f) || f < 0 || f > 8) fallar('Uso: masterplan.mjs fase <0-8>')
+  if (f === pr.fase) return console.log(`Ya estás en la fase ${f} · ${FASES[f]}`)
+  const antes = pr.fase
+  pr.fase = f
+  guardarProyecto(pr)
+  const t = pr.tiempos?.[String(antes)]
+  const tardo = t?.inicio && t?.fin ? ` (la fase ${antes} tomó ${duracion(new Date(t.fin) - new Date(t.inicio))})` : ''
+  const tramoAntes = TRAMOS.find(x => x.fases.includes(antes)), tramoAhora = TRAMOS.find(x => x.fases.includes(f))
+  console.log(`✓ fase ${f} · ${FASES[f]}${tardo}`)
+  if (f > antes && tramoAntes !== tramoAhora) console.log(`Cierra el tramo "${tramoAntes.nombre}": escribe el relevo (masterplan.mjs relevo) y sigue en una sesión nueva.`)
+  else if (f > antes) console.log(`Mismo tramo ("${tramoAhora.nombre}"): sigue en esta sesión, sin relevo.`)
+}
+
 // ---------- reglas (fuente única) ----------
 function cmdReglas(args) {
   const reglas = {
@@ -974,9 +1025,10 @@ const AYUDA = `Masterplan · comandos (desde la raíz de tu proyecto)
   ola [n] [--escribir] [--json]  tareas libres de la ola para lanzar en paralelo, una sesión por tarea, con sus briefs
   pgtap-resumen <archivo|->      lista los asertos que fallan en una salida TAP/pgTAP
   auditoria fusionar|comparar    une hallazgos y calcula las tres notas / compara las 2 últimas
+  fase [n]                       muestra la fase o pasa a la fase n (anota cuánto tomó la anterior)
   reglas [--json]                reglas que valen en todo el plugin: siempre humano, rigor, tramos, preguntas
   deriva                         specs sin prueba, tablas sin RLS, variables sin documentar
-  cambio nuevo "<qué>"           abre un cambio (delta) sobre las specs vivas
+  cambio nuevo "<qué>" [--tamano=pequeno|mediano|grande]   abre un cambio (delta) sobre las specs vivas
   cambio archivar <carpeta>      aplica el delta a specs/ y lo archiva
   relevo [NN-fase]               crea el relevo para seguir en una sesión nueva
   buzon enviar --para fase-N "…" | buzon leer   mensajes entre sesiones (sin mod)
@@ -995,6 +1047,7 @@ try {
     case 'relevo': cmdRelevo(args); break
     case 'ola': cmdOla(args); break
     case 'reglas': cmdReglas(args); break
+    case 'fase': cmdFase(args); break
     case 'auto': cmdAuto(args); break
     case 'pgtap-resumen': cmdPgtap(args); break
     case 'buzon': cmdBuzon(args); break
