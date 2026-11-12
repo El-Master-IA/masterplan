@@ -1,0 +1,382 @@
+<title>Cimientos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: plano técnico. Columna de lectura + índice lateral fijo en desktop, barra de secciones arriba en móvil. Cuadrícula tenue de fondo solo en la cabecera. */
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --fg:#17202e; --muted:#5a6678; --line:#d9dfe8;
+  --accent:#1f4fd1; --accent-soft:#e6ecfb; --ok:#1d7a4f; --warn:#a15c00; --bad:#b4323a;
+  --grid:rgba(31,79,209,.07);
+  --f-display:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d121b; --surface:#141b27; --fg:#e4e9f1; --muted:#97a3b6; --line:#263143;
+  --accent:#7d9cff; --accent-soft:#1b2640; --ok:#5cc495; --warn:#e3a54b; --bad:#f07a82;
+  --grid:rgba(125,156,255,.07); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d121b; --surface:#141b27; --fg:#e4e9f1; --muted:#97a3b6; --line:#263143;
+  --accent:#7d9cff; --accent-soft:#1b2640; --ok:#5cc495; --warn:#e3a54b; --bad:#f07a82;
+  --grid:rgba(125,156,255,.07); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--f-body);margin:0}
+a{color:var(--accent);text-underline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0}
+h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.15rem;font-weight:700;margin-top:2rem}
+p{margin:0}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+code{background:var(--accent-soft);padding:.05em .35em;border-radius:3px}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.inner{max-width:1180px;margin:0 auto}
+
+/* Cabecera */
+header.top{border-bottom:1px solid var(--line);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;padding-block:48px 36px}
+.eyebrow{font:500 .75rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+header.top h1{font-size:clamp(2.1rem,6vw,3.6rem);font-weight:800;letter-spacing:-.025em;margin:.6rem 0 1rem;max-width:18ch}
+header.top .lede{max-width:62ch;color:var(--muted);font-size:1.05rem}
+.stamp{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;font:400 .8rem/1.4 var(--f-mono);color:var(--muted)}
+.stamp b{color:var(--fg);font-weight:500}
+
+/* Estructura */
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:48px;padding-block:40px 80px}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;font-size:.9rem}
+nav.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;counter-reset:s}
+nav.toc a{display:block;padding:6px 10px;border-left:2px solid var(--line);color:var(--muted);text-decoration:none}
+nav.toc a:hover{color:var(--fg);border-left-color:var(--accent)}
+nav.toc a.on{color:var(--accent);border-left-color:var(--accent);font-weight:600}
+main{min-width:0}
+section{padding-top:8px;margin-bottom:64px;scroll-margin-top:24px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--fg);padding-bottom:10px;margin-bottom:22px}
+.sec-head .n{font:500 .8rem var(--f-mono);color:var(--accent)}
+.prose{max-width:68ch;display:flex;flex-direction:column;gap:14px}
+.muted{color:var(--muted)}
+
+/* Resumen */
+.tldr{display:grid;gap:0;border:1px solid var(--line);background:var(--surface)}
+.tldr div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;padding:14px 18px;border-top:1px solid var(--line)}
+.tldr div:first-child{border-top:0}
+.tldr .k{font:500 .8rem var(--f-mono);color:var(--accent);padding-top:3px}
+
+/* Tablas */
+.tbl{overflow-x:auto;border:1px solid var(--line);background:var(--surface);margin-top:14px}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font:600 .72rem/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--bg);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-family:var(--f-mono);font-size:.85rem}
+td:first-child{font-weight:500}
+.tag{display:inline-block;font:500 .7rem/1 var(--f-mono);padding:4px 6px;border-radius:3px;border:1px solid currentColor;white-space:nowrap}
+.t-ok{color:var(--ok)}.t-warn{color:var(--warn)}.t-es{color:var(--accent)}
+
+/* Diagrama */
+.flow{margin-top:18px;border:1px solid var(--line);background:var(--surface);padding:20px;overflow-x:auto}
+.flow svg{display:block;min-width:640px;width:100%;height:auto}
+
+/* Ideas */
+.ideas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:14px}
+.idea{background:var(--surface);padding:18px;display:flex;flex-direction:column;gap:6px}
+.idea h4{font:700 1rem var(--f-display);margin:0;display:flex;gap:10px}
+.idea h4 span{font:500 .78rem var(--f-mono);color:var(--accent);padding-top:3px}
+.idea p{font-size:.93rem;color:var(--muted)}
+.quote{border-left:3px solid var(--accent);padding:4px 0 4px 16px;font-style:italic}
+
+.sections20{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.sections20 span{font:400 .82rem var(--f-mono);border:1px solid var(--line);background:var(--surface);padding:5px 9px}
+.sections20 span.key{border-color:var(--accent);color:var(--accent);font-weight:500}
+
+.gaps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
+.gap{border:1px dashed var(--warn);padding:14px;background:var(--surface)}
+.gap b{display:block;font-family:var(--f-display);margin-bottom:4px}
+.gap p{font-size:.9rem;color:var(--muted)}
+
+pre.code{font:400 .85rem/1.55 var(--f-mono);background:var(--surface);border:1px solid var(--line);padding:16px;overflow-x:auto;margin:14px 0 0}
+
+/* Pestañas de fuentes */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tabs button{font:500 .85rem var(--f-body);background:var(--surface);color:var(--fg);border:1px solid var(--line);padding:8px 14px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.legend{font-size:.85rem;color:var(--muted);margin-top:12px;display:flex;flex-wrap:wrap;gap:6px 16px}
+
+/* Ruta */
+.weeks{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);background:var(--surface);margin-top:14px}
+.week{display:grid;grid-template-columns:28px 64px minmax(0,1fr);gap:14px;padding:14px 16px;border-top:1px solid var(--line);align-items:start}
+.week:first-child{border-top:0}
+.week input{width:18px;height:18px;margin-top:3px;accent-color:var(--accent)}
+.week .wk{font:500 .8rem var(--f-mono);color:var(--accent);padding-top:3px}
+.week b{font-family:var(--f-display)}
+.week .mat{font-size:.9rem;color:var(--muted)}
+.week .del{font-size:.9rem;margin-top:4px}
+.week .del::before{content:"Entregable → ";font:500 .75rem var(--f-mono);color:var(--ok)}
+.week.done b,.week.done .mat,.week.done .del{opacity:.5;text-decoration:line-through}
+.progress{display:flex;align-items:center;gap:12px;margin-top:12px;font:400 .85rem var(--f-mono);color:var(--muted)}
+.bar{flex:1;height:6px;background:var(--line)}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+ol.top7{margin:14px 0 0;padding-left:1.4em;display:flex;flex-direction:column;gap:6px;max-width:72ch}
+
+footer{border-top:1px solid var(--line);padding-block:24px 40px;font-size:.85rem;color:var(--muted)}
+
+@media (max-width:860px){
+  .layout{grid-template-columns:minmax(0,1fr);gap:0;padding-top:0}
+  nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:8px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line);overflow-x:auto}
+  nav.toc ol{flex-direction:row;gap:4px;white-space:nowrap}
+  nav.toc a{border-left:0;border-bottom:2px solid transparent;padding:6px 8px}
+  nav.toc a.on{border-bottom-color:var(--accent)}
+  section{padding-top:28px}
+  .ideas{grid-template-columns:minmax(0,1fr)}
+  .week{grid-template-columns:24px minmax(0,1fr)}
+  .week .wk{grid-column:2}
+  .week>div{grid-column:2}
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+<style>
+.phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:14px}
+.ph{background:var(--surface);padding:16px;display:flex;flex-direction:column;gap:6px}
+.ph .num{font:500 .78rem var(--f-mono);color:var(--accent)}
+.ph b{font-family:var(--f-display);font-size:1.05rem}
+.ph p{font-size:.9rem;color:var(--muted)}
+.ph .gate{font:500 .78rem/1.4 var(--f-mono);color:var(--ok);border-top:1px dashed var(--line);padding-top:6px;margin-top:auto}
+.layers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.layer{border:1px solid var(--line);background:var(--surface);padding:16px}
+.layer h4{font:700 1rem var(--f-display);margin:0 0 8px}
+.layer ul{margin:0;padding-left:1.1em;font-size:.92rem;display:flex;flex-direction:column;gap:4px}
+.vs td:nth-child(2){color:var(--muted)}
+.vs td:nth-child(3){font-weight:500}
+@media (max-width:860px){.phases{grid-template-columns:minmax(0,1fr)}.layers{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+<header class="top wrap">
+  <div class="inner">
+    <div class="eyebrow">Auditoría y propuesta · nombre en clave</div>
+    <h1>Cimientos</h1>
+    <p class="lede">Un plugin propio para Claude Code que lleva a cualquier persona de la idea a un SaaS en producción, con frontend, backend, datos, APIs y seguridad bien puestos y verificados por máquina. En español.</p>
+    <div class="stamp">
+      <span>Versión de la propuesta: <b>0</b></span>
+      <span>Fuentes estudiadas: <b>the-architect + 23 repos + 73 guías</b></span>
+      <span>Estado en la Torre: <b>en espera hasta el 4-nov</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="inner layout">
+<nav class="toc" aria-label="Secciones">
+  <ol>
+    <li><a href="#auditoria">Auditoría</a></li>
+    <li><a href="#vision">Visión</a></li>
+    <li><a href="#flujo">Flujo</a></li>
+    <li><a href="#capas">Capas técnicas</a></li>
+    <li><a href="#interna">Por dentro</a></li>
+    <li><a href="#vs">Frente a the-architect</a></li>
+    <li><a href="#ruta">Hoja de ruta</a></li>
+  </ol>
+</nav>
+<main>
+
+<section id="auditoria">
+  <div class="sec-head"><span class="n">01</span><h2>Auditoría del ecosistema</h2></div>
+  <p class="prose muted">Estudiamos the-architect, otros 8 repos de su autor, 9 repos de frontend y calidad, 6 competidores spec-driven y las 73 guías de la búsqueda "web" en tododeia. Tomamos ideas y patrones, no textos ni código.</p>
+
+  <h3>Lo que ya está resuelto y adoptamos como principio</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Idea</th><th>Dónde se vio</th></tr></thead>
+    <tbody>
+      <tr><td>Plan ejecutable por otra sesión: 4 campos por paso, EARS, comando que sale 0</td><td>the-architect, Kiro</td></tr>
+      <tr><td>Puertas antes de generar: cero dudas, pre-mortem, Non-Goals</td><td>the-architect, spec-kit</td></tr>
+      <tr><td>El script mide, el modelo juzga</td><td>claude-seo-ai, claude-db</td></tr>
+      <tr><td>Validadores en hooks que no se pueden discutir</td><td>agente-pagokit</td></tr>
+      <tr><td>Auditores de solo lectura, un solo escritor, arreglos opt-in</td><td>claude-seo-ai, cyber-neo</td></tr>
+      <tr><td>Specs vivas con deltas</td><td>OpenSpec</td></tr>
+      <tr><td>UX en dos documentos: DESIGN.md + EXPERIENCE.md</td><td>BMAD v7</td></tr>
+      <tr><td>Entrevista: mirar antes de preguntar, una pregunta por turno</td><td>Superpowers</td></tr>
+      <tr><td>Pedagogía: ficha fija, analogía → técnica, prompts copiables, "cuándo NO usarlo"</td><td>guías tododeia</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Dónde falla: nuestra oportunidad</h3>
+  <div class="gaps">
+    <div class="gap"><b>No hay conductor</b><p>Cada herramienta vive aislada y vuelve a preguntar todo. El usuario es el pegamento.</p></div>
+    <div class="gap"><b>Backend débil</b><p>Sin RLS probadas, migraciones, colas ni rate limiting. Apps que se ven bien y filtran datos.</p></div>
+    <div class="gap"><b>Seguridad como checklist</b><p>Nadie conecta amenazas → permisos → políticas → tests.</p></div>
+    <div class="gap"><b>Frontend sin medir</b><p>Accesibilidad, Core Web Vitals y anti-"AI slop" quedan como opinión.</p></div>
+    <div class="gap"><b>Termina en el plano</b><p>the-architect no construye, no publica, no opera.</p></div>
+    <div class="gap"><b>Specs que se pudren</b><p>El plano deja de describir el sistema real tras el primer cambio.</p></div>
+    <div class="gap"><b>30 minutos en silencio</b><p>La generación parece colgada.</p></div>
+    <div class="gap"><b>Asume desarrollador</b><p>Excluye al dueño de negocio y al principiante.</p></div>
+  </div>
+</section>
+
+<section id="vision">
+  <div class="sec-head"><span class="n">02</span><h2>Visión y principios</h2></div>
+  <div class="tldr">
+    <div><span class="k">→</span><p><b>Un solo compañero que lleva a cualquier persona de la idea a un SaaS en producción, con las bases bien puestas y verificadas por máquina, en español.</b></p></div>
+    <div><span class="k">✓</span><p><b>Terminado (v1):</b> un principiante lo usa de la idea al deploy y sale un SaaS real con auth, base de datos, API, frontend con design system y auditoría de seguridad aprobada.</p></div>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>#</th><th>Principio</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>Un agente + skills. Subagentes solo para investigar, auditar, validar y tareas independientes.</td></tr>
+      <tr><td class="num">2</td><td>Un contrato de proyecto único que todos leen y nadie vuelve a preguntar.</td></tr>
+      <tr><td class="num">3</td><td>Lo que se puede medir lo mide un script; el modelo explica y decide el resto.</td></tr>
+      <tr><td class="num">4</td><td>Puertas con evidencia guardada: nada se da por hecho sin la salida del comando.</td></tr>
+      <tr><td class="num">5</td><td>Seguridad por diseño: amenazas → permisos → políticas → tests, desde el plano.</td></tr>
+      <tr><td class="num">6</td><td>Frontend con contrato: DESIGN.md + EXPERIENCE.md y reglas comprobables.</td></tr>
+      <tr><td class="num">7</td><td>Specs vivas: el plano se actualiza con cada cambio.</td></tr>
+      <tr><td class="num">8</td><td>Carga progresiva: archivo raíz corto, una fase a la vez.</td></tr>
+      <tr><td class="num">9</td><td>Confirmación humana para efectos externos; secretos solo por entorno, nunca en el chat.</td></tr>
+      <tr><td class="num">10</td><td>Dos voces: modo dueño de negocio y modo desarrollador.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="flujo">
+  <div class="sec-head"><span class="n">03</span><h2>El flujo: 9 fases con puertas</h2></div>
+  <div class="phases">
+    <div class="ph"><span class="num">FASE 0</span><b>Contexto</b><p>Lee la carpeta de contexto o el repo existente antes de preguntar.</p><span class="gate">Puerta: mapa de lo que ya se sabe</span></div>
+    <div class="ph"><span class="num">FASE 1</span><b>Descubrir</b><p>Una pregunta por turno, diciendo qué cambia según la respuesta. Detecta el nivel del usuario.</p><span class="gate">Puerta: tipo de producto confirmado</span></div>
+    <div class="ph"><span class="num">FASE 2</span><b>Recortar</b><p>Tres versiones de la idea (mínima, recomendada, soñada). Al menos 5 Non-Goals.</p><span class="gate">Puerta: MVP firmado</span></div>
+    <div class="ph"><span class="num">FASE 3</span><b>Diseñar</b><p>Tipo × perfil de stack × capacidades. Atributos de calidad, C4, datos, contratos de API, matriz de permisos, mapa de amenazas, DESIGN.md y EXPERIENCE.md.</p><span class="gate">Puerta: ninguna dimensión en silencio</span></div>
+    <div class="ph"><span class="num">FASE 4</span><b>Puertas</b><p>Máximo 5 preguntas con opción recomendada, pre-mortem, checklists de calidad de requisitos, validador por script y validador IA independiente.</p><span class="gate">Puerta: 0 dudas, 0 BLOCKER</span></div>
+    <div class="ph"><span class="num">FASE 5</span><b>Planear</b><p>Grafo de tareas en olas paralelas. Cada paso con 4 campos y su test.</p><span class="gate">Puerta: plan validado</span></div>
+    <div class="ph"><span class="num">FASE 6</span><b>Construir</b><p>El conductor ejecuta e invoca el kit de cada capacidad con el contrato resuelto. Subagente por tarea + revisor. Hooks de políticas activos.</p><span class="gate">Puerta: cada paso en verde + tag</span></div>
+    <div class="ph"><span class="num">FASE 7</span><b>Verificar y publicar</b><p>Auditoría común: seguridad, RLS con la app corriendo, accesibilidad, rendimiento, anti-slop, SEO. Preview → smoke → producción con tu confirmación.</p><span class="gate">Puerta: gate global en verde</span></div>
+    <div class="ph"><span class="num">FASE 8</span><b>Operar</b><p>Cambios como deltas sobre specs vivas, detector de desvío en CI, loop de mantenimiento.</p><span class="gate">Puerta: spec = sistema real</span></div>
+  </div>
+  <p class="muted" style="margin-top:10px;font-size:.9rem">Cada fase larga muestra avances cortos. Nunca 30 minutos en silencio.</p>
+
+  <h3>Lo que queda en el proyecto del usuario</h3>
+  <pre class="code">cimientos/
+  proyecto.json        contrato único: tipo, perfil, capacidades, versiones, fase, aprobaciones
+  decisiones.log       bitácora append-only con IDs estables
+  specs/ + cambios/    specs vivas (EARS) y deltas por cambio
+  arquitectura.md      C4, atributos de calidad, ADRs
+  datos.md             modelo, borrado, retención de datos personales
+  api.md               contratos, errores, versionado
+  seguridad.md         amenazas, matriz rol×recurso×acción, políticas RLS
+  DESIGN.md            tokens + lista de "no usar"
+  EXPERIENCE.md        pantallas, estados, flujos, accesibilidad
+  plan/tareas.json     grafo en olas      evidencia/  salidas de cada puerta
+CLAUDE.md · AGENTS.md  cortos, comandos primero
+.claude/skills · .claude/hooks</pre>
+</section>
+
+<section id="capas">
+  <div class="sec-head"><span class="n">04</span><h2>Las capas que hacen "bases sólidas"</h2></div>
+  <div class="layers">
+    <div class="layer"><h4>Frontend</h4><ul>
+      <li>Design system generado desde el brief, con semilla para que no salga todo igual</li>
+      <li>Exporta a variables CSS y tema de Tailwind</li>
+      <li>Reglas versionadas: accesibilidad, rendimiento, animación, anti-slop, componentes, estado</li>
+      <li>Cada componente con sus estados: cargando, vacío, error, datos extremos</li>
+      <li>axe + Playwright + Lighthouse CI: LCP &lt; 2,5 s, INP &lt; 200 ms, CLS &lt; 0,1</li>
+    </ul></div>
+    <div class="layer"><h4>Backend y API</h4><ul>
+      <li>Contrato primero (zod/OpenAPI), validación en la frontera</li>
+      <li>Un solo formato de error, paginación, versionado</li>
+      <li>Rate limiting, webhooks idempotentes, colas para lo lento</li>
+      <li>Tests de contrato contra la API real</li>
+    </ul></div>
+    <div class="layer"><h4>Datos</h4><ul>
+      <li>Migraciones con vuelta atrás, índices justificados, seed coherente</li>
+      <li>Dinero en enteros, borrado decidido, retención de datos personales</li>
+      <li>Introspección en solo lectura con hook guardián (también vía MCP)</li>
+    </ul></div>
+    <div class="layer"><h4>Seguridad</h4><ul>
+      <li>Amenazas por capacidad → matriz de permisos → políticas RLS generadas</li>
+      <li>Test que prueba que el cliente A no ve datos del B</li>
+      <li>Policy packs en hooks: auth, pagos, uploads, SQL, CORS, headers, secretos en <code>VITE_*</code></li>
+      <li>Auditoría al editar, al terminar el turno y en cada commit</li>
+    </ul></div>
+    <div class="layer"><h4>Deploy y operación</h4><ul>
+      <li>Entornos local / preview / producción con variables por entorno</li>
+      <li>CI con las puertas; migraciones antes de promover</li>
+      <li>Smoke funcional, monitoreo de errores, rollback</li>
+      <li>Hosting elegido también por términos de uso comercial</li>
+    </ul></div>
+    <div class="layer"><h4>LatAm</h4><ul>
+      <li>Pagos: Wompi, Mercado Pago, PSE, Nequi, Stripe</li>
+      <li>Habeas Data (Ley 1581) y facturación electrónica como checklist</li>
+      <li>WhatsApp como canal nativo</li>
+    </ul></div>
+  </div>
+</section>
+
+<section id="interna">
+  <div class="sec-head"><span class="n">05</span><h2>Por dentro del plugin</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Pieza</th><th>Qué es</th></tr></thead>
+    <tbody>
+      <tr><td>Skill raíz (corta)</td><td>Reglas innegociables, máquina de estados, resumen vivo del proyecto</td></tr>
+      <tr><td><code>fases/0..8</code></td><td>Un archivo por fase, se lee al entrar</td></tr>
+      <tr><td><code>conocimiento/tipos/</code></td><td>Tipos de producto. v1: SaaS y sitio/landing</td></tr>
+      <tr><td><code>conocimiento/perfiles/</code></td><td>Stacks con versiones y procedencia. v1: React + Vite + Supabase + Vercel + Vitest</td></tr>
+      <tr><td><code>kits/</code></td><td>Uno por capacidad: preguntas de negocio → decisión determinista → archivos → candados → checklist de producción</td></tr>
+      <tr><td><code>motor-auditoria/</code></td><td>Formato de hallazgo común, ejes separados, confianza, "no verificado" honesto, comparación entre corridas</td></tr>
+      <tr><td><code>politicas/</code></td><td>Validadores deterministas para hooks, con sus tests</td></tr>
+      <tr><td><code>scripts/validar</code></td><td>Lint del plano en Node sin dependencias</td></tr>
+      <tr><td><code>agentes/</code></td><td>Investigador de versiones, revisor del plano, auditores de solo lectura, verificador independiente, escritor único</td></tr>
+      <tr><td><code>evals/</code></td><td>"Constructor literal": una sesión limpia construye desde el plano y se mide</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="vs">
+  <div class="sec-head"><span class="n">06</span><h2>Frente a the-architect</h2></div>
+  <div class="tbl vs"><table>
+    <thead><tr><th>Aspecto</th><th>the-architect</th><th>Cimientos</th></tr></thead>
+    <tbody>
+      <tr><td>Alcance</td><td>Termina en el plano</td><td>Idea → plano → construcción → publicación → operación</td></tr>
+      <tr><td>Orquestación</td><td>Recomienda otras herramientas</td><td>Un conductor invoca kits con el contrato resuelto</td></tr>
+      <tr><td>Backend y datos</td><td>Capacidad genérica</td><td>RLS generada y probada, migraciones, contratos verificados</td></tr>
+      <tr><td>Seguridad</td><td>Checklist</td><td>Amenazas → permisos → políticas → tests + hooks</td></tr>
+      <tr><td>Frontend</td><td>Capacidades en texto</td><td>DESIGN.md + EXPERIENCE.md + reglas medibles</td></tr>
+      <tr><td>Después de construir</td><td>El plano se queda fijo</td><td>Specs vivas con detector de desvío</td></tr>
+      <tr><td>Usuario</td><td>Desarrollador</td><td>Modo dueño de negocio y modo dev</td></tr>
+      <tr><td>Progreso</td><td>25–35 min en silencio</td><td>Avances visibles por fase</td></tr>
+      <tr><td>Mercado</td><td>Genérico</td><td>LatAm de punta a punta</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="ruta">
+  <div class="sec-head"><span class="n">07</span><h2>Hoja de ruta</h2></div>
+  <p class="prose muted">Arranca después del 4 de noviembre, cuando cierre Torre fase 2.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Versión</th><th>Alcance</th><th>Terminado significa</th></tr></thead>
+    <tbody>
+      <tr><td class="num">v0.1 · 2 sem</td><td>Fases 0–5, tipo SaaS, perfil React+Vite+Supabase+Vercel, validador por script</td><td>Una sesión limpia construye los 5 primeros pasos desde el plano sin preguntar</td></tr>
+      <tr><td class="num">v0.2 · 2 sem</td><td>Kits de datos, auth/tenencia con RLS y tests, design system, hooks de políticas</td><td>Test de aislamiento entre tenants en verde en un proyecto de prueba</td></tr>
+      <tr><td class="num">v0.3 · 2 sem</td><td>Motor de auditoría, deploy, observabilidad, fase 7</td><td>Preview → smoke → producción con reporte sin críticos</td></tr>
+      <tr><td class="num">v1.0 · 2 sem</td><td>Fase 8, pagos LatAm, guías en español, landing del producto</td><td>Un principiante saca un SaaS real a producción (piloto con un cliente de IA Master Tech)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Propiedad intelectual</h3>
+  <ol class="top7">
+    <li>Todo escrito desde cero: estudiamos patrones e ideas, no copiamos textos, nombres ni código.</li>
+    <li>Si algún día se reutiliza código MIT o Apache de terceros, se conserva su aviso de licencia.</li>
+    <li>Nada de repos con todos los derechos reservados ni de repos sin licencia.</li>
+    <li>Licencia recomendada: MIT para la comunidad, con la marca registrada a tu nombre.</li>
+  </ol>
+</section>
+</main>
+</div></div>
+
+<footer class="wrap"><div class="inner">Informes de soporte: investigacion/A–D y propuesta-producto.md, en la carpeta de esta sesión.</div></footer>
+
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'))});
+  function mark(){var y=window.scrollY+120,cur=0;secs.forEach(function(s,i){if(s&&s.offsetTop<=y)cur=i});links.forEach(function(a,i){a.classList.toggle('on',i===cur)});}
+  window.addEventListener('scroll',mark,{passive:true});mark();
+})();
+</script>

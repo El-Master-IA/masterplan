@@ -34,7 +34,8 @@ Antes de decir que algo está listo corren en verde: `typecheck`, `lint`, `test`
    con el ID de la spec.
 4. Implementa hasta que los comandos de `verificar` salgan 0. Guarda la salida en
    `masterplan/evidencia/<id>.txt`.
-5. Corre el `checkpoint` de la tarea (commit + tag `mp-<id>`).
+5. Cierre: si trabajas en tu propia sesión, haz un commit solo en tu rama `mp-<id>`. El
+   `checkpoint` de la tarea (integrar + tag `mp-<id>`) lo corre el conductor después de revisar.
 
 Para pedir la siguiente tarea: **`/masterplan:seguir`**.
 

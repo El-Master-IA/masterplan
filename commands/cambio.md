@@ -1,5 +1,5 @@
 ---
-description: Abre un cambio (delta) sobre un proyecto ya publicado: feature, bug o refactor, con sus propias puertas y tareas
+description: "Abre un cambio (delta) sobre un proyecto ya publicado: feature, bug o refactor, con sus propias puertas y tareas"
 argument-hint: "\"<qué cambia, en una frase>\""
 ---
 
@@ -13,7 +13,8 @@ Cambio pedido: $ARGUMENTS
 2. Si `$ARGUMENTS` está vacío, pregunta una sola cosa: qué quiere cambiar y por qué.
 3. Clasifica en una línea: `feature`, `bug` o `refactor`. Revisa si ya hay una carpeta abierta en
    `masterplan/cambios/` que lo cubra; si la hay, retómala en vez de abrir otra.
-4. Crea `masterplan/cambios/<AAAA-MM-DD>-<slug>/delta.md` con:
+4. Crea la carpeta con `node "${CLAUDE_PLUGIN_ROOT}/scripts/masterplan.mjs" cambio nuevo "<descripción corta>"`
+   (deja `masterplan/cambios/<AAAA-MM-DD>-<slug>/delta.md` y `tareas.json`) y completa el delta con:
    - Motivo y tipo.
    - Requisitos AGREGADOS (EARS, ids nuevos), MODIFICADOS (id, antes → después) y ELIMINADOS
      (id, motivo y migración de datos si aplica), citando los de `masterplan/specs/`.

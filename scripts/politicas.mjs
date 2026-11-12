@@ -108,7 +108,8 @@ const permitidos = new Map([...texto.matchAll(/masterplan-permitir:\s*(MP-[A-Z]+
 const vigentes = []
 for (const h of hallazgos) {
   if (permitidos.has(h.codigo)) {
-    try {
+    // Se anota una sola vez, en "pre": el hook "post" ve el mismo contenido.
+    if (fase === 'pre') try {
       fs.mkdirSync(path.join(mp, 'evidencia'), { recursive: true })
       fs.appendFileSync(path.join(mp, 'evidencia', 'excepciones.log'), `${new Date().toISOString()} | ${h.codigo} | ${relativo || 'bash'} | ${permitidos.get(h.codigo)}\n`)
     } catch {}

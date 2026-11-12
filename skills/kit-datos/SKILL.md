@@ -75,7 +75,7 @@ Referencias en esta carpeta: `ejemplo-tabla-multitenant.sql` y `ejemplo-aislamie
 | DAT-03 | Ninguna política usa `using (true)` en tablas con `org_id` o `user_id` | grep en migraciones |
 | DAT-04 | Toda tabla de negocio tiene `id uuid`, `created_at`, `updated_at` (con trigger) y su dueño (`org_id` o `user_id`) | grep en migraciones |
 | DAT-05 | Dinero nunca en `float`, `real`, `double precision` ni `money` | grep de columnas `*amount*`, `*price*`, `*total*` |
-| DAT-06 | Migraciones aplicadas son inmutables: un archivo con hash registrado no cambia | `masterplan.mjs deriva` compara hashes |
+| DAT-06 | Migraciones aplicadas son inmutables: un archivo con hash registrado no cambia | La política `MP-DAT-02` avisa al editar una migración existente; en revisión, `git log --diff-filter=M -- supabase/migrations` |
 | DAT-07 | Toda columna usada en una política RLS o en un `where` frecuente tiene índice | revisión del modelo + `pg_indexes` |
 | DAT-08 | Existe test de aislamiento con usuario A, usuario B y anónimo, y corre en CI | archivo presente + resultado en evidencia |
 | DAT-09 | Funciones `security definer` fijan `search_path` y no se exponen sin necesidad | grep `security definer` sin `set search_path` |

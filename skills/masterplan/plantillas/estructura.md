@@ -34,7 +34,7 @@ masterplan/
     excepciones.log      # excepciones a políticas con su motivo
   auditoria/
     <fecha>.json         # hallazgos fusionados de los auditores
-    <fecha>.md           # resumen con nota de Seguridad y nota de Calidad de experiencia
+    <fecha>.md           # resumen con tres notas: Seguridad, Calidad de experiencia y Bases técnicas
 ```
 
 Fuera de `masterplan/`, en la raíz del proyecto:

@@ -47,13 +47,18 @@ producción. Hablas en el idioma de la persona (español por defecto, tuteo).
 12. **Voz.** Lee `proyecto.json.voz`. `negocio`: analogía primero y lenguaje de negocio;
     `dev`: directo y técnico; `auto` (por defecto): decide por la primera respuesta, dilo en una
     línea y guárdalo. La persona lo cambia cuando quiera ("háblame más técnico").
-
 13. **Velocidad con rigor proporcional.** Lee `proyecto.json.rigor` (`bajo|medio|alto`, propuesto en
     la fase 1). Define vueltas de revisión del plano, cuánta auditoría lleva cada tarea y qué
     bloquea. No gastes rigor de SaaS con pagos en una herramienta de 5 personas, ni al revés.
 14. **Paralelo por defecto.** En la fase 6, las tareas independientes de una ola corren cada una en
     su propia sesión (`/masterplan:ola`), no en fila dentro de una sola conversación. El plan se
     diseña en cortes verticales: algo usable antes de la mitad de las olas.
+15. **Piloto automático solo con permiso.** `proyecto.json.autonomia: "continua"` (la persona lo activa
+    con `/masterplan:auto`) hace que, al cerrar una fase u ola, la sesión siguiente se lance sola
+    hasta terminar. Se detiene siempre ante lo delicado o lo que solo la persona tiene: publicar a
+    producción, cobros, mensajes a terceros, borrar datos, cuentas, llaves y secretos, gasto nuevo,
+    push forzado, tareas bloqueadas y preguntas de las fases 1 a 4. Las reglas están en
+    `masterplan.mjs auto`; nunca las decidas de memoria.
 
 ## Dos caminos: Constructor y Auditor
 
@@ -65,13 +70,6 @@ producción. Hablas en el idioma de la persona (español por defecto, tuteo).
   auditor**: explorador, tres auditores en paralelo, informe con veredicto y plan de arreglos. No
   entrevistes ni crees `proyecto.json`; al final ofrece arreglar la ola 1, convertirlo en proyecto
   Masterplan o dejarlo registrado.
-
-15. **Piloto automático solo con permiso.** `proyecto.json.autonomia: "continua"` (la persona lo activa
-    con `/masterplan:auto`) hace que, al cerrar una fase u ola, la sesión siguiente se lance sola
-    hasta terminar. Se detiene siempre ante lo delicado o lo que solo la persona tiene: publicar a
-    producción, cobros, mensajes a terceros, borrar datos, cuentas, llaves y secretos, gasto nuevo,
-    push forzado, tareas bloqueadas y preguntas de las fases 1 a 4. Las reglas están en
-    `masterplan.mjs auto`; nunca las decidas de memoria.
 
 ## Máquina de fases
 
@@ -132,7 +130,7 @@ absolutas y lo que ya está decidido (fragmento de `proyecto.json`); no les pida
 |---|---|---|
 | `masterplan:explorador` | Mapa de un repo existente (stack, convenciones, comandos) | 0 |
 | `masterplan:investigador` | Verificar versiones y compatibilidades en registros oficiales | 3, 5 |
-| `masterplan:arquitecto-datos` | Modelo de datos, migraciones, políticas RLS y sus tests | 3, 6 |
+| `masterplan:arquitecto-datos` | Modelo de datos, dueño de cada fila y políticas RLS (documentos) | 3 |
 | `masterplan:disenador` | DESIGN.md y EXPERIENCE.md desde el brief, sin estética genérica | 3 |
 | `masterplan:revisor-plano` | Auditar los documentos y el plan contra las reglas (solo lee) | 4, 5 |
 | `masterplan:constructor` | Implementar UNA tarea del plan, con su test, y dejar evidencia | 6 |

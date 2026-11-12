@@ -1,5 +1,5 @@
-// Pruebas de 1.5.0 (rigor, olas, relevo, piloto automático): rigor, hito visible, ampliaciones, olas en paralelo, relevo automático y pgtap-resumen.
-// Correr: node --test tests/
+// Pruebas de rigor, hito visible, ampliaciones, olas en paralelo, relevo automático, piloto automático y pgtap-resumen.
+// Correr: npm test
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
@@ -103,7 +103,7 @@ test('ola: --json devuelve los briefs y la revisión depende del rigor', () => {
   assert.equal(alto.lanzar.length, 2)
   assert.match(alto.revision, /por tarea/)
   const bajo = JSON.parse(mp(proyectoConPlan(plan(), { rigor: 'bajo' }), 'ola', '1', '--json').stdout)
-  assert.match(bajo.revision, /una revisión por ola/)
+  assert.match(bajo.revision, /una vez por ola/)
   assert.equal(bajo.briefs.length, 2)
 })
 

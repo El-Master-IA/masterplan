@@ -1,6 +1,6 @@
 ---
 name: auditor-frontend
-description: Audita la calidad de experiencia del frontend: accesibilidad con axe y Playwright, rendimiento con Lighthouse contra los presupuestos de DESIGN.md, estados de EXPERIENCE.md, estética genérica, SEO y legibilidad para agentes (SSR o prerender, 404 reales, sitemap, llms.txt). Despáchalo en la fase 7 de Masterplan o con /masterplan:auditar. No modifica el código.
+description: "Audita la calidad de experiencia del frontend: accesibilidad con axe y Playwright, rendimiento con Lighthouse contra los presupuestos de DESIGN.md, estados de EXPERIENCE.md, estética genérica, SEO y legibilidad para agentes (SSR o prerender, 404 reales, sitemap, llms.txt). Despáchalo en la fase 7 de Masterplan o con /masterplan:auditar. No modifica el código."
 tools: Read, Grep, Glob, Bash
 model: sonnet
 color: orange

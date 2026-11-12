@@ -1,6 +1,6 @@
 ---
 name: auditor-bases
-description: Audita las bases técnicas de un proyecto ya construido: arquitectura y separación de capas, modelo de datos y migraciones, manejo de errores, pruebas, CI, deploy, observabilidad, respaldos y dependencias del stack. Despáchalo con /masterplan:auditar (sobre todo en proyectos hechos con otras herramientas o "a mano") y en la fase 8 como chequeo de salud. Solo lee; cada hallazgo con archivo:línea.
+description: "Audita las bases técnicas de un proyecto ya construido: arquitectura y separación de capas, modelo de datos y migraciones, manejo de errores, pruebas, CI, deploy, observabilidad, respaldos y dependencias del stack. Despáchalo con /masterplan:auditar (sobre todo en proyectos hechos con otras herramientas o \"a mano\") y en la fase 8 como chequeo de salud. Solo lee; cada hallazgo con archivo:línea."
 tools: Read, Grep, Glob, Bash
 model: sonnet
 color: yellow

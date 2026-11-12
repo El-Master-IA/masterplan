@@ -1,13 +1,13 @@
 {
   "name": "masterplan",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "private": true,
   "description": "Plugin de Claude Code: de la idea a un SaaS en producción con bases sólidas.",
   "type": "module",
   "license": "MIT",
   "author": "Alexander Cast · El Máster IA",
   "scripts": {
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test tests/scripts.test.mjs tests/olas.test.mjs tests/referencias.test.mjs",
     "validar": "claude plugin validate .claude-plugin/plugin.json"
   },
   "engines": { "node": ">=20" }

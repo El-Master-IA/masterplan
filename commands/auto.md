@@ -1,5 +1,5 @@
 ---
-description: Activa o desactiva el piloto automático: Masterplan sigue solo, sesión tras sesión, hasta terminar, y se detiene ante lo delicado
+description: "Activa o desactiva el piloto automático: Masterplan sigue solo, sesión tras sesión, hasta terminar, y se detiene ante lo delicado"
 argument-hint: "[activar | desactivar | estado]"
 ---
 

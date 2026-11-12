@@ -13,10 +13,12 @@ Despacha en paralelo, en un solo mensaje:
   inyección, headers, dependencias.
 - `masterplan:auditor-frontend` — accesibilidad (axe), rendimiento (Lighthouse con presupuestos de
   `DESIGN.md`), estados de `EXPERIENCE.md`, estética genérica, legibilidad para buscadores y agentes.
-Ambos devuelven hallazgos en el formato de `skills/auditor/hallazgo.schema.json`; guarda cada
+- `masterplan:auditor-bases` — arquitectura, datos, manejo de errores, pruebas, CI y respaldos.
+Los tres devuelven hallazgos en el formato de `skills/auditor/hallazgo.schema.json`; guarda cada
 arreglo en `masterplan/auditoria/pendientes/<auditor>.json`. Fusiona con
 `node "${CLAUDE_PLUGIN_ROOT}/scripts/masterplan.mjs" auditoria fusionar` → `masterplan/auditoria/<fecha>.json`
-y un resumen con dos notas separadas (Seguridad y Calidad de experiencia), nunca mezcladas.
+y un resumen con tres notas separadas (Seguridad, Calidad de experiencia y Bases técnicas), nunca
+mezcladas.
 
 Críticos o altos: se arreglan uno por uno con un constructor (explicando cada cambio) y se vuelve a
 auditar; `masterplan.mjs auditoria comparar` muestra qué se cerró.

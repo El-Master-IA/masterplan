@@ -48,7 +48,7 @@ lectura: `psql "$DATABASE_URL" -At -c "<consulta>"`.
 | CHK-RLS-09 | DAT-07 | Columnas de políticas sin índice: listar `org_id`/`user_id` de tablas públicas sin índice que empiece por ellas: `select c.table_name, c.column_name from information_schema.columns c where c.table_schema = 'public' and c.column_name in ('org_id','user_id') and not exists (select 1 from pg_indexes i where i.schemaname = 'public' and i.tablename = c.table_name and i.indexdef ~ ('\(' \|\| c.column_name));` | media |
 | CHK-RLS-10 | DAT-08 | Test de aislamiento existe y pasa: `ls tests/rls/*.test.ts && npx vitest run tests/rls` | critica si falla, alta si no existe |
 | CHK-RLS-11 | DAT-05 | `grep -niE "(amount\|monto\|price\|precio\|total)[a-z_]*\s+(float\|real\|double precision\|money\|numeric)" supabase/migrations/*.sql` | alta |
-| CHK-RLS-12 | DAT-06 | `masterplan.mjs deriva` (reporta migraciones aplicadas modificadas y tablas nuevas sin política) | alta |
+| CHK-RLS-12 | DAT-06 | `git log --diff-filter=M --name-only -- supabase/migrations` (migraciones modificadas después de creadas) y `masterplan.mjs deriva` (tablas sin RLS) | alta |
 
 ## dependencias
 

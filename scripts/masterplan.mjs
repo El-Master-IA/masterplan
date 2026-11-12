@@ -106,7 +106,8 @@ function cmdValidar(args) {
   // Alcance
   if (pr.fase >= 3) {
     const ng = pr.alcance?.noGoals || []
-    if (ng.length < 5) add('BLOCKER', 'masterplan/proyecto.json', `Non-Goals: hay ${ng.length}, se necesitan al menos 5`)
+    // Con código existente (brownfield) la fase 2 no se recorre: los Non-Goals se recomiendan, no bloquean.
+    if (ng.length < 5) add(pr.modo === 'brownfield' ? 'MINOR' : 'BLOCKER', 'masterplan/proyecto.json', `Non-Goals: hay ${ng.length}, se necesitan al menos 5`)
     if (!(pr.alcance?.flujoPrincipal || []).length) add('MAJOR', 'masterplan/proyecto.json', 'falta alcance.flujoPrincipal')
   }
 
@@ -121,6 +122,10 @@ function cmdValidar(args) {
       if (!/rol/i.test(s) || !/(polític|policy)/i.test(s)) add('MAJOR', 'masterplan/seguridad.md', 'falta la matriz de permisos o las políticas RLS')
     }
     if (!pr.capacidades?.length) add('MAJOR', 'masterplan/proyecto.json', 'falta la lista de capacidades')
+    if (existe(path.join(MP, 'datos.md')) && !/retenci/i.test(leer(path.join(MP, 'datos.md'))))
+      add('MAJOR', 'masterplan/datos.md', 'DAT-12: falta la regla de retención de datos personales')
+    if (existe(path.join(MP, 'arquitectura.md')) && !/10\s*[×x]/i.test(leer(path.join(MP, 'arquitectura.md'))))
+      add('MAJOR', 'masterplan/arquitectura.md', 'OBS-08: falta la tabla de costo a 1× y 10×')
   }
 
   // Specs: IDs únicos y en forma EARS
@@ -229,7 +234,7 @@ function variablesSinDocumentar() {
     const t = leer(f)
     for (const r of re) for (const m of t.matchAll(r)) usadas.add(m[1])
   }
-  for (const v of ['NODE_ENV', 'MODE', 'DEV', 'PROD', 'SSR', 'BASE_URL', 'CI', 'VERCEL', 'VERCEL_ENV', 'VERCEL_URL']) usadas.delete(v)
+  for (const v of ['PATH', 'HOME', 'USERPROFILE', 'PWD', 'TZ', 'NODE_ENV', 'MODE', 'DEV', 'PROD', 'SSR', 'BASE_URL', 'CI', 'VERCEL', 'VERCEL_ENV', 'VERCEL_URL']) usadas.delete(v)
   const ej = path.join(RAIZ, '.env.example')
   const doc = existe(ej) ? new Set([...leer(ej).matchAll(/^\s*([A-Z0-9_]+)\s*=/gm)].map(m => m[1])) : new Set()
   return [...usadas].filter(v => !doc.has(v)).sort()
@@ -294,7 +299,7 @@ Eres el constructor de UNA tarea de Masterplan, en tu propia sesión. Trabaja so
 - Tu worktree: ${worktree}   (rama ${rama})
 - Perfil: ${pr.perfil || '(ver proyecto.json)'} · rigor: ${pr.rigor || 'medio'} · ola ${ola}
 - Kit: ${t.kit || '(ninguno)'}
-- Antes de empezar: \`git worktree add "${worktree}" -b ${rama}\` y trabaja dentro de ese directorio. Lee su \`CLAUDE.md\`.
+- Antes de empezar: si tu sesión ya arrancó en un worktree propio, úsalo y pásate a la rama ${rama} (\`git switch -c ${rama}\`). Solo si estás en el directorio principal, crea uno: \`git worktree add "${worktree}" -b ${rama}\`. Lee su \`CLAUDE.md\`.
 
 ## Tarea
 \`\`\`json
@@ -312,6 +317,13 @@ ${specs}
 5. Tu último mensaje: criterios cumplidos, salida de verificación (exit), rama y commit, dudas. Avisa al conductor por el buzón (\`mcp__masterplan__enviar\` o \`masterplan.mjs buzon enviar\`).
 `
   return { id: t.id, titulo: t.titulo, rama, worktree, md }
+}
+
+// Misma tabla que fases/6-construir.md › Rigor.
+const REVISION = {
+  bajo: 'revisor-codigo una vez por ola sobre el diff acumulado; auditor-seguridad una vez por ola solo si hubo tareas de auth, datos, pagos o secretos; bloquea solo BLOCKER',
+  medio: 'revisor-codigo una vez por ola sobre el diff acumulado; auditor-seguridad por cada tarea de auth, datos o pagos; bloquean BLOCKER y MAJOR',
+  alto: 'revisor-codigo por tarea; auditor-seguridad por cada tarea de auth, datos o pagos y de la ola entera; bloquean BLOCKER y MAJOR'
 }
 
 function cmdOla(args) {
@@ -340,7 +352,7 @@ function cmdOla(args) {
     ola, paralelo_max: max, rigor: pr.rigor || 'medio',
     lanzar: briefs.map(b => ({ id: b.id, titulo: b.titulo, rama: b.rama, worktree: b.worktree, brief: args.includes('--escribir') ? rel(path.join(dir, `${b.id}.brief.md`)) : undefined })),
     esperan, conflictos,
-    revision: (pr.rigor || 'medio') === 'alto' ? 'revisor-codigo y auditor-seguridad por tarea' : 'una revisión por ola sobre el diff acumulado (seguridad solo en kits auth/datos/pagos)'
+    revision: REVISION[pr.rigor || 'medio']
   }
   if (args.includes('--json')) return console.log(JSON.stringify({ ...resumen, briefs: briefs.map(b => ({ id: b.id, brief: b.md })) }, null, 2))
   console.log(`Ola ${ola} · ${lote.length} sesión(es) en paralelo (máx. ${max}) · rigor ${resumen.rigor}`)
@@ -912,7 +924,7 @@ const AYUDA = `Masterplan · comandos (desde la raíz de tu proyecto)
   auto [--json] [--registrar]   ¿seguir solo en una sesión nueva? (CONTINUAR/PARAR con el motivo); auto activar|desactivar|pendiente "…"|resuelto
   ola [n] [--escribir] [--json]  tareas libres de la ola para lanzar en paralelo, una sesión por tarea, con sus briefs
   pgtap-resumen <archivo|->      lista los asertos que fallan en una salida TAP/pgTAP
-  auditoria fusionar|comparar    une hallazgos y calcula las dos notas / compara las 2 últimas
+  auditoria fusionar|comparar    une hallazgos y calcula las tres notas / compara las 2 últimas
   deriva                         specs sin prueba, tablas sin RLS, variables sin documentar
   cambio nuevo "<qué>"           abre un cambio (delta) sobre las specs vivas
   cambio archivar <carpeta>      aplica el delta a specs/ y lo archiva

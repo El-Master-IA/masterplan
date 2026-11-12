@@ -110,7 +110,7 @@ antes de producción.
 |---|---|---|
 | DEP-01 | `.env` y variantes están en `.gitignore` y nunca entraron a git | `git ls-files` + `git log --all -- .env` |
 | DEP-02 | Ninguna variable `VITE_*` contiene secretos (`SERVICE_ROLE`, `SECRET`, `sk_`, `PRIVATE`, `WEBHOOK`) y `service_role` no aparece en `src/` | grep (ver `auditor/checks.md`) |
-| DEP-03 | `.env.example` lista toda variable usada en el código, y nada más | `masterplan.mjs deriva` |
+| DEP-03 | `.env.example` lista toda variable usada en el código | `masterplan.mjs deriva` |
 | DEP-04 | CI corre typecheck, lint, test, build y `deriva` en cada PR; la rama principal exige CI verde | workflow + protección de rama |
 | DEP-05 | Migraciones se aplican a producción antes de promover el deploy que las necesita | `docs/despliegue.md` + orden en el workflow |
 | DEP-06 | Producción solo se publica con confirmación explícita de la persona | registro en `decisiones.log` |

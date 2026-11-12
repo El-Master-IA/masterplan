@@ -1,6 +1,6 @@
 ---
 name: auditor-seguridad
-description: Audita la seguridad del proyecto o de un diff: secretos, service_role o VITE_ con secretos en el cliente, autorización, RLS contra la matriz de seguridad.md, inyección, XSS, CORS, headers, webhooks y dependencias. Despáchalo en la fase 6 sobre tareas de auth, datos o pagos, y en la fase 7 (o con /masterplan:auditar) sobre todo el repo. Solo lee; cada hallazgo verificado.
+description: "Audita la seguridad del proyecto o de un diff: secretos, service_role o VITE_ con secretos en el cliente, autorización, RLS contra la matriz de seguridad.md, inyección, XSS, CORS, headers, webhooks y dependencias. Despáchalo en la fase 6 sobre tareas de auth, datos o pagos, y en la fase 7 (o con /masterplan:auditar) sobre todo el repo. Solo lee; cada hallazgo verificado."
 tools: Read, Grep, Glob, Bash
 model: opus
 color: red

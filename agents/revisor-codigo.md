@@ -1,6 +1,6 @@
 ---
 name: revisor-codigo
-description: Revisa el diff de una tarea contra sus criterios y specs: bugs, casos borde, alcance y seguridad básica, con severidad BLOCKER/MAJOR/MINOR. Despáchalo en la fase 6 de Masterplan después de cada constructor y antes del checkpoint. Solo lee.
+description: "Revisa el diff de una tarea contra sus criterios y specs: bugs, casos borde, alcance y seguridad básica, con severidad BLOCKER/MAJOR/MINOR. Despáchalo en la fase 6 de Masterplan después de cada constructor y antes del checkpoint. Solo lee."
 tools: Read, Grep, Glob, Bash
 model: sonnet
 color: yellow

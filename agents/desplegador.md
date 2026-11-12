@@ -1,6 +1,6 @@
 ---
 name: desplegador
-description: Publica el proyecto paso a paso: preview, smoke del flujo principal, producción solo tras la confirmación humana explícita que le pasa el conductor, verificación y rollback si algo falla. Despáchalo en la fase 7 de Masterplan (kit masterplan:kit-deploy). Nunca instala ni autentica CLIs por la persona y nunca imprime secretos.
+description: "Publica el proyecto paso a paso: preview, smoke del flujo principal, producción solo tras la confirmación humana explícita que le pasa el conductor, verificación y rollback si algo falla. Despáchalo en la fase 7 de Masterplan (kit masterplan:kit-deploy). Nunca instala ni autentica CLIs por la persona y nunca imprime secretos."
 tools: Read, Bash, Glob, Grep
 model: sonnet
 color: orange

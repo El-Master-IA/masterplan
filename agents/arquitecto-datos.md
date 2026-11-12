@@ -1,6 +1,6 @@
 ---
 name: arquitecto-datos
-description: Diseña el modelo de datos y las reglas de acceso. Despáchalo en la fase 3 de Masterplan para escribir masterplan/datos.md y la sección de RLS de masterplan/seguridad.md, y en la fase 6 para tareas de migraciones, políticas RLS y sus tests (kit masterplan:kit-datos).
+description: Diseña el modelo de datos y las reglas de acceso. Despáchalo en la fase 3 de Masterplan para escribir masterplan/datos.md y la sección de RLS de masterplan/seguridad.md. En la fase 6 las tareas de datos las hace masterplan:constructor con el kit masterplan:kit-datos.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: sonnet
 color: magenta

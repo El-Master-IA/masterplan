@@ -1,5 +1,18 @@
 # Cambios
 
+## 1.5.2 · 2026-11-11
+
+Limpieza y correcciones: el plugin deja de contradecirse. Nada cambia en cómo se usa.
+
+- **Agentes con su modelo y sus herramientas.** Cinco agentes (`auditor-seguridad`, `auditor-frontend`, `auditor-bases`, `revisor-codigo`, `desplegador`) y dos comandos (`auto`, `cambio`) tenían la cabecera mal formada: Claude Code les descartaba el modelo y las herramientas. Corregido.
+- **Esquemas al día con lo que escribe el CLI:** `tareas.json` admite `actualizado`; `proyecto.json` admite `modo: rapido`, las capacidades `video`, `trabajos`, `chatbots` e `ia-media`, y fecha con hora.
+- **`validar`** comprueba lo que los kits ya prometían: retención de datos personales en `datos.md` (DAT-12) y tabla de costo a 1× y 10× en `arquitectura.md` (OBS-08). Con código existente, tener menos de 5 Non-Goals ya no bloquea.
+- **`ola`** describe la revisión distinta para rigor bajo, medio y alto, y el brief ya no crea un segundo worktree cuando la sesión arranca en uno.
+- **Políticas:** cada excepción se anota una sola vez en `excepciones.log`. `deriva` deja de reportar `PATH` y `HOME` como variables sin documentar.
+- **Una sola versión de cada regla:** la fase 7 despacha los tres auditores y da tres notas; los auditores devuelven hallazgos y el conductor los guarda; el tag lo pone el conductor; `/masterplan:cambio` usa `cambio nuevo`; `arquitecto-datos` actúa solo en la fase 3.
+- **Pruebas de coherencia** (`tests/referencias.test.mjs`): todo agente, comando, kit, ruta y subcomando citado existe; lo que escribe el CLI cumple sus esquemas; las cabeceras no rompen el YAML. `npm test` funciona igual en Windows, macOS y Linux, y corre en GitHub Actions.
+- La investigación que dio origen a Masterplan vive ahora en `docs/investigacion/`.
+
 ## 1.5.1 · 2026-10-26
 
 Nombre nuevo de la organización: **El-Master-IA** (antes La-Boveda-del-Master).

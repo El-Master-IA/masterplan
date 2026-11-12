@@ -1,5 +1,5 @@
 // Pruebas de scripts/masterplan.mjs y scripts/politicas.mjs sobre proyectos temporales.
-// Correr: node --test tests/
+// Correr: npm test
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
@@ -178,9 +178,12 @@ test('políticas: avisan tabla sin RLS; la excepción con motivo se registra', (
   assert.match(JSON.parse(r.stdout).hookSpecificOutput.additionalContext, /MP-DAT-01/)
   assert.equal(pol(dir, 'pre', ev).stdout, '')
   ev.tool_input.content += '\n-- masterplan-permitir: MP-DAT-01 -- tabla interna sin acceso por API'
+  assert.equal(pol(dir, 'pre', ev).stdout, '')
   r = pol(dir, 'post', ev)
   assert.equal(r.stdout, '')
-  assert.match(fs.readFileSync(path.join(dir, 'masterplan/evidencia/excepciones.log'), 'utf8'), /MP-DAT-01/)
+  // pre y post ven el mismo contenido: la excepción se anota una sola vez
+  const log = fs.readFileSync(path.join(dir, 'masterplan/evidencia/excepciones.log'), 'utf8')
+  assert.equal(log.match(/MP-DAT-01/g).length, 1)
 })
 
 test('políticas: modo estricto convierte avisos en bloqueos; fuera de un proyecto no actúan', () => {

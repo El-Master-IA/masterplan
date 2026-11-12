@@ -70,8 +70,9 @@ Siempre se declara qué no se revisó.
    preview) se registra como "no verificado", nunca como aprobado.
 2. **Auditores en paralelo, solo lectura.** Despacha en un solo mensaje los auditores del tier.
    Reciben rutas absolutas, `seguridad.md`, `DESIGN.md`, `EXPERIENCE.md` y las salidas de los checks.
-   No editan archivos del proyecto. Cada uno escribe su array de hallazgos en
-   `masterplan/auditoria/pendientes/<agente>.json` (formato `hallazgo.schema.json`).
+   No editan ni escriben archivos. Cada uno devuelve su arreglo de hallazgos (formato
+   `hallazgo.schema.json`) y el conductor lo guarda en
+   `masterplan/auditoria/pendientes/<agente>.json`.
 3. **Verificador independiente.** Por cada hallazgo `critica` o `alta`, un agente distinto al que
    lo encontró intenta confirmarlo con su propia lectura o comando (reproducir la consulta,
    abrir el archivo en la línea, correr el test). Resultado: `verificado: true`, o

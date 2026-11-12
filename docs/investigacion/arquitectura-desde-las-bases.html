@@ -1,0 +1,584 @@
+<title>Arquitectura desde las bases</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: plano técnico. Columna de lectura + índice lateral fijo en desktop, barra de secciones arriba en móvil. Cuadrícula tenue de fondo solo en la cabecera. */
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --fg:#17202e; --muted:#5a6678; --line:#d9dfe8;
+  --accent:#1f4fd1; --accent-soft:#e6ecfb; --ok:#1d7a4f; --warn:#a15c00; --bad:#b4323a;
+  --grid:rgba(31,79,209,.07);
+  --f-display:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d121b; --surface:#141b27; --fg:#e4e9f1; --muted:#97a3b6; --line:#263143;
+  --accent:#7d9cff; --accent-soft:#1b2640; --ok:#5cc495; --warn:#e3a54b; --bad:#f07a82;
+  --grid:rgba(125,156,255,.07); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d121b; --surface:#141b27; --fg:#e4e9f1; --muted:#97a3b6; --line:#263143;
+  --accent:#7d9cff; --accent-soft:#1b2640; --ok:#5cc495; --warn:#e3a54b; --bad:#f07a82;
+  --grid:rgba(125,156,255,.07); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--f-body);margin:0}
+a{color:var(--accent);text-underline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0}
+h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.15rem;font-weight:700;margin-top:2rem}
+p{margin:0}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+code{background:var(--accent-soft);padding:.05em .35em;border-radius:3px}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.inner{max-width:1180px;margin:0 auto}
+
+/* Cabecera */
+header.top{border-bottom:1px solid var(--line);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;padding-block:48px 36px}
+.eyebrow{font:500 .75rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+header.top h1{font-size:clamp(2.1rem,6vw,3.6rem);font-weight:800;letter-spacing:-.025em;margin:.6rem 0 1rem;max-width:18ch}
+header.top .lede{max-width:62ch;color:var(--muted);font-size:1.05rem}
+.stamp{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;font:400 .8rem/1.4 var(--f-mono);color:var(--muted)}
+.stamp b{color:var(--fg);font-weight:500}
+
+/* Estructura */
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:48px;padding-block:40px 80px}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;font-size:.9rem}
+nav.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;counter-reset:s}
+nav.toc a{display:block;padding:6px 10px;border-left:2px solid var(--line);color:var(--muted);text-decoration:none}
+nav.toc a:hover{color:var(--fg);border-left-color:var(--accent)}
+nav.toc a.on{color:var(--accent);border-left-color:var(--accent);font-weight:600}
+main{min-width:0}
+section{padding-top:8px;margin-bottom:64px;scroll-margin-top:24px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--fg);padding-bottom:10px;margin-bottom:22px}
+.sec-head .n{font:500 .8rem var(--f-mono);color:var(--accent)}
+.prose{max-width:68ch;display:flex;flex-direction:column;gap:14px}
+.muted{color:var(--muted)}
+
+/* Resumen */
+.tldr{display:grid;gap:0;border:1px solid var(--line);background:var(--surface)}
+.tldr div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;padding:14px 18px;border-top:1px solid var(--line)}
+.tldr div:first-child{border-top:0}
+.tldr .k{font:500 .8rem var(--f-mono);color:var(--accent);padding-top:3px}
+
+/* Tablas */
+.tbl{overflow-x:auto;border:1px solid var(--line);background:var(--surface);margin-top:14px}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font:600 .72rem/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--bg);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-family:var(--f-mono);font-size:.85rem}
+td:first-child{font-weight:500}
+.tag{display:inline-block;font:500 .7rem/1 var(--f-mono);padding:4px 6px;border-radius:3px;border:1px solid currentColor;white-space:nowrap}
+.t-ok{color:var(--ok)}.t-warn{color:var(--warn)}.t-es{color:var(--accent)}
+
+/* Diagrama */
+.flow{margin-top:18px;border:1px solid var(--line);background:var(--surface);padding:20px;overflow-x:auto}
+.flow svg{display:block;min-width:640px;width:100%;height:auto}
+
+/* Ideas */
+.ideas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:14px}
+.idea{background:var(--surface);padding:18px;display:flex;flex-direction:column;gap:6px}
+.idea h4{font:700 1rem var(--f-display);margin:0;display:flex;gap:10px}
+.idea h4 span{font:500 .78rem var(--f-mono);color:var(--accent);padding-top:3px}
+.idea p{font-size:.93rem;color:var(--muted)}
+.quote{border-left:3px solid var(--accent);padding:4px 0 4px 16px;font-style:italic}
+
+.sections20{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.sections20 span{font:400 .82rem var(--f-mono);border:1px solid var(--line);background:var(--surface);padding:5px 9px}
+.sections20 span.key{border-color:var(--accent);color:var(--accent);font-weight:500}
+
+.gaps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
+.gap{border:1px dashed var(--warn);padding:14px;background:var(--surface)}
+.gap b{display:block;font-family:var(--f-display);margin-bottom:4px}
+.gap p{font-size:.9rem;color:var(--muted)}
+
+pre.code{font:400 .85rem/1.55 var(--f-mono);background:var(--surface);border:1px solid var(--line);padding:16px;overflow-x:auto;margin:14px 0 0}
+
+/* Pestañas de fuentes */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tabs button{font:500 .85rem var(--f-body);background:var(--surface);color:var(--fg);border:1px solid var(--line);padding:8px 14px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.legend{font-size:.85rem;color:var(--muted);margin-top:12px;display:flex;flex-wrap:wrap;gap:6px 16px}
+
+/* Ruta */
+.weeks{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);background:var(--surface);margin-top:14px}
+.week{display:grid;grid-template-columns:28px 64px minmax(0,1fr);gap:14px;padding:14px 16px;border-top:1px solid var(--line);align-items:start}
+.week:first-child{border-top:0}
+.week input{width:18px;height:18px;margin-top:3px;accent-color:var(--accent)}
+.week .wk{font:500 .8rem var(--f-mono);color:var(--accent);padding-top:3px}
+.week b{font-family:var(--f-display)}
+.week .mat{font-size:.9rem;color:var(--muted)}
+.week .del{font-size:.9rem;margin-top:4px}
+.week .del::before{content:"Entregable → ";font:500 .75rem var(--f-mono);color:var(--ok)}
+.week.done b,.week.done .mat,.week.done .del{opacity:.5;text-decoration:line-through}
+.progress{display:flex;align-items:center;gap:12px;margin-top:12px;font:400 .85rem var(--f-mono);color:var(--muted)}
+.bar{flex:1;height:6px;background:var(--line)}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+ol.top7{margin:14px 0 0;padding-left:1.4em;display:flex;flex-direction:column;gap:6px;max-width:72ch}
+
+footer{border-top:1px solid var(--line);padding-block:24px 40px;font-size:.85rem;color:var(--muted)}
+
+@media (max-width:860px){
+  .layout{grid-template-columns:minmax(0,1fr);gap:0;padding-top:0}
+  nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:8px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line);overflow-x:auto}
+  nav.toc ol{flex-direction:row;gap:4px;white-space:nowrap}
+  nav.toc a{border-left:0;border-bottom:2px solid transparent;padding:6px 8px}
+  nav.toc a.on{border-bottom-color:var(--accent)}
+  section{padding-top:28px}
+  .ideas{grid-template-columns:minmax(0,1fr)}
+  .week{grid-template-columns:24px minmax(0,1fr)}
+  .week .wk{grid-column:2}
+  .week>div{grid-column:2}
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<header class="top wrap">
+  <div class="inner">
+    <div class="eyebrow">Informe de estudio · Arquitectura de software</div>
+    <h1>Arquitectura desde las bases</h1>
+    <p class="lede">Ingeniería inversa del plugin <a href="https://github.com/Hainrixz/the-architect">Hainrixz/the-architect</a> y un mapa verificado de herramientas, repos, marcos, libros y cursos para diseñar bien cualquier cosa: apps, herramientas, sitios, infraestructura y SaaS.</p>
+    <div class="stamp">
+      <span>Consulta: <b>23-oct-2026</b></span>
+      <span>Repo revisado: <b>v2.6.0 · commit a25b09e</b></span>
+      <span>Para: <b>Alexander Cast</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="inner layout">
+<nav class="toc" aria-label="Secciones">
+  <ol>
+    <li><a href="#resumen">Resumen</a></li>
+    <li><a href="#architect">the-architect</a></li>
+    <li><a href="#bases">Las bases</a></li>
+    <li><a href="#tipos">Según el tipo</a></li>
+    <li><a href="#fuentes">Fuentes</a></li>
+    <li><a href="#ruta">Ruta 12 semanas</a></li>
+  </ol>
+</nav>
+
+<main>
+<!-- RESUMEN -->
+<section id="resumen">
+  <div class="sec-head"><span class="n">00</span><h2>Resumen</h2></div>
+  <div class="tldr">
+    <div><span class="k">1</span><p><b>the-architect no sabe más arquitectura que un buen libro.</b> Su fuerza es un proceso con puertas (clasificar → profundizar → confirmar sin huecos → generar con verificación) y un auditor implacable: el validador pesa más que todo su conocimiento junto.</p></div>
+    <div><span class="k">2</span><p><b>Las 4 ideas más copiables:</b> Non-Goals obligatorios, marcadores <code>[NEEDS CLARIFICATION]</code>, pre-mortem adversarial, y cada paso con criterio EARS + comando que sale con 0 + <code>git tag</code>.</p></div>
+    <div><span class="k">3</span><p><b>Lo que no cubre:</b> atributos de calidad explícitos, diagramas C4, modelado de amenazas, RPO/RTO y evolución. Ahí entran los libros y cursos.</p></div>
+    <div><span class="k">4</span><p><b>Para tu stack (React + Supabase + Vercel)</b> su propia tabla de compatibilidad recomienda la variante "Lean SaaS": Supabase Auth como único dueño de la sesión. Nunca dos proveedores de identidad.</p></div>
+    <div><span class="k">5</span><p><b>Ruta propuesta:</b> 12 semanas, gratis primero, con un entregable sobre un proyecto tuyo cada semana.</p></div>
+  </div>
+</section>
+
+<!-- THE ARCHITECT -->
+<section id="architect">
+  <div class="sec-head"><span class="n">01</span><h2>Ingeniería inversa de the-architect</h2></div>
+  <div class="prose">
+    <p>Plugin de Claude Code de Enrique Rocha, licencia MIT, 561★ y 103 forks. Son unos 1,4 MB de markdown y JSON: <b>no contiene código</b>, es un programa escrito en prompts. Entrevista, decide el stack y escribe un <i>blueprint</i> tan completo que otra sesión de Claude, sin contexto, construye el proyecto sin preguntar nada.</p>
+  </div>
+
+  <h3>El flujo</h3>
+  <div class="flow" role="img" aria-label="Máquina de estados: Gate 0, Discovery, Deep Dive, Architecture con Gates A y B, Generate con validador; Brownfield entra en Architecture">
+    <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker></defs>
+      <g font-size="13">
+        <rect x="10" y="40" width="110" height="64" style="fill:var(--bg);stroke:var(--line)"/>
+        <text x="65" y="66" text-anchor="middle" font-weight="600" style="fill:var(--fg)">Gate 0</text>
+        <text x="65" y="86" text-anchor="middle" font-size="11" style="fill:var(--muted)">¿nuevo o existente?</text>
+
+        <rect x="160" y="40" width="140" height="64" style="fill:var(--surface);stroke:var(--fg)"/>
+        <text x="230" y="66" text-anchor="middle" font-weight="700" style="fill:var(--fg)">DISCOVERY</text>
+        <text x="230" y="86" text-anchor="middle" font-size="11" style="fill:var(--muted)">2–3 preguntas → 1 shape</text>
+
+        <rect x="340" y="40" width="140" height="64" style="fill:var(--surface);stroke:var(--fg)"/>
+        <text x="410" y="66" text-anchor="middle" font-weight="700" style="fill:var(--fg)">DEEP DIVE</text>
+        <text x="410" y="86" text-anchor="middle" font-size="11" style="fill:var(--muted)">runtime + capabilities</text>
+
+        <rect x="520" y="40" width="160" height="64" stroke-width="2" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+        <text x="600" y="66" text-anchor="middle" font-weight="700" style="fill:var(--accent)">ARCHITECTURE</text>
+        <text x="600" y="86" text-anchor="middle" font-size="11" style="fill:var(--fg)">Gate A + Gate B + "sí"</text>
+
+        <rect x="720" y="40" width="170" height="64" style="fill:var(--surface);stroke:var(--fg)"/>
+        <text x="805" y="66" text-anchor="middle" font-weight="700" style="fill:var(--fg)">GENERATE</text>
+        <text x="805" y="86" text-anchor="middle" font-size="11" style="fill:var(--muted)">8 pasos · 25–35 min</text>
+
+        <line x1="120" y1="72" x2="157" y2="72" marker-end="url(#ar)" style="stroke:var(--muted)"/>
+        <line x1="300" y1="72" x2="337" y2="72" marker-end="url(#ar)" style="stroke:var(--muted)"/>
+        <line x1="480" y1="72" x2="517" y2="72" marker-end="url(#ar)" style="stroke:var(--muted)"/>
+        <line x1="680" y1="72" x2="717" y2="72" marker-end="url(#ar)" style="stroke:var(--muted)"/>
+
+        <rect x="340" y="160" width="140" height="56" style="fill:var(--bg);stroke:var(--line)"/>
+        <text x="410" y="184" text-anchor="middle" font-weight="700" style="fill:var(--fg)">BROWNFIELD</text>
+        <text x="410" y="203" text-anchor="middle" font-size="11" style="fill:var(--muted)">Repo Map → delta</text>
+        <path d="M65,104 V188 H337" fill="none" stroke-dasharray="4 4" marker-end="url(#ar)" style="stroke:var(--muted)"/>
+        <path d="M480,188 H600 V107" fill="none" stroke-dasharray="4 4" marker-end="url(#ar)" style="stroke:var(--muted)"/>
+
+        <path d="M600,40 V18 H410 V37" fill="none" marker-end="url(#ar)" style="stroke:var(--warn)"/>
+        <text x="505" y="13" text-anchor="middle" font-size="11" style="fill:var(--warn)">ajustes vuelven a DEEP DIVE (máx. 2 vueltas)</text>
+
+        <path d="M805,104 V140 H860 V120" fill="none" style="stroke:var(--ok)"/>
+        <text x="760" y="156" font-size="11" style="fill:var(--ok)">writer ⇄ validator hasta PASS</text>
+        <text x="760" y="174" font-size="11" style="fill:var(--muted)">+ smoke test real</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="tbl"><table>
+    <thead><tr><th>Estado</th><th>Qué hace</th><th>Puerta de salida</th></tr></thead>
+    <tbody>
+      <tr><td>DISCOVERY</td><td>Visión, audiencia, etapa (prototipo o producción), restricciones, plazo. Clasifica en 1 de 14 <i>shapes</i> (máx. 2).</td><td>El usuario acepta la shape</td></tr>
+      <tr><td>DEEP DIVE</td><td>3–5 preguntas propias de la shape. Elige runtime track y capabilities. Revisa combinaciones incompatibles.</td><td>Todo decidido</td></tr>
+      <tr><td>ARCHITECTURE</td><td>Un mensaje de menos de 40 líneas: stack con porqué, cómo encaja, v1 incluye / excluye, fases y riesgos.</td><td>Cero huecos + pre-mortem + "sí" explícito</td></tr>
+      <tr><td>GENERATE</td><td>Avisa la duración, verifica versiones en vivo, decide formato (≥12 pasos = bundle), escribe, valida en bucle, ejecuta el bootstrap 2 veces y el primer paso de base de datos.</td><td>0 BLOCKER, 0 MAJOR</td></tr>
+      <tr><td>BROWNFIELD</td><td>Lee el repo antes de preguntar. Solo pregunta el delta: qué debe ser verdad después, qué no puede romperse, qué no se toca.</td><td>Entra a ARCHITECTURE</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Anatomía: conocimiento en 3 ejes</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Eje</th><th>Pregunta</th><th>Archivos</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td>Shape</td><td>¿Qué es?</td><td class="num">14</td><td>SaaS, marketing site, mobile, API, herramienta interna, comunidad, agente, media generativa, e-commerce, CLI/librería/MCP, extensión, desktop, bot, pipeline de datos</td></tr>
+      <tr><td>Runtime track</td><td>¿En qué se escribe?</td><td class="num">5</td><td>ts-node, python, go, rails-laravel, mobile-native. <b>Únicos archivos con números de versión.</b></td></tr>
+      <tr><td>Capability</td><td>¿Qué hace?</td><td class="num">18</td><td>auth, database, API, pagos, despliegue, testing, observabilidad, accesibilidad, IA/LLM, agent-loop, créditos, voz, colaboración, reservas, enterprise, frontend, estado, estilos</td></tr>
+      <tr><td>Agentes</td><td>¿Quién trabaja?</td><td class="num">3</td><td><code>stack-researcher</code> (versiones en vivo), <code>blueprint-writer</code> (único autor, sin shell), <code>blueprint-validator</code> (solo lectura, ~30 barridos, ~40 tipos de falla)</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted" style="margin-top:10px;font-size:.9rem">Dato revelador: el validador ocupa 159 KB y el escritor 114 KB; cada shape ronda los 15 KB. La calidad sale de auditar, no de "saber".</p>
+
+  <h3>Las 10 ideas que lo hacen funcionar</h3>
+  <div class="ideas">
+    <div class="idea"><h4><span>01</span>Clasificar antes de diseñar</h4><p>Cada tipo de producto tiene su propio orden de construcción. Error que combate: convertir una capability en shape ("tiene pagos" no es e-commerce; "usa IA" no es agente).</p></div>
+    <div class="idea"><h4><span>02</span>Preguntas desempatadoras</h4><p class="quote">"Si reemplazo cada llamada al modelo por una respuesta fija, ¿sigue habiendo producto?"</p><p>Una sola pregunta decide entre dos shapes.</p></div>
+    <div class="idea"><h4><span>03</span>Tres ejes ortogonales</h4><p>Shape × runtime × capability. Las versiones viven en un solo eje: cuando algo cambia se edita un archivo, no trece (la v1 se pudrió en 4 meses por eso).</p></div>
+    <div class="idea"><h4><span>04</span>Nunca versiones de memoria</h4><p>Cada versión se verifica en el registro en vivo y lleva procedencia: paquete, versión, URL, fecha. Lo no verificado dice "verify before install".</p></div>
+    <div class="idea"><h4><span>05</span>Gate A: cero huecos</h4><p>Cada <code>[NEEDS CLARIFICATION]</code> se cierra respondido, con default confirmado o como Non-Goal. El silencio no es confirmación.</p></div>
+    <div class="idea"><h4><span>06</span>Gate B: pre-mortem</h4><p>8 ángulos: supuestos, mercado, competencia, viabilidad, números a 10× y 0,1×, ejecución, obituario a 6 meses, punto ciego. Los sobrevivientes van al registro de riesgos.</p></div>
+    <div class="idea"><h4><span>07</span>Non-Goals como valla</h4><p>El validador falla el blueprint si hay menos de 5 Non-Goals. Lo que no entra en v1 vale tanto como lo que entra.</p></div>
+    <div class="idea"><h4><span>08</span>Terminado = verificable</h4><p><code>Do / Done when / Verify / Checkpoint</code>. Criterios EARS, comando que sale con 0, <code>git tag</code> de rollback. Prohibido: "funciona", "se ve bien".</p></div>
+    <div class="idea"><h4><span>09</span>Permisos mínimos por rol</h4><p>El escritor no tiene shell, el validador solo lee, el hilo principal es el único que ejecuta. Un solo autor por bundle.</p></div>
+    <div class="idea"><h4><span>10</span>Memoria anti-compactación</h4><p>Un "running brief" de ≤10 líneas tras cada cambio de estado, porque Claude solo re-adjunta los primeros 5.000 tokens del skill.</p></div>
+  </div>
+
+  <h3>Un paso de construcción, por dentro</h3>
+  <pre class="code">5. Tenancy guard + isolation tests
+   Do:        un helper de autorización que llaman TODAS las queries y mutations
+   Done when: WHEN un usuario de la org A pide un id de la org B
+              THE SYSTEM SHALL responder 404 (no 403, no el registro)
+              en list, detail, update y delete
+   Verify:    pnpm test src/server/auth/tenancy   # exit 0
+   Checkpoint: git add -A &amp;&amp; git commit -m "step 5: tenancy-guard"
+               git tag step-05-tenancy-guard</pre>
+  <p class="muted" style="margin-top:8px;font-size:.9rem">Adaptado del orden de 14 pasos de la shape SaaS. Reglas del paso: 2–6 criterios, máximo 5 archivos, una sentada de trabajo.</p>
+
+  <h3>Las 20 secciones del blueprint</h3>
+  <div class="sections20">
+    <span class="key">1 Visión y Non-Goals</span><span>2 Stack</span><span>3 Carpetas</span><span class="key">4 Modelo de datos</span><span>5 API</span><span>6 Frontend</span><span>7 Design system</span><span>8 AuthN/AuthZ</span><span class="key">9 Orden de construcción</span><span>10 Entorno</span><span>11 Dependencias + procedencia</span><span>12 Despliegue</span><span>13 Testing</span><span>14 Seguridad</span><span>15 Accesibilidad</span><span class="key">16 Observabilidad y costo</span><span>17 Modelos IA</span><span>18 Skills</span><span>19 Workspace del agente</span><span class="key">20 Gate, riesgos, decisiones</span>
+  </div>
+
+  <h3>Conocimiento destilado: la shape SaaS</h3>
+  <div class="prose">
+    <p><b>Primera bifurcación: la tenencia.</b> Si existe cualquier posibilidad de equipos, empezar multi-tenant con una organización personal creada al registrarse. Cuesta una tabla y una columna; cambiarlo después es reescribir la capa de datos.</p>
+    <p><b>Trampas que nombra:</b> autorización dispersa por los handlers, confiar en el cliente para los límites del plan, webhooks sin firma ni idempotencia, abstraer antes del segundo feature, consultas N+1 en el dashboard.</p>
+    <p><b>Stack por defecto:</b> framework React full-stack + Tailwind/shadcn + Supabase solo como base de datos + Clerk como dueño de sesión + Stripe + Vercel. <b>Variante Lean (la tuya):</b> Supabase Auth en lugar de Clerk, nunca los dos.</p>
+  </div>
+
+  <h3>De dónde vienen sus ideas</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>En the-architect</th><th>Origen</th></tr></thead>
+    <tbody>
+      <tr><td><code>[NEEDS CLARIFICATION]</code>, spec antes que código</td><td>GitHub spec-kit / spec-driven development (lo cita)</td></tr>
+      <tr><td>EARS: WHEN … THE SYSTEM SHALL …</td><td>Mavin et al., Rolls-Royce (2009); popularizado por AWS Kiro</td></tr>
+      <tr><td>Pre-mortem</td><td>Gary Klein, Harvard Business Review (2007)</td></tr>
+      <tr><td>Non-Goals</td><td>Design docs de Google (goals / non-goals)</td></tr>
+      <tr><td>Decision Log</td><td>ADR de Michael Nygard (2011)</td></tr>
+      <tr><td>Done when + checkpoint por paso</td><td>Definition of Done (Scrum) + commits atómicos</td></tr>
+      <tr><td>Tenencia, webhooks idempotentes, pooling</td><td>AWS SaaS Lens, <i>Release It!</i>, DDIA</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Lo que no cubre</h3>
+  <div class="gaps">
+    <div class="gap"><b>Atributos de calidad</b><p>Decide por shape, no por "qué cualidades mandan" (ISO 25010, escenarios ATAM).</p></div>
+    <div class="gap"><b>Diagramas</b><p>Todo es texto y tablas; no hay vistas C4 ni arc42.</p></div>
+    <div class="gap"><b>Amenazas</b><p>La §14 es una checklist, no un análisis STRIDE ni OWASP ASVS.</p></div>
+    <div class="gap"><b>Continuidad</b><p>Sin RPO/RTO, backups probados ni plan ante desastres.</p></div>
+    <div class="gap"><b>Evolución</b><p>Sin fitness functions ni plan para cuando el monolito crezca (DDD estratégico).</p></div>
+    <div class="gap"><b>Regulación concreta</b><p>Solo pide "nombrar el régimen". Habeas Data (Ley 1581) o GDPR quedan a tu cargo.</p></div>
+  </div>
+</section>
+
+<!-- BASES -->
+<section id="bases">
+  <div class="sec-head"><span class="n">02</span><h2>Las bases: lo que todas las fuentes repiten</h2></div>
+  <p class="prose muted">Aparecen con distintas palabras en the-architect, <i>Fundamentals of Software Architecture</i>, DDIA, Well-Architected, 12-Factor, arc42 y <i>A Philosophy of Software Design</i>.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>#</th><th>Principio</th><th>En una línea</th><th>Pregunta de control</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>Problema antes que solución</td><td>Qué duele, a quién, y qué significa "terminado", antes de elegir tecnología</td><td>¿Lo explico sin nombrar una herramienta?</td></tr>
+      <tr><td class="num">2</td><td>Clasifica qué construyes</td><td>Sitio, SaaS, API, bot y pipeline tienen órdenes de construcción distintos</td><td>¿Cuál es la shape principal?</td></tr>
+      <tr><td class="num">3</td><td>Atributos de calidad</td><td>Elige 3 que mandan (disponibilidad, seguridad, costo, velocidad de cambio). Todo es trade-off</td><td>Si sacrifico una, ¿cuál?</td></tr>
+      <tr><td class="num">4</td><td>Alcance con valla</td><td>Lo que no entra en v1 vale tanto como lo que entra</td><td>¿Tengo 5 Non-Goals escritos?</td></tr>
+      <tr><td class="num">5</td><td>Datos primero</td><td>Identidad de cada registro, tenencia y borrado son lo más caro de cambiar</td><td>¿Quién es dueño de cada fila?</td></tr>
+      <tr><td class="num">6</td><td>Límites y contratos</td><td>Módulos profundos con interfaces pequeñas; validar en la frontera; una sola puerta de autorización</td><td>¿Hay un solo lugar que decide permisos?</td></tr>
+      <tr><td class="num">7</td><td>Decisiones registradas</td><td>ADR: contexto, opciones, elección, consecuencia</td><td>En 6 meses, ¿sabré por qué?</td></tr>
+      <tr><td class="num">8</td><td>Seguridad por diseño</td><td>Secretos fuera del repo, mínimo privilegio, aislamiento probado con test</td><td>¿Un test prueba que A no ve datos de B?</td></tr>
+      <tr><td class="num">9</td><td>Fallar bien</td><td>Idempotencia, reintentos, timeouts, colas para lo lento, backups restaurados</td><td>¿Y si llega dos veces, tarde o nunca?</td></tr>
+      <tr><td class="num">10</td><td>Observable desde el día 1</td><td>Logs con request-id, errores con contexto, 4–6 métricas con alerta</td><td>¿Me entero antes que el cliente?</td></tr>
+      <tr><td class="num">11</td><td>Costo como requisito</td><td>Costo a 1× y a 10×, y el punto donde el precio salta</td><td>¿Qué factura me mata si crezco?</td></tr>
+      <tr><td class="num">12</td><td>Terminado = verificable</td><td>Criterio observable (EARS) y comando que lo prueba; entregas pequeñas y reversibles</td><td>¿Qué comando sale con 0?</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Checklist antes de escribir código</h3>
+  <ol class="top7">
+    <li><b>Problema, Objetivo y "Terminado significa…"</b> en tres líneas.</li>
+    <li><b>Shape</b> principal; secundaria solo si tiene deploy, usuarios o ciclo propio.</li>
+    <li><b>Usuarios y escala</b> en orden de magnitud: 10, 1.000 o 100.000.</li>
+    <li><b>Top 3 atributos de calidad</b> y cuál se sacrifica.</li>
+    <li><b>Non-Goals</b>: al menos 5.</li>
+    <li><b>Modelo de datos v0</b>: entidades, dueño de cada fila, qué pasa al borrar, dinero en enteros.</li>
+    <li><b>Tenencia y permisos</b>: quién ve qué, roles, organización desde el día 1.</li>
+    <li><b>Integraciones</b>: cuál, quién es dueño de la cuenta y de las llaves, webhooks.</li>
+    <li><b>Stack</b> con una razón por fila, versiones verificadas en vivo, combinaciones incompatibles revisadas.</li>
+    <li><b>Diagrama C4</b> de contexto y contenedores.</li>
+    <li><b>Amenazas</b> (STRIDE rápido) y regulación aplicable.</li>
+    <li><b>Pre-mortem</b>: "falló en 6 meses, ¿por qué?" → riesgos con mitigación.</li>
+    <li><b>Orden de construcción</b>: 10–18 pasos con Do / Done when / Verify / Checkpoint.</li>
+    <li><b>Costo</b> a 1× y a 10×.</li>
+    <li><b>ADR-0001</b> con la decisión más cara de revertir.</li>
+  </ol>
+</section>
+
+<!-- TIPOS -->
+<section id="tipos">
+  <div class="sec-head"><span class="n">03</span><h2>Qué cambia según lo que construyas</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Tipo</th><th>Decisión que más pesa</th><th>Riesgo típico</th><th>Paso que no puede faltar</th></tr></thead>
+    <tbody>
+      <tr><td>Sitio web</td><td>Estático o dinámico; CMS; Core Web Vitals</td><td>Convertir un blog en una "plataforma" (5× esfuerzo)</td><td>Metadatos, sitemap, imágenes optimizadas, analítica</td></tr>
+      <tr><td>SaaS</td><td>Tenencia (usuario u organización) antes de la primera tabla</td><td>Autorización dispersa → fuga entre clientes</td><td>Test de aislamiento entre tenants + límites del plan en servidor</td></tr>
+      <tr><td>App móvil</td><td>¿Offline? ¿Push? Toolchain gestionado (Expo/EAS)</td><td>Firmado y revisión de tiendas fuera de tu control</td><td>Actualizaciones OTA + versión mínima soportada</td></tr>
+      <tr><td>API / backend</td><td>Contrato (OpenAPI), versionado, auth entre máquinas</td><td>Romper clientes al cambiar un campo</td><td>Tests de contrato + rate limiting</td></tr>
+      <tr><td>CLI / librería / MCP</td><td>Superficie pública = símbolos exportados + semver</td><td>Cambios incompatibles sin versión mayor</td><td>Changelog + publicación reproducible</td></tr>
+      <tr><td>Herramienta interna</td><td>SSO, auditoría, velocidad antes que pulido</td><td>Construir billing u onboarding que nadie necesita</td><td>Log de auditoría</td></tr>
+      <tr><td>Bot / automatización</td><td>Idempotencia, reintentos, dead-letter, secretos</td><td>Ejecuciones duplicadas por reintentos del proveedor</td><td>Tabla de eventos procesados</td></tr>
+      <tr><td>Agente / IA</td><td>Bucle, herramientas, contexto, evals, costo por corrida</td><td>Costo y calidad sin medir</td><td>Suite de evals + tope de gasto</td></tr>
+      <tr><td>Pipeline de datos</td><td>Linaje, frescura, tests sobre los datos</td><td>"¿Por qué estos dos números no coinciden?"</td><td>Tests de calidad de datos</td></tr>
+      <tr><td>Infraestructura</td><td>Todo como código, entornos, red, secretos, backups</td><td>Servidores configurados a mano, irrepetibles</td><td>Restaurar un backup de verdad, al menos una vez</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- FUENTES -->
+<section id="fuentes">
+  <div class="sec-head"><span class="n">04</span><h2>Fuentes verificadas</h2></div>
+  <div class="tabs" role="tablist" aria-label="Tipo de fuente">
+    <button role="tab" id="tab-herr" aria-controls="p-herr" aria-selected="true">Herramientas hermanas</button>
+    <button role="tab" id="tab-repos" aria-controls="p-repos" aria-selected="false">Repos</button>
+    <button role="tab" id="tab-marcos" aria-controls="p-marcos" aria-selected="false">Marcos</button>
+    <button role="tab" id="tab-libros" aria-controls="p-libros" aria-selected="false">Libros</button>
+    <button role="tab" id="tab-cursos" aria-controls="p-cursos" aria-selected="false">Cursos</button>
+  </div>
+  <div class="legend"><span><span class="tag t-ok">✓</span> verificado en vivo el 23-oct-2026</span><span><span class="tag t-warn">!</span> con reservas (sin mantenimiento o sin confirmar)</span><span><span class="tag t-es">ES</span> disponible en español</span></div>
+
+  <div id="p-herr" role="tabpanel" aria-labelledby="tab-herr">
+    <div class="tbl"><table>
+      <thead><tr><th>Herramienta</th><th>★</th><th>Qué hace</th><th>Frente a the-architect</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://github.com/github/spec-kit">github/spec-kit</a></td><td class="num">142.603</td><td>/specify → /plan → /tasks → /implement con una "constitution"; multi-agente</td><td>Mismo ADN. Más genérico y por fases; the-architect entrega un solo blueprint con EARS y verificación por paso</td></tr>
+        <tr><td><a href="https://github.com/Fission-AI/OpenSpec">Fission-AI/OpenSpec</a></td><td class="num">72.859</td><td>Specs vivas + propuestas de cambio (deltas)</td><td>Mejor para proyectos existentes e iterar</td></tr>
+        <tr><td><a href="https://github.com/bmad-code-org/BMAD-METHOD">BMAD-METHOD</a></td><td class="num">54.485</td><td>Equipo de agentes: analista, PM, arquitecto, scrum master, dev</td><td>Más pesado y ágil-céntrico</td></tr>
+        <tr><td><a href="https://kiro.dev/docs/specs">Kiro (AWS)</a></td><td class="num">—</td><td>IDE con requirements → design → tasks en EARS</td><td>El comparable de formato más directo, pero cerrado</td></tr>
+        <tr><td><a href="https://github.com/gotalab/cc-sdd">gotalab/cc-sdd</a></td><td class="num">3.737</td><td>Flujo estilo Kiro como skills de Claude Code</td><td>Muy cercano</td></tr>
+        <tr><td><a href="https://github.com/eyaltoledano/claude-task-master">claude-task-master</a> <span class="tag t-warn">!</span></td><td class="num">28.269</td><td>PRD → tareas con dependencias</td><td>Solo descompone; ~6 meses sin push</td></tr>
+        <tr><td><a href="https://github.com/buildermethods/agent-os">agent-os</a></td><td class="num">5.537</td><td>Inyecta estándares del código existente</td><td>Complemento</td></tr>
+        <tr><td><b>Tu agente <code>architect</code></b></td><td class="num">—</td><td>Lee el código y ordena DB → API → UI con riesgos</td><td>Le faltan: Non-Goals, huecos marcados, pre-mortem, EARS + verify, versiones en vivo</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div id="p-repos" role="tabpanel" aria-labelledby="tab-repos" hidden>
+    <div class="tbl"><table>
+      <thead><tr><th>Repo</th><th>★</th><th>Para qué</th><th>Nivel</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://github.com/karanpratapsingh/system-design">karanpratapsingh/system-design</a></td><td class="num">46.607</td><td>Curso lineal: redes → bases de datos → microservicios</td><td>Básico</td></tr>
+        <tr><td><a href="https://github.com/donnemartin/system-design-primer">system-design-primer</a></td><td class="num">375.338</td><td>La referencia: caché, BD, CAP, colas + ejercicios</td><td>Básico–Inter.</td></tr>
+        <tr><td><a href="https://github.com/ByteByteGoHq/system-design-101">system-design-101</a> <span class="tag t-warn">!</span></td><td class="num">90.690</td><td>Conceptos con diagramas (sin cambios desde abr-2025)</td><td>Básico</td></tr>
+        <tr><td><a href="https://roadmap.sh/software-architect">roadmap.sh</a></td><td class="num">370.234</td><td>Mapas de "qué me falta"</td><td>Básico</td></tr>
+        <tr><td><a href="https://github.com/ashishps1/awesome-system-design-resources">awesome-system-design-resources</a></td><td class="num">42.781</td><td>Índice de conceptos y artículos</td><td>Básico–Inter.</td></tr>
+        <tr><td><a href="https://github.com/binhnguyennus/awesome-scalability">awesome-scalability</a></td><td class="num">75.017</td><td>Casos reales (Netflix, Uber…)</td><td>Avanzado</td></tr>
+        <tr><td><a href="https://github.com/mehdihadeli/awesome-software-architecture">awesome-software-architecture</a></td><td class="num">11.733</td><td>DDD, CQRS, event sourcing, microservicios</td><td>Avanzado</td></tr>
+        <tr><td><a href="https://github.com/joelparkerhenderson/architecture-decision-record">architecture-decision-record</a> · <a href="https://github.com/adr/madr">MADR</a></td><td class="num">17.293</td><td>Plantillas de ADR</td><td>Básico</td></tr>
+        <tr><td><a href="https://github.com/alan2207/bulletproof-react">bulletproof-react</a></td><td class="num">36.000</td><td>Arquitectura de apps React (tu stack)</td><td>Inter.</td></tr>
+        <tr><td><a href="https://github.com/nextjs/saas-starter">nextjs/saas-starter</a></td><td class="num">16.208</td><td>SaaS mínimo con Postgres y Stripe</td><td>Básico</td></tr>
+        <tr><td><a href="https://github.com/boxyhq/saas-starter-kit">boxyhq/saas-starter-kit</a></td><td class="num">4.960</td><td>Equipos, SSO y auditoría</td><td>Inter.</td></tr>
+        <tr><td><a href="https://github.com/Sairyss/domain-driven-hexagon">domain-driven-hexagon</a> <span class="tag t-warn">!</span></td><td class="num">14.994</td><td>DDD + hexagonal en TypeScript (sin cambios desde 2024; sigue vigente)</td><td>Inter.</td></tr>
+        <tr><td><a href="https://github.com/kgrzybek/modular-monolith-with-ddd">modular-monolith-with-ddd</a> <span class="tag t-warn">!</span></td><td class="num">14.089</td><td>Monolito modular completo con ADRs y C4 (.NET)</td><td>Avanzado</td></tr>
+        <tr><td><a href="https://github.com/ddd-crew/ddd-starter-modelling-process">ddd-starter-modelling-process</a></td><td class="num">6.072</td><td>Proceso paso a paso para modelar un dominio</td><td>Inter.</td></tr>
+        <tr><td><a href="https://github.com/aws-samples/aws-saas-factory-ref-solution-serverless-saas">AWS serverless SaaS</a></td><td class="num">523</td><td>Aislamiento por tenant (pool/silo)</td><td>Avanzado</td></tr>
+        <tr><td><a href="https://github.com/CodelyTV">CodelyTV</a> <span class="tag t-es">ES</span></td><td class="num">—</td><td>Ejemplos hexagonal/DDD/CQRS en TS, PHP y Java</td><td>Inter.</td></tr>
+        <tr><td><a href="https://github.com/marco-mendes/arquitetura-software">marco-mendes/arquitetura-software</a> (PT)</td><td class="num">145</td><td>Libro abierto de fundamentos en portugués</td><td>Básico</td></tr>
+      </tbody>
+    </table></div>
+    <p class="muted" style="margin-top:10px;font-size:.9rem">En español no hay un repo de system design comparable. Lo mejor nativo en español son las docs de Azure (pestaña Marcos) y CodelyTV.</p>
+  </div>
+
+  <div id="p-marcos" role="tabpanel" aria-labelledby="tab-marcos" hidden>
+    <div class="tbl"><table>
+      <thead><tr><th>Marco</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://c4model.com">C4 model</a></td><td>Dibujar la arquitectura en 4 zooms: contexto, contenedores, componentes, código</td></tr>
+        <tr><td><a href="https://arc42.org">arc42</a> <span class="tag t-es">ES</span></td><td>Plantilla de 12 secciones para documentar una arquitectura</td></tr>
+        <tr><td><a href="https://12factor.net/es/">12-Factor App</a> <span class="tag t-es">ES</span></td><td>12 reglas para apps cloud y SaaS: config en el entorno, procesos sin estado, logs como flujo</td></tr>
+        <tr><td><a href="https://learn.microsoft.com/es-es/azure/well-architected/">Azure Well-Architected</a> · <a href="https://learn.microsoft.com/es-es/azure/architecture/">Architecture Center</a> · <a href="https://learn.microsoft.com/es-es/azure/architecture/guide/multitenant/overview">guía multi-tenant</a> <span class="tag t-es">ES</span></td><td><b>La mejor fuente nativa en español:</b> pilares, patrones cloud, estilos y multi-tenancy</td></tr>
+        <tr><td><a href="https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html">AWS Well-Architected</a> + <a href="https://docs.aws.amazon.com/wellarchitected/latest/saas-lens/saas-lens.html">SaaS Lens</a></td><td>6 pilares; el lente SaaS cubre tenencia, aislamiento y onboarding</td></tr>
+        <tr><td><a href="https://cloud.google.com/architecture/framework">Google Cloud Architecture Framework</a></td><td>Pilares equivalentes</td></tr>
+        <tr><td><a href="https://owasp.org/www-project-application-security-verification-standard/">OWASP ASVS 5.0</a></td><td>Requisitos de seguridad verificables por nivel</td></tr>
+        <tr><td>ISO/IEC 25010:2023 <span class="tag t-warn">!</span></td><td>Catálogo de atributos de calidad (de pago; mejor por resúmenes)</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div id="p-libros" role="tabpanel" aria-labelledby="tab-libros" hidden>
+    <div class="tbl"><table>
+      <thead><tr><th>Libro</th><th>Edición</th><th>Nivel</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>Head First Software Architecture <span class="muted">— Gandhi, Richards, Ford</span></td><td class="num">2024</td><td>Principiante</td><td>La mejor puerta de entrada: pensar en trade-offs</td></tr>
+        <tr><td>A Philosophy of Software Design <span class="muted">— Ousterhout</span></td><td class="num">2ª · 2021</td><td>Princ.–Inter.</td><td>Complejidad, módulos profundos, buenas abstracciones</td></tr>
+        <tr><td>Fundamentals of Software Architecture <span class="muted">— Richards, Ford</span> <span class="tag t-es">ES</span></td><td class="num">2ª · 2025</td><td>Inter.</td><td>El mapa completo: características, estilos, rol del arquitecto</td></tr>
+        <tr><td>Designing Data-Intensive Applications <span class="muted">— Kleppmann, Riccomini</span> <span class="tag t-es">ES</span></td><td class="num">2ª · 2026</td><td>Inter.–Avanz.</td><td>La biblia de datos: replicación, transacciones, consistencia</td></tr>
+        <tr><td>Building Multi-Tenant SaaS Architectures <span class="muted">— Golding</span></td><td class="num">2024</td><td>Inter.</td><td><b>El libro de SaaS:</b> aislamiento, noisy neighbor, onboarding</td></tr>
+        <tr><td>Learning Domain-Driven Design <span class="muted">— Khononov</span></td><td class="num">2021</td><td>Princ.–Inter.</td><td>La mejor entrada a DDD</td></tr>
+        <tr><td>Release It! <span class="muted">— Nygard</span></td><td class="num">2ª · 2018</td><td>Inter.</td><td>Timeouts, circuit breakers: sobrevivir en producción</td></tr>
+        <tr><td>Software Architecture: The Hard Parts <span class="muted">— Ford et al.</span></td><td class="num">2021</td><td>Avanzado</td><td>Partir sistemas, datos distribuidos, sagas</td></tr>
+        <tr><td>Building Evolutionary Architectures <span class="muted">— Ford et al.</span></td><td class="num">2ª · 2022</td><td>Inter.</td><td>Fitness functions para que no se degrade</td></tr>
+        <tr><td>Balancing Coupling in Software Design <span class="muted">— Khononov</span></td><td class="num">2024</td><td>Avanzado</td><td>Modelo moderno de acoplamiento</td></tr>
+        <tr><td>Software Architecture in Practice <span class="muted">— Bass, Clements, Kazman</span></td><td class="num">4ª · 2021</td><td>Avanzado</td><td>Atributos de calidad, tácticas, ATAM</td></tr>
+        <tr><td>Building Microservices <span class="muted">— Newman</span></td><td class="num">2ª · 2021</td><td>Inter.</td><td>Cuándo sí, y cuándo no, microservicios</td></tr>
+        <tr><td>Designing Distributed Systems <span class="muted">— Burns</span></td><td class="num">2ª · 2024</td><td>Inter.</td><td>Patrones de contenedores y sistemas distribuidos</td></tr>
+        <tr><td>Team Topologies <span class="muted">— Skelton, Pais</span></td><td class="num">2ª · 2025</td><td>Inter.</td><td>Ley de Conway, tipos de equipo</td></tr>
+        <tr><td>Threats / Threat Modeling <span class="muted">— Shostack</span></td><td class="num">2023 / 2014</td><td>Princ. / Inter.</td><td>Modelado de amenazas (STRIDE)</td></tr>
+        <tr><td>Site Reliability Engineering <span class="muted">— Google, <a href="https://sre.google/books/">gratis</a></span></td><td class="num">2016</td><td>Inter.</td><td>SLOs, error budgets, postmortems</td></tr>
+        <tr><td>System Design Interview vol. 1 y 2 <span class="muted">— Alex Xu</span></td><td class="num">2020 / 2022</td><td>Inter.</td><td>Casos prácticos: rate limiter, chat, pagos</td></tr>
+        <tr><td>Clean Architecture <span class="muted">— Martin</span> <span class="tag t-es">ES</span></td><td class="num">2017</td><td>Inter.</td><td>Dependencias y capas (útil, algo dogmático)</td></tr>
+        <tr><td>The Pragmatic Programmer <span class="muted">— Thomas, Hunt</span> <span class="tag t-es">ES</span></td><td class="num">2019</td><td>Principiante</td><td>Hábitos de ingeniero profesional</td></tr>
+        <tr><td>DDD (Evans) · Implementing DDD (Vernon)</td><td class="num">2003 / 2013</td><td>Avanzado</td><td>Obras fundacionales de DDD</td></tr>
+        <tr><td>Introducción a la arquitectura de software <span class="muted">— Oscar Blancarte</span> <span class="tag t-es">ES</span></td><td class="num">2020</td><td>Principiante</td><td>Estilos y patrones escritos en español</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div id="p-cursos" role="tabpanel" aria-labelledby="tab-cursos" hidden>
+    <div class="tbl"><table>
+      <thead><tr><th>Curso</th><th>Costo</th><th>Formato</th><th>Aporta</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://www.youtube.com/playlist?list=PLeKd45zvjcDFUEv_ohr_HdUFe97RItdiB">Kleppmann — Distributed Systems</a> (<a href="https://www.cl.cam.ac.uk/teaching/2122/ConcDisSys/dist-sys-notes.pdf">notas</a>)</td><td>Gratis</td><td>~7 h + 87 págs.</td><td>Relojes, replicación, consenso, consistencia</td></tr>
+        <tr><td><a href="https://15445.courses.cs.cmu.edu/">CMU 15-445 Database Systems</a></td><td>Gratis</td><td>26 clases</td><td>Cómo funciona Postgres por dentro</td></tr>
+        <tr><td><a href="https://pdos.csail.mit.edu/6.824/">MIT 6.5840 Distributed Systems</a></td><td>Gratis</td><td>Papers + labs en Go</td><td>Implementar Raft y un KV tolerante a fallos</td></tr>
+        <tr><td><a href="https://web.mit.edu/6.031/www/">MIT 6.031 Software Construction</a></td><td>Gratis</td><td>29 lecturas</td><td>Specs, tipos, testing</td></tr>
+        <tr><td><a href="https://developertoarchitect.com/lessons/">Software Architecture Monday</a></td><td>Gratis</td><td>~225 videos cortos</td><td>Estilos, trade-offs, ADRs</td></tr>
+        <tr><td><a href="https://codely.com/en/courses/hexagonal-architecture-t5m4">CodelyTV</a> <span class="tag t-es">ES</span></td><td>19 €/mes</td><td>Video + repos</td><td><b>Lo mejor en español</b>: hexagonal, DDD, CQRS</td></tr>
+        <tr><td><a href="https://ed.team/cursos">EDteam — Arquitectura con IA</a> <span class="tag t-es">ES</span></td><td>~US$11</td><td>3 h</td><td>Contratos, persistencia, seguridad, monitoreo</td></tr>
+        <tr><td><a href="https://platzi.com/cursos/fundamentos-arquitectura-software/">Platzi — Fundamentos</a> <span class="tag t-es">ES</span></td><td>Suscripción</td><td>2 h</td><td>Primer contacto</td></tr>
+        <tr><td><a href="https://www.coursera.org/specializations/software-design-architecture">Coursera — U. Alberta</a></td><td>Coursera Plus</td><td>~52 h</td><td>Programa académico ordenado</td></tr>
+        <tr><td><a href="https://www.udemy.com/course/fundamentals-of-backend-communications-and-protocols/">Hussein Nasser — Backend</a></td><td>Udemy</td><td>19,5 h</td><td>Protocolos y proxies: puente desde frontend</td></tr>
+        <tr><td><a href="https://bytebytego.com/">ByteByteGo</a> · <a href="https://www.educative.io/courses/grokking-the-system-design-interview">Educative</a></td><td>Suscripción</td><td>Texto ilustrado</td><td>System design por casos</td></tr>
+        <tr><td><a href="https://branas.io">Branas.io</a> · <a href="https://fullcycle.com.br/">Full Cycle</a> (PT)</td><td>De pago</td><td>Con mentoría</td><td>Clean Architecture, DDD, microservicios</td></tr>
+        <tr><td><a href="https://learn.particular.net/courses/adsd-online">Udi Dahan — ADSD</a></td><td>US$2.500</td><td>99 lecciones</td><td>Mensajería y acoplamiento (solo con presupuesto)</td></tr>
+        <tr><td><a href="https://docs.aws.amazon.com/whitepapers/latest/saas-architecture-fundamentals/saas-architecture-fundamentals.html">AWS SaaS Fundamentals</a> · <a href="https://supabase.com/docs/guides/getting-started/architecture">Supabase Architecture</a></td><td>Gratis</td><td>Docs</td><td>Vocabulario SaaS y tu propio stack por dentro</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- RUTA -->
+<section id="ruta">
+  <div class="sec-head"><span class="n">05</span><h2>Ruta de 12 semanas</h2></div>
+  <p class="prose muted">6–8 horas por semana, gratis primero. Cada semana termina con un entregable sobre un proyecto tuyo real. Marca las que completes: se guardan en este navegador.</p>
+  <div class="progress"><span id="pc">0 / 9 bloques</span><div class="bar"><i id="pb"></i></div></div>
+  <div class="weeks" id="weeks">
+    <div class="week"><input type="checkbox" id="w1" aria-label="Semana 1 completada"><span class="wk">Sem 1</span><div><b>Mapa general</b><div class="mat">roadmap.sh · Supabase Architecture · empezar <i>Head First Software Architecture</i></div><div class="del">Diagrama C4 (contexto y contenedores) de una app tuya</div></div></div>
+    <div class="week"><input type="checkbox" id="w2" aria-label="Semana 2 completada"><span class="wk">Sem 2</span><div><b>Diseño de módulos</b><div class="mat"><i>A Philosophy of Software Design</i> · MIT 6.031</div><div class="del">Refactorizar un módulo hacia "módulo profundo"</div></div></div>
+    <div class="week"><input type="checkbox" id="w3" aria-label="Semana 3 completada"><span class="wk">Sem 3</span><div><b>Estilos y decisiones</b><div class="mat">Software Architecture Monday (10–15 lecciones) · MADR</div><div class="del">3 ADRs de decisiones que ya tomaste</div></div></div>
+    <div class="week"><input type="checkbox" id="w4" aria-label="Semanas 4 y 5 completadas"><span class="wk">Sem 4–5</span><div><b>Arquitectura de aplicación</b><div class="mat">CodelyTV (si pagas un solo curso, este) · domain-driven-hexagon · bulletproof-react</div><div class="del">Una feature con el dominio separado de Supabase (puertos y adaptadores)</div></div></div>
+    <div class="week"><input type="checkbox" id="w6" aria-label="Semanas 6 y 7 completadas"><span class="wk">Sem 6–7</span><div><b>Bases de datos por dentro</b><div class="mat">CMU 15-445 (≈10 clases) · DDIA caps. 1–3</div><div class="del">Revisar índices y RLS con <code>EXPLAIN ANALYZE</code></div></div></div>
+    <div class="week"><input type="checkbox" id="w8" aria-label="Semana 8 completada"><span class="wk">Sem 8</span><div><b>Backend y red</b><div class="mat">Hussein Nasser · <i>Release It!</i></div><div class="del">Documentar una request Vercel → función → Postgres, con timeouts y reintentos</div></div></div>
+    <div class="week"><input type="checkbox" id="w9" aria-label="Semanas 9 y 10 completadas"><span class="wk">Sem 9–10</span><div><b>Sistemas distribuidos</b><div class="mat">Kleppmann Cambridge (7 h) · DDIA replicación y consistencia</div><div class="del">Qué pasa si un webhook llega 2 veces, tarde o nunca → idempotencia</div></div></div>
+    <div class="week"><input type="checkbox" id="w11" aria-label="Semana 11 completada"><span class="wk">Sem 11</span><div><b>System design</b><div class="mat">karanpratapsingh/system-design · system-design-primer</div><div class="del">Diseñar en pizarra 2 sistemas: colas, caché, rate limiting</div></div></div>
+    <div class="week"><input type="checkbox" id="w12" aria-label="Semana 12 completada"><span class="wk">Sem 12</span><div><b>SaaS</b><div class="mat">AWS SaaS Fundamentals + SaaS Lens · guía multi-tenant de Azure · <i>Building Multi-Tenant SaaS Architectures</i></div><div class="del">Documento de arquitectura SaaS de tu producto: tenencia, onboarding, billing, aislamiento probado</div></div></div>
+  </div>
+
+  <h3>Top 7 de lectura, en orden</h3>
+  <ol class="top7">
+    <li><i>Head First Software Architecture</i>: vocabulario base sin abrumar.</li>
+    <li><i>A Philosophy of Software Design</i>: corto, aplica desde el primer día.</li>
+    <li><i>Fundamentals of Software Architecture</i> 2ª: estructura todo; hay versión en español.</li>
+    <li><i>Designing Data-Intensive Applications</i> 2ª: Supabase es Postgres; el mayor retorno a largo plazo.</li>
+    <li><i>Building Multi-Tenant SaaS Architectures</i>: RLS por tenant, planes, onboarding.</li>
+    <li><i>Learning Domain-Driven Design</i>: qué construir y qué comprar.</li>
+    <li><i>Release It!</i> 2ª: sobrevivir en producción.</li>
+  </ol>
+
+  <h3>Usar the-architect como profesor</h3>
+  <pre class="code">/plugin marketplace add Hainrixz/the-architect
+/plugin install the-architect@soyenriquerocha
+/architect-quick   # con una idea pequeña; lee el blueprint como material de estudio</pre>
+  <p class="prose" style="margin-top:12px">Compara el mismo proyecto en spec-kit o cc-sdd: ver tres artefactos lado a lado enseña qué hace buena una spec. Después, lleva las mejores piezas a tu propio agente <code>architect</code>.</p>
+</section>
+</main>
+</div></div>
+
+<footer class="wrap"><div class="inner">Estrellas y ediciones consultadas el 23-oct-2026 con la API de GitHub y las páginas de editoriales. Afirmaciones sobre the-architect tomadas de sus archivos en el commit a25b09e.</div></footer>
+
+<script>
+(function(){
+  // Pestañas
+  var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
+  function show(t){tabs.forEach(function(b){var on=b===t;b.setAttribute('aria-selected',on);document.getElementById(b.getAttribute('aria-controls')).hidden=!on;});}
+  tabs.forEach(function(b,i){
+    b.addEventListener('click',function(){show(b)});
+    b.addEventListener('keydown',function(e){
+      var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0; if(!d)return;
+      var n=tabs[(i+d+tabs.length)%tabs.length]; n.focus(); show(n);
+    });
+  });
+
+  // Índice activo
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'))});
+  function mark(){
+    var y=window.scrollY+120, cur=0;
+    secs.forEach(function(s,i){if(s && s.offsetTop<=y)cur=i});
+    links.forEach(function(a,i){a.classList.toggle('on',i===cur)});
+  }
+  window.addEventListener('scroll',mark,{passive:true}); mark();
+
+  // Progreso de la ruta (solo en este navegador)
+  var KEY='arq-ruta-v1', saved={};
+  try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){saved={}}
+  var boxes=[].slice.call(document.querySelectorAll('#weeks input'));
+  function update(){
+    var done=0;
+    boxes.forEach(function(b){b.closest('.week').classList.toggle('done',b.checked); if(b.checked)done++;});
+    document.getElementById('pc').textContent=done+' / '+boxes.length+' bloques';
+    document.getElementById('pb').style.width=(done/boxes.length*100)+'%';
+  }
+  boxes.forEach(function(b){
+    b.checked=!!saved[b.id];
+    b.addEventListener('change',function(){
+      saved[b.id]=b.checked;
+      try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}
+      update();
+    });
+  });
+  update();
+})();
+</script>

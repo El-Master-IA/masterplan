@@ -9,7 +9,7 @@
   "properties": {
     "$schema": { "type": "string" },
     "nombre": { "type": "string", "minLength": 1, "description": "Nombre del proyecto (puede ser provisional)." },
-    "modo": { "enum": ["greenfield", "brownfield"], "description": "greenfield: sin código previo. brownfield: repo existente." },
+    "modo": { "enum": ["greenfield", "brownfield", "rapido"], "description": "greenfield: sin código previo. brownfield: repo existente. rapido: sin código previo, con entrevista corta y defaults declarados (/masterplan:rapido)." },
     "fase": { "type": "integer", "minimum": 0, "maximum": 8, "description": "Fase actual de la máquina de fases." },
     "voz": { "enum": ["auto", "negocio", "dev"], "default": "auto" },
     "politicas": {
@@ -83,7 +83,7 @@
       "type": "array",
       "uniqueItems": true,
       "items": {
-        "enum": ["auth", "datos", "api", "frontend", "pagos", "deploy", "observabilidad", "correo", "archivos", "tiempo-real", "ia"]
+        "enum": ["auth", "datos", "api", "frontend", "pagos", "deploy", "observabilidad", "correo", "archivos", "video", "trabajos", "tiempo-real", "chatbots", "ia", "ia-media"]
       }
     },
     "calidad": {
@@ -126,6 +126,6 @@
       }
     },
     "creado": { "type": "string", "format": "date" },
-    "actualizado": { "type": "string", "format": "date" }
+    "actualizado": { "type": "string", "description": "Fecha o fecha y hora ISO; lo escribe masterplan.mjs en cada guardado." }
   }
 }
