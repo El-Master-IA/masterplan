@@ -4,7 +4,7 @@
 entrevista, diseña el frontend, el backend, los datos, las APIs y la seguridad, construye paso a
 paso con un agente por tarea, audita, publica y mantiene tu proyecto. En español.
 
-Un kit de [El Máster IA](https://la-boveda-del-master.vercel.app/lab/masterplan) por
+Un kit de [El Máster IA](https://www.elmasteria.com/lab/masterplan) por
 Alexander Cast.
 
 ---
